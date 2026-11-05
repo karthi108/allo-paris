@@ -1,0 +1,15 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+# Never commit call audio or raw transcripts
+*.wav
+*.mp3
+*.ulaw
+eval/audio/private/
+data/allo.db
+data/stops.json

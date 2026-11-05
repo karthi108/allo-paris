@@ -1,0 +1,126 @@
+"""Web companion API logic, framework-free so it can be unit tested.
+
+Same rules as the phone line: every time shown comes from PRIM, answers come
+from the same templates, and limits protect the PRIM quota.
+"""
+
+from __future__ import annotations
+
+import time
+from collections import OrderedDict
+from datetime import UTC, datetime
+from typing import Any
+
+from app.agent.dialog import CallState, Dialog, render_departures
+from app.data.prim import FeedError
+from app.data.stops import Line, StopArea, StopIndex
+
+MAX_SESSIONS = 1000
+
+
+class RateLimiter:
+    """Fixed-window limiter per key (e.g. client IP)."""
+
+    def __init__(self, per_minute: int) -> None:
+        self.per_minute = per_minute
+        self._hits: dict[str, tuple[int, int]] = {}
+
+    def allow(self, key: str, now: float | None = None) -> bool:
+        window = int((now if now is not None else time.time()) // 60)
+        win, count = self._hits.get(key, (window, 0))
+        if win != window:
+            win, count = window, 0
+        if count >= self.per_minute:
+            self._hits[key] = (win, count)
+            return False
+        self._hits[key] = (win, count + 1)
+        if len(self._hits) > 10_000:
+            self._hits.clear()
+        return True
+
+
+def line_json(line: Line, lang: str = "fr") -> dict[str, str]:
+    return {
+        "id": line.line_id,
+        "short": line.short,
+        "mode": line.mode,
+        "label": line.spoken(lang),
+        "color": line.color,
+        "text_color": line.text_color,
+    }
+
+
+def stop_json(area: StopArea) -> dict[str, Any]:
+    return {
+        "id": area.zda_id,
+        "name": area.name,
+        "lat": area.lat,
+        "lon": area.lon,
+        "lines": [line_json(ln) for ln in area.lines],
+    }
+
+
+class WebApi:
+    def __init__(self, index: StopIndex, dialog: Dialog, stale_after: int = 120) -> None:
+        self.index = index
+        self.dialog = dialog
+        self.stale_after = stale_after
+        self.sessions: OrderedDict[str, CallState] = OrderedDict()
+        self._stops_cache = [stop_json(a) for a in index.areas if a.lat is not None]
+
+    def stops(self) -> list[dict[str, Any]]:
+        return self._stops_cache
+
+    def departures(self, stop_id: str, line_id: str, lang: str = "fr") -> dict[str, Any]:
+        area = self.index.by_id.get(stop_id)
+        if area is None:
+            return {"error": "unknown_stop"}
+        line = next((ln for ln in area.lines if ln.line_id == line_id), None)
+        if line is None:
+            return {"error": "line_not_at_stop"}
+        try:
+            result = self.dialog.source.next_departures(area.monitoring_ref, line.line_id)
+        except FeedError:
+            return {"error": "feed_down", "stop": stop_json(area), "line": line_json(line, lang)}
+        now = datetime.now(UTC)
+        age = int((now - result.fetched_at).total_seconds())
+        stale = age > self.stale_after
+        return {
+            "stop": stop_json(area),
+            "line": line_json(line, lang),
+            "fetched_at": result.fetched_at.isoformat(),
+            "age_seconds": max(age, 0),
+            "stale": stale,
+            "departures": []
+            if stale
+            else [
+                {
+                    "destination": d.destination,
+                    "at": d.at.isoformat(),
+                    "minutes": max(int((d.at - now).total_seconds() // 60), 0),
+                    "realtime": d.realtime,
+                }
+                for d in result.departures[:10]
+            ],
+            "answer": render_departures(result, line, area, lang, now, self.stale_after),
+        }
+
+    def ask(self, question: str, session_id: str, lang: str = "fr") -> dict[str, Any]:
+        question = question.strip()[:300]
+        state = self.sessions.get(session_id)
+        if state is None:
+            state = CallState(lang=lang)
+            self.sessions[session_id] = state
+            if len(self.sessions) > MAX_SESSIONS:
+                self.sessions.popitem(last=False)
+        state.lang = lang if lang in ("fr", "en") else "fr"
+        if not question:
+            return {"intent": "empty", "answer": ""}
+        reply = self.dialog.handle(question, state)
+        return {
+            "intent": reply.intent,
+            "answer": reply.text,
+            "lang": state.lang,
+            "stop": stop_json(reply.stop) if reply.stop else None,
+            "line": line_json(reply.line, state.lang) if reply.line else None,
+        }
