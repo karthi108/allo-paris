@@ -22,10 +22,10 @@ LANDMARKS: dict[str, tuple[str, str]] = {
     "sacre coeur": ("le Sacré-Cœur", "Anvers"),
     "montmartre": ("Montmartre", "Abbesses"),
     "champs elysees": ("les Champs-Élysées", "Franklin D. Roosevelt"),
-    "disneyland": ("Disneyland Paris", "Marne-la-Vallée Chessy"),
+    "disneyland": ("Disneyland Paris", "Marne-la-Vallée - Chessy"),
     "versailles chateau": ("le château de Versailles", "Versailles Château Rive Gauche"),
     "chateau de versailles": ("le château de Versailles", "Versailles Château Rive Gauche"),
-    "stade de france": ("le Stade de France", "Stade de France - Saint-Denis"),
+    "stade de france": ("le Stade de France", "Stade de France Saint-Denis"),
     "orly": ("l'aéroport d'Orly", "Aéroport d'Orly"),
     "roissy": ("l'aéroport Charles-de-Gaulle", "Aéroport Charles de Gaulle 2 (Terminal 2)"),
     "cdg": ("l'aéroport Charles-de-Gaulle", "Aéroport Charles de Gaulle 2 (Terminal 2)"),
@@ -35,14 +35,15 @@ LANDMARKS: dict[str, tuple[str, str]] = {
 }
 
 
-def _landmark(text: str) -> tuple[str, str] | None:
+def _landmark(text: str) -> tuple[str, str, float] | None:
+    """Return (spoken place, station name, match score) for the best landmark, if any."""
     words = tokens(text)
     best: tuple[float, tuple[str, str]] | None = None
     for key, value in LANDMARKS.items():
         score = _best_window_score(words, tokens(key))
         if score >= 0.8 and (best is None or score > best[0]):
             best = (score, value)
-    return best[1] if best else None
+    return (best[1][0], best[1][1], best[0]) if best else None
 
 
 _STATUS_WORDS = re.compile(
@@ -90,7 +91,24 @@ _LINE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("Tramway", re.compile(r"\bt(\d{1,2}[ab]?)\b")),
     ("Metro", re.compile(r"\b(?:ligne|line|metro|m)\s?" + _NUM + r"\b")),
     ("LocalTrain", re.compile(r"\b(?:ligne|line|train|transilien)\s?([hjklnpru])\b")),
+    # How Parisians say it: "la 13", "le 4". Only accepted if it is a real metro line.
+    ("MetroBare", re.compile(r"\b(?:la|le)\s(\d{1,2}(?:\s?bis)?)\b")),
 ]
+
+# Questions v1 cannot answer honestly: say so instead of guessing.
+_ROUTE = re.compile(
+    r"\b(comment (aller|me rendre|je vais|on va|faire pour aller)|itineraire|trajet|"
+    r"how (do i|to|can i) get|directions?|fastest way|quickest way)\b"
+)
+_FUTURE = re.compile(
+    r"\b(demain|tomorrow|ce soir|tonight|apres demain|lundi|mardi|mercredi|jeudi|vendredi|"
+    r"samedi|dimanche|monday|tuesday|wednesday|thursday|friday|saturday|sunday|"
+    r"\d{1,2} ?h(?: ?\d\d)?|\d{1,2} ?(?:am|pm)|\d{1,2} \d\d)\b"
+)
+_VELIB = re.compile(r"\b(velib|velibs|velo|velos|bike|bikes|bicycle|bicycles|cycle)\b")
+_BUS = re.compile(r"\b(bus|autobus|noctilien)\b")
+_AIRPORT = re.compile(r"\b(aeroport|airport)\b")
+_AIRPORT_NAMED = re.compile(r"\b(orly|roissy|cdg|charles de gaulle|beauvais)\b")
 
 
 @dataclass
@@ -118,6 +136,12 @@ def _extract_line(text: str, index: StopIndex) -> tuple[Line | None, str | None,
             continue
         raw = m.group(1).replace(" ", "")
         short = _NUMBER_WORDS.get(raw, raw).replace("bis", "B")
+        if mode == "MetroBare":
+            bare = index.find_line("Metro", short)
+            if bare is None:
+                continue  # "le 21 novembre" is a date, not a line
+            stripped = (text[: m.start()] + " " + text[m.end() :]).strip()
+            return bare, None, stripped
         if mode == "Tramway":
             short = "T" + short
         elif mode == "RapidTransit" or mode == "LocalTrain":
@@ -135,6 +159,24 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
     wants_english = bool(re.fullmatch(r"(in )?english( please)?|anglais", text))
     if wants_english:
         return ParsedQuery("unknown", wants_english=True)
+    if _ROUTE.search(text):
+        return ParsedQuery("unsupported_route")
+    if _BUS.search(text):
+        return ParsedQuery("unsupported_bus")
+    if _FUTURE.search(text) and not _STATUS_WORDS.search(text):
+        return ParsedQuery("unsupported_time")  # disruption questions may mention dates
+    if _AIRPORT.search(text) and not _AIRPORT_NAMED.search(text):
+        return ParsedQuery("clarify_airport")
+    if _VELIB.search(text):
+        place = _VELIB.sub(" ", text)
+        stops = index.match(place)
+        landmark = None
+        found = _landmark(place)
+        if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+            near = index.match(found[1])
+            if near and near[0].score >= 0.95:
+                stops, landmark = near[:1], found[0]
+        return ParsedQuery("velib", stops=stops, landmark=landmark)
     line, heard, rest = _extract_line(text, index)
     intent = "line_status" if _STATUS_WORDS.search(text) else "next_departure"
     if intent == "line_status":
@@ -144,12 +186,12 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         # Line found but stop does not serve it: retry without the line filter
         stops = index.match(rest)
     landmark = None
-    if (not stops or stops[0].score < 0.95) and rest:
-        found = _landmark(rest)
-        if found:
-            near = index.match(found[1], line=line) or index.match(found[1])
-            if near and near[0].score >= 0.95:
-                stops, landmark = near[:1], found[0]
+    found = _landmark(rest) if rest else None
+    # A landmark said exactly ("stade de france") wins over a partial station match
+    if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+        near = index.match(found[1], line=line) or index.match(found[1])
+        if near and near[0].score >= 0.95:
+            stops, landmark = near[:1], found[0]
     if not stops and line is None and heard is None and not rest:
         return ParsedQuery("unknown")
     return ParsedQuery(intent, line=line, line_heard=heard, stops=stops, landmark=landmark)

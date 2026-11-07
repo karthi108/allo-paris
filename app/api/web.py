@@ -124,6 +124,36 @@ class WebApi:
             "answer": render_departures(result, line, area, lang, now, self.stale_after),
         }
 
+    def velib(self, stop_id: str) -> dict[str, Any]:
+        area = self.index.by_id.get(stop_id)
+        if area is None or area.lat is None or area.lon is None:
+            return {"error": "unknown_stop"}
+        bikes = self.dialog.bikes
+        if bikes is None:
+            return {"error": "feed_down"}
+        try:
+            result = bikes.nearby(area.lat, area.lon)
+        except FeedError:
+            return {"error": "feed_down"}
+        return {
+            "fetched_at": result.fetched_at.isoformat(),
+            "stations": [
+                {
+                    "name": s.name,
+                    "distance_m": s.distance_m,
+                    "bikes": s.bikes,
+                    "ebikes": s.ebikes,
+                    "mechanical": s.mechanical,
+                    "docks": s.docks,
+                    "renting": s.renting,
+                    "reported_at": s.reported_at.isoformat() if s.reported_at else None,
+                    "lat": s.lat,
+                    "lon": s.lon,
+                }
+                for s in result.stations
+            ],
+        }
+
     def traffic(self, line_id: str) -> dict[str, Any]:
         line = next((ln for a in self.index.areas for ln in a.lines if ln.line_id == line_id), None)
         if line is None:

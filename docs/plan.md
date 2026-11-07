@@ -16,8 +16,13 @@ Working phone line first, hardening after. Scope cuts recorded in decisions.md D
 - [x] Template answers with freshness / scheduled labels
 - [x] Twilio webhooks, signature check, caps, max duration, HMAC caller ID, 30-day purge
 - [x] Live PRIM test (scripts/ask.py): departures + traffic OK, 224-1033 ms (2026-11-05)
-- [ ] First real call; record p50/p95 from /stats
-- [ ] 20-question manual check against the PRIM data
+- [x] Web app with live data, tested in the browser on real PRIM data (2026-11-07)
+- [x] Vélib nearby, landmarks, unsupported-question replies, privacy page, 30-day purge job
+- [x] Eval set in CI: 61/61, 0 invented numbers (synthetic questions)
+- [ ] Live latency p50/p95 (scripts/measure.py)
+- [ ] Public deploy (render.yaml ready)
+- [ ] First real phone call (Twilio trial)
+- [ ] 7 days unattended after deploy
 
 ---
 

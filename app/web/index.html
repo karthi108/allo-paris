@@ -65,6 +65,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .icon-btn { border: 0; background: transparent; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); }
 .icon-btn:hover { background: var(--line); color: var(--ink); }
 .icon-btn.rec { background: var(--bad); color: #fff; }
+#speak[aria-pressed=true] { color: var(--brand); }
+#speak[aria-pressed=false] #speakWaves { opacity: .25; }
 .suggest { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--card); border-radius: 14px;
   box-shadow: var(--shadow); list-style: none; margin: 0; padding: 6px; z-index: 5; max-height: 320px; overflow-y: auto; }
 .suggest:empty { display: none; }
@@ -178,6 +180,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
         <span id="callLabel">Appeler</span>
       </a>
+      <button class="icon-btn" type="button" id="speak" aria-pressed="false" aria-label="Read answers aloud" title="Read answers aloud">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path id="speakWaves" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+      </button>
       <button class="icon-btn" type="button" id="theme" aria-label="Theme" title="Theme"></button>
       <div class="seg" role="group" aria-label="Langue">
         <button type="button" id="langFr" aria-pressed="true">FR</button>
@@ -205,6 +210,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   <div class="foot">
     <span class="dot" id="feedDot"></span>
     <span class="grow" id="feedText">…</span>
+    <a href="/privacy" id="privacyLink">Confidentialité</a>
     <a href="https://prim.iledefrance-mobilites.fr" rel="noopener" target="_blank" id="srcLink">IDFM open data</a>
   </div>
 </div>

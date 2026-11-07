@@ -46,6 +46,15 @@ class Store:
         self._db.execute("DELETE FROM turns WHERE at < ?", (cutoff,))
         self._db.execute("DELETE FROM calls WHERE started_at < ?", (cutoff,))
 
+    def purge(self, now: datetime | None = None) -> int:
+        """Delete rows past the retention period. Returns how many rows were removed.
+        Runs on every write and on a background schedule (see app/api/main.py)."""
+        now = now or datetime.now(UTC)
+        with self._lock, self._db:
+            before = self._db.total_changes
+            self._purge(now)
+            return int(self._db.total_changes - before)
+
     def start_call(self, call_sid: str, caller_id: str, now: datetime | None = None) -> None:
         now = now or datetime.now(UTC)
         with self._lock, self._db:

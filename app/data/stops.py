@@ -261,7 +261,8 @@ class StopIndex:
             score = _best_window_score(words, name_toks)
             if score >= 0.75:
                 results.append(StopMatch(area, score))
-        results.sort(key=lambda m: (-m.score, len(m.area.name)))
+        # Equal scores: prefer the name covering more words ("Massy - Palaiseau" over "Palaiseau")
+        results.sort(key=lambda m: (-m.score, -len(self._tokens[m.area.zda_id]), len(m.area.name)))
         return results[:limit]
 
 

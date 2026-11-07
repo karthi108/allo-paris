@@ -1,116 +1,71 @@
 # Allô Paris
 
-AI voice phone line answering live Paris public transport questions from IDFM open data.
+Live Paris transport answers, on the web and by phone, from official Île-de-France Mobilités real-time open data.
 
-> Unofficial project. Not affiliated with Île-de-France Mobilités or RATP.
+> Independent project using official IDFM real-time open data (PRIM). Not affiliated with or endorsed by Île-de-France Mobilités or RATP.
 
-**Status:** v1 · phone line + web companion (map, ask box, live boards). See [docs/plan.md](docs/plan.md).
+**Status:** v1 · web app working on live data · phone line built, not yet tested on a real call · see [plan](docs/plan.md).
+
+## What it does
+- **Next departures** for metro, RER, tram and Transilien: "prochain RER A à Châtelet", "la 13 à Saint-Lazare", "line four at chateau rouge"
+- **Disruptions:** "perturbations RER B", "any delays on line 4"
+- **Vélib' nearby:** "Vélib à Bastille", "any bikes near the Eiffel Tower" (bikes, e-bikes, free docks)
+- **Landmarks:** Eiffel Tower, Louvre, Sacré-Cœur, airports, Disneyland… mapped to the nearest station, typos tolerated
+- **Asks back** when the line or station is missing or ambiguous; **says so** for things it doesn't do (journeys, future timetables, buses)
+- **Web app:** full-screen map of 979 stations, search with autocomplete, boards grouped by direction (30 s refresh), disruption banner, Vélib nearby, Near me, favourites, mic input and read-aloud, FR/EN, light/dark, mobile bottom sheet
 
 ## Design in one line
-The parser only works out what the caller wants. Times and status come from live PRIM data and are spoken through fixed templates, so the system cannot invent a departure time. See [D-001](docs/decisions.md).
+The parser only works out *what* is asked. Every time, status and bike count comes from a live data source and is spoken through fixed templates, so the system **cannot invent a departure time**. See [D-001](docs/decisions.md).
 
 ```
-Caller ─► Twilio (speech-to-text, fr-FR/en-GB) ─► POST /voice/gather
-            ▲                                          │
-            │                                parser (line + stop, fuzzy)
-          <Say>                                        │
-            │                              PRIM stop-monitoring / general-message
-            └──── TwiML ◄── template renderer ◄────────┘
+ Web (text / mic) ─┐                                   ┌─► IDFM PRIM  next departures (cache 30 s)
+                   ├─► parser ─► dialog ─► data layer ─┼─► IDFM PRIM  traffic messages (cache 5 min)
+ Phone (Twilio) ───┘   rules +    clarify   quotas,    └─► Paris open data  Vélib' (cache 60 s)
+                       fuzzy      or answer  caching
+                       matching   (templates only)
 ```
 
-## Two ways to use it
-- **Phone:** call the number, ask out loud, hear the answer.
-- **Web** (`http://localhost:8000/`): full-screen map of metro / RER / tram / train stations. Search a station (autocomplete) or ask a question by text or microphone. Station board grouped by direction, auto-refresh 30 s, disruption banner, Near me, favourites, FR/EN, dark mode, mobile bottom sheet.
+## Results (measured)
+| Metric | Value | How |
+|---|---|---|
+| Intent accuracy | **61/61 (100%)** | `python eval/run_eval.py`, synthetic FR/EN question set on the full IDFM station list |
+| Line / station accuracy | **100% / 100%** | same eval |
+| Invented numbers in answers | **0** | eval checks every number against data source, templates and names |
+| Tests | **87 passing** | `pytest`, run in CI with ruff, mypy strict, gitleaks |
+| Answer latency p50 / p95 | _pending: run `python scripts/measure.py`_ | live PRIM, cache off |
 
-Both use the same parser, PRIM client and answer templates, and share one PRIM daily budget.
+The eval questions were written by the author (labelled `synthetic`); real user questions will be added from a beta. Results show the parser handles the covered phrasings, not every possible sentence.
 
-## What v1 answers
-- Next departures: "prochain RER A à Châtelet", "ligne 4 Gare du Nord", "tram T2 La Défense"
-- Disruptions: "perturbations sur le RER B"
-- Asks back when the line or station is missing or ambiguous
-- Says so when real-time data is down or stale, and labels scheduled times
-
-Coverage: metro, RER, tram, Transilien (not bus in v1).
-
----
-
-## Run it (Windows, PowerShell)
-
-### 1. Install
+## Run locally (Windows, PowerShell)
 ```powershell
 cd "K:\AI\Allo Paris"
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
-pytest -q
+copy .env.example .env          # set ALLO_PRIM_API_KEY and ALLO_CALLER_HMAC_KEY
+python scripts\build_stops.py   # downloads the IDFM station list (~1 min)
+.\dev.ps1                       # tests, then server on http://127.0.0.1:8000 (auto-reload)
 ```
-Expected: all tests pass.
+Other commands: `python scripts\ask.py "ligne 4 Gare du Nord"` (live answer in the terminal) · `python eval\run_eval.py` · `python scripts\measure.py` · `.\ship.ps1 "message"` (all checks, then commit and push).
 
-### 2. Configure
-```powershell
-copy .env.example .env
-python -c "import secrets; print(secrets.token_hex(32))"
-```
-Open `.env` and set `ALLO_PRIM_API_KEY` and `ALLO_CALLER_HMAC_KEY` (the value printed above).
+## Deploy (free)
+`render.yaml` is a Render Blueprint: Render dashboard → **New → Blueprint** → this repo → paste `ALLO_PRIM_API_KEY` when asked. Free instances sleep when idle (first request ~30-60 s).
 
-### 3. Build the station list (once, ~1 min)
-```powershell
-python scripts\build_stops.py
-```
-Expected: `Wrote ~900+ stop areas to ...\data\stops.json`.
+## Phone line (optional, Twilio)
+Webhooks `/voice` and `/voice/gather` (signature-checked). Set `ALLO_TWILIO_AUTH_TOKEN` and `ALLO_PUBLIC_BASE_URL`, point the Twilio number's "A call comes in" webhook to `https://<host>/voice`. Not yet tested on a real call.
 
-### 4. Test with live data, no phone
-```powershell
-python scripts\ask.py "prochain RER A à Châtelet"
-python scripts\ask.py "ligne 4 Gare du Nord"
-python scripts\ask.py "perturbations RER B"
-python scripts\ask.py --en "line 14 at Châtelet"
-```
-If this prints departures in minutes, the data layer works.
+## Data and privacy
+No web questions are stored. Location for "Near me" never leaves the browser. Phone callers are stored only as HMAC-SHA256; transcripts are deleted after 30 days (background job). Full details: `/privacy` page and [threat model](docs/threat-model.md).
 
-### 5. Start the server and open the web page
-Terminal 1:
-```powershell
-uvicorn app.api.main:app --port 8000 --proxy-headers
-```
-Open **http://localhost:8000/** → click a station, or ask "ligne 4 Gare du Nord".
-The web page works without Twilio. Steps 6-8 add the phone line.
-
-### 6. Expose it for Twilio
-Terminal 2:
-```powershell
-ngrok http 8000
-```
-Copy the `https://....ngrok-free.app` URL into `.env` as `ALLO_PUBLIC_BASE_URL`, add `ALLO_TWILIO_AUTH_TOKEN`, then restart uvicorn.
-Check: open `http://localhost:8000/health`. It should show `"prim_key": true` and a stop count.
-
-### 7. Connect Twilio
-Twilio Console → Phone Numbers → Manage → Active numbers → your number → Voice configuration:
-- **A call comes in:** Webhook, `https://YOUR-NGROK-URL/voice`, HTTP POST
-- Save
-
-### 8. Call it
-Call your Twilio number from your verified phone. Trial accounts play a short Twilio message first, then press any key.
-Check results at `http://localhost:8000/stats` (calls, intents, latency).
-
----
-
-## Limits and privacy
-- PRIM daily budget shared by phone + web (default 900/day), web rate limit per IP (20/min)
-- Daily global call cap, per-caller daily limit, max call duration (see `.env`)
-- Caller numbers stored only as HMAC-SHA256; no audio stored by this app
-- Transcripts deleted after 30 days
-- Speech recognition and voice are done by Twilio (processor); check its retention settings
-
-## Known limitations (v1)
-- Speech recognition is Twilio's, not streaming: expect ~2-3 s per answer
-- Disruption messages are read in French even in English mode (PRIM text is French)
-- No buses, no Vélib, no A→B routing yet
-- Web microphone uses the browser's speech service (Chrome/Edge), not ours
-- Scheduled times are only what PRIM returns; no GTFS timetable fallback yet
+## Known limitations
+- Real-time coverage is partial on IDFM's side; scheduled times are labelled as such
+- Data can be up to 30 s behind the source (cache protecting the PRIM quota)
+- No buses, no journey planning, no future timetables (the assistant says so)
+- Rule-based understanding: covers the phrasings in the eval set, not arbitrary sentences
+- Disruption messages are read in French in English mode (source text is French)
+- Web mic uses the browser vendor's speech service; map tiles come from OpenStreetMap (light use only)
 
 ## Docs
-- [Plan](docs/plan.md) · [Decisions](docs/decisions.md) · [Threat model](docs/threat-model.md)
+[Plan](docs/plan.md) · [Decisions](docs/decisions.md) · [Threat model](docs/threat-model.md) · [Eval](eval/README.md)
 
-## Results
-_Filled only with measured values._
+Data: © Île-de-France Mobilités (PRIM open data) · Vélib' data: Ville de Paris open data · Map: © OpenStreetMap contributors.

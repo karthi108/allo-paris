@@ -314,3 +314,45 @@ def test_french_de_contraction() -> None:
     assert _de("la tour Eiffel") == "de la tour Eiffel"
     assert _de("l'aéroport d'Orly") == "de l'aéroport d'Orly"
     assert _de("Montmartre") == "de Montmartre"
+
+
+# ---------- natural phrasing found in the 2026-11-07 phrase test ----------
+
+
+@pytest.mark.parametrize(
+    ("text", "intent"),
+    [
+        ("comment aller de Châtelet à La Défense", "unsupported_route"),
+        ("how do I get to Nation", "unsupported_route"),
+        ("prochain train demain à 8h à Châtelet", "unsupported_time"),
+        ("next train at 7pm at Nation", "unsupported_time"),
+        ("prochain bus 38 à Châtelet", "unsupported_bus"),
+        ("how do I go to the airport", "clarify_airport"),
+        ("prochain train pour l'aéroport", "clarify_airport"),
+    ],
+)
+def test_unsupported_questions_are_named(index: StopIndex, text: str, intent: str) -> None:
+    assert parse(text, index).intent == intent
+
+
+def test_unsupported_replies_never_give_times(index: StopIndex, source: FakeSource) -> None:
+    d = Dialog(index, source)
+    for q in ("comment aller de Châtelet à Nation", "demain 8h Châtelet", "bus 38 Nation"):
+        reply = d.handle(q, CallState())
+        assert "minute" not in reply.text
+    assert not source.calls
+
+
+def test_status_question_with_date_is_still_status(index: StopIndex) -> None:
+    assert parse("perturbations RER B ce week-end du 21", index).intent == "line_status"
+
+
+@pytest.mark.parametrize(("text", "short"), [("la 4 à Château Rouge", "4"), ("le 1 à Nation", "1")])
+def test_bare_metro_number(index: StopIndex, text: str, short: str) -> None:
+    q = parse(text, index)
+    assert q.line is not None and q.line.short == short and q.line.mode == "Metro"
+
+
+def test_bare_number_that_is_not_a_line_is_ignored(index: StopIndex) -> None:
+    q = parse("le 21 à Nation", index)  # no metro 21
+    assert q.line is None and q.line_heard is None

@@ -6,12 +6,14 @@ Run:  uvicorn app.api.main:app --port 8000 --proxy-headers
 from __future__ import annotations
 
 import logging
+import threading
+import time
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl
 
 from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from app.agent.dialog import Dialog
 from app.api.web import RateLimiter, WebApi
@@ -19,6 +21,7 @@ from app.core.config import get_settings
 from app.core.store import Store
 from app.data.prim import PrimClient
 from app.data.stops import StopIndex
+from app.data.velib import VelibClient
 from app.voice import twiml
 from app.voice.calls import CallConfig, CallHandler
 
@@ -34,7 +37,8 @@ prim = PrimClient(
     cache_ttl=settings.cache_ttl_seconds,
     daily_budget=settings.prim_daily_budget,
 )
-dialog = Dialog(index, prim, stale_after=settings.realtime_stale_after_seconds)
+velib = VelibClient()
+dialog = Dialog(index, prim, stale_after=settings.realtime_stale_after_seconds, bikes=velib)
 store = Store(settings.db_path, settings.transcript_retention_days)
 calls = CallHandler(
     dialog,
@@ -60,7 +64,23 @@ CSP = (
     "connect-src 'self'; frame-ancestors 'none'"
 )
 
-app = FastAPI(title="Allô Paris", version="0.2.0", docs_url=None, redoc_url=None)
+app = FastAPI(title="Allô Paris", version="0.3.0", docs_url=None, redoc_url=None)
+log = logging.getLogger("allo.main")
+
+
+def _purge_loop() -> None:
+    """Delete transcripts older than the retention period every 6 hours, even with no calls."""
+    while True:
+        try:
+            removed = store.purge()
+            if removed:
+                log.info("retention purge removed %s rows", removed)
+        except Exception:  # never let the cleanup thread die silently
+            log.exception("retention purge failed")
+        time.sleep(6 * 3600)
+
+
+threading.Thread(target=_purge_loop, name="retention-purge", daemon=True).start()
 
 
 async def _twilio_params(request: Request) -> dict[str, str]:
@@ -80,8 +100,34 @@ def _xml(body: str) -> Response:
 
 
 @app.get("/health")
-def health() -> dict[str, object]:
-    return {"status": "ok", "stops": len(index.areas), "prim_key": bool(settings.prim_api_key)}
+def health() -> JSONResponse:
+    """For uptime monitors: 503 when the PRIM key is missing or the last PRIM call failed."""
+    p = prim.status()
+    failing = not p["configured"] or (
+        p["last_error_at"] is not None
+        and (p["last_ok_at"] is None or str(p["last_error_at"]) > str(p["last_ok_at"]))
+    )
+    body = {
+        "status": "degraded" if failing else "ok",
+        "stops": len(index.areas),
+        "prim": p,
+        "velib": velib.status(),
+    }
+    return JSONResponse(body, status_code=503 if failing else 200)
+
+
+@app.get("/healthz")
+def healthz() -> dict[str, str]:
+    """Liveness for the host (Render): the process is up. Feed health is /health."""
+    return {"status": "alive"}
+
+
+@app.get("/privacy")
+def privacy() -> FileResponse:
+    return FileResponse(
+        WEB_DIR / "privacy.html",
+        headers={"Content-Security-Policy": CSP, "Cache-Control": "no-cache"},
+    )
 
 
 @app.get("/stats")
@@ -136,6 +182,12 @@ def favicon_ico() -> FileResponse:
     return favicon()
 
 
+@app.get("/api/velib")
+def api_velib(request: Request, stop: str) -> dict[str, Any]:
+    _limit(request)
+    return web.velib(stop)
+
+
 @app.get("/api/traffic")
 def api_traffic(request: Request, line: str) -> dict[str, Any]:
     _limit(request)
@@ -167,4 +219,9 @@ async def api_ask(request: Request) -> dict[str, Any]:
 
 @app.get("/api/status")
 def api_status() -> dict[str, Any]:
-    return {"prim": prim.status(), "stops": len(index.areas), "phone": settings.public_phone}
+    return {
+        "prim": prim.status(),
+        "velib": velib.status(),
+        "stops": len(index.areas),
+        "phone": settings.public_phone,
+    }

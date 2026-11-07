@@ -14,6 +14,13 @@ from typing import Protocol
 from app.agent.parser import ParsedQuery, parse
 from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.stops import Line, StopArea, StopIndex, StopMatch, normalize
+from app.data.velib import VelibResult
+
+
+class BikeSource(Protocol):
+    def nearby(
+        self, lat: float, lon: float, radius_m: int = 500, limit: int = 3
+    ) -> VelibResult: ...
 
 
 class TransitSource(Protocol):
@@ -33,12 +40,29 @@ class CallState:
 T = {
     "fr": {
         "greeting": (
-            "Bonjour, ici Allô Paris, un assistant vocal automatique, non officiel, "
-            "basé sur les données temps réel d'Île-de-France Mobilités. "
+            "Bonjour, ici Allô Paris, un assistant vocal automatique et indépendant. "
+            "Les horaires viennent des données temps réel officielles d'Île-de-France "
+            "Mobilités. Service non affilié à IDFM ni à la RATP. "
             "For English, say English. "
             "Posez votre question, par exemple : prochain RER A à Châtelet."
         ),
         "again": "Autre question ? Sinon, raccrochez simplement.",
+        "unsupported_route": "Je ne calcule pas encore les itinéraires. Je donne les prochains "
+        "départs à une station : dites par exemple, RER A à Châtelet.",
+        "unsupported_time": "Je donne uniquement les prochains départs en temps réel, pas les "
+        "horaires futurs. Dites par exemple : ligne 4 à Gare du Nord.",
+        "unsupported_bus": "Les bus ne sont pas encore couverts. Je réponds pour le métro, le "
+        "RER, le tram et les trains.",
+        "clarify_airport": "Quel aéroport : Orly ou Charles-de-Gaulle ?",
+        "velib_which": "Vélib près de quelle station ? Par exemple : Vélib à Bastille.",
+        "velib_none": "Aucune station Vélib à moins de 500 mètres de {stop}.",
+        "velib_intro": "Vélib près de {stop}. ",
+        "velib_station": "{name}, à {dist} mètres : {bikes} vélos dont {ebikes} électriques, "
+        "{docks} places libres. ",
+        "velib_closed": "{name}, à {dist} mètres : station fermée. ",
+        "velib_fresh": "Données Vélib en temps réel.",
+        "velib_old": "Attention, certaines stations n'ont pas mis à jour depuis {mins} minutes.",
+        "velib_down": "Les données Vélib ne sont pas disponibles pour le moment.",
         "not_understood": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
         "which_stop": "À quelle station ?",
         "which_stop_choice": "Vous voulez dire {a} ou {b} ?",
@@ -72,6 +96,21 @@ T = {
     "en": {
         "greeting": "",
         "again": "Any other question? Otherwise, just hang up.",
+        "unsupported_route": "I don't plan journeys yet. I give the next departures at a "
+        "station: say for example, RER A at Châtelet.",
+        "unsupported_time": "I only give the next real-time departures, not future timetables. "
+        "Say for example: line 4 at Gare du Nord.",
+        "unsupported_bus": "Buses aren't covered yet. I answer for metro, RER, tram and trains.",
+        "clarify_airport": "Which airport: Orly or Charles de Gaulle?",
+        "velib_which": "Vélib near which station? For example: Vélib at Bastille.",
+        "velib_none": "No Vélib station within 500 metres of {stop}.",
+        "velib_intro": "Vélib near {stop}. ",
+        "velib_station": "{name}, {dist} metres away: {bikes} bikes including {ebikes} "
+        "electric, {docks} free docks. ",
+        "velib_closed": "{name}, {dist} metres away: station closed. ",
+        "velib_fresh": "Real-time Vélib data.",
+        "velib_old": "Note: some stations haven't reported for {mins} minutes.",
+        "velib_down": "Vélib data is unavailable right now.",
         "not_understood": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
         "which_stop": "Which station?",
         "which_stop_choice": "Do you mean {a} or {b}?",
@@ -173,6 +212,32 @@ def render_departures(
     return "".join(parts).strip()
 
 
+def render_velib(result: VelibResult, stop: StopArea, lang: str) -> str:
+    if not result.stations:
+        return t(lang, "velib_none", stop=stop.name)
+    parts = [t(lang, "velib_intro", stop=stop.name)]
+    oldest = 0
+    for s in result.stations[:3]:
+        if not s.renting:
+            parts.append(t(lang, "velib_closed", name=s.name, dist=s.distance_m))
+            continue
+        parts.append(
+            t(
+                lang,
+                "velib_station",
+                name=s.name,
+                dist=s.distance_m,
+                bikes=s.bikes,
+                ebikes=s.ebikes,
+                docks=s.docks,
+            )
+        )
+        if s.reported_at:
+            oldest = max(oldest, int((result.fetched_at - s.reported_at).total_seconds() // 60))
+    parts.append(t(lang, "velib_old", mins=oldest) if oldest > 30 else t(lang, "velib_fresh"))
+    return "".join(parts).strip()
+
+
 def render_traffic(result: TrafficResult, line: Line, lang: str) -> str:
     if not result.messages:
         return t(lang, "status_ok", line=line.with_article(lang))
@@ -193,10 +258,17 @@ class Reply:
 
 
 class Dialog:
-    def __init__(self, index: StopIndex, source: TransitSource, stale_after: int = 120) -> None:
+    def __init__(
+        self,
+        index: StopIndex,
+        source: TransitSource,
+        stale_after: int = 120,
+        bikes: BikeSource | None = None,
+    ) -> None:
         self.index = index
         self.source = source
         self.stale_after = stale_after
+        self.bikes = bikes
 
     def handle(self, utterance: str, state: CallState) -> Reply:
         q = parse(utterance, self.index)
@@ -220,6 +292,16 @@ class Dialog:
             if not q.line:
                 return Reply(t(lang, "status_which_line"), "clarify_line")
             return self._traffic(q.line, lang)
+        if q.intent in ("unsupported_route", "unsupported_time", "unsupported_bus"):
+            return Reply(t(lang, q.intent), q.intent)
+        if q.intent == "clarify_airport":
+            return Reply(t(lang, "clarify_airport"), "clarify_stop")
+        if q.intent == "velib":
+            reply = self._velib(q, lang)
+            if q.landmark and reply.stop:
+                place = _de(q.landmark) if lang == "fr" else q.landmark
+                reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
+            return reply
         if q.intent == "unknown":
             return self._miss(state)
         reply = self._departures(q, state)
@@ -227,6 +309,18 @@ class Dialog:
             place = _de(q.landmark) if lang == "fr" else q.landmark
             reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
         return reply
+
+    def _velib(self, q: ParsedQuery, lang: str) -> Reply:
+        if not q.stops:
+            return Reply(t(lang, "velib_which"), "clarify_stop")
+        stop = q.stops[0].area
+        if self.bikes is None or stop.lat is None or stop.lon is None:
+            return Reply(t(lang, "velib_down"), "feed_down", stop=stop)
+        try:
+            result = self.bikes.nearby(stop.lat, stop.lon)
+        except FeedError:
+            return Reply(t(lang, "velib_down"), "feed_down", stop=stop)
+        return Reply(render_velib(result, stop, lang), "velib", stop=stop)
 
     def _miss(self, state: CallState) -> Reply:
         state.misses += 1

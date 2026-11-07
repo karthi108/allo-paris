@@ -23,7 +23,8 @@ def _handler(index: StopIndex, source: FakeSource, **kw: int) -> CallHandler:
 
 def test_greeting_discloses_ai_and_listens(index: StopIndex, source: FakeSource) -> None:
     xml = _handler(index, source).incoming({"CallSid": "CA1", "From": "+33612345678"})
-    assert "assistant vocal automatique" in xml and "non officiel" in xml
+    assert "assistant vocal automatique" in xml and "non affilié" in xml
+    assert "données temps réel officielles" in xml
     assert '<Gather input="speech"' in xml and 'language="fr-FR"' in xml
 
 
@@ -93,3 +94,16 @@ def test_signature_roundtrip_and_tamper() -> None:
     assert twiml.valid_signature("token", url, params, sig)
     assert not twiml.valid_signature("token", url, {**params, "SpeechResult": "x"}, sig)
     assert not twiml.valid_signature("", url, params, sig)
+
+
+def test_purge_runs_without_new_calls() -> None:
+    store = Store(Path(":memory:"), retention_days=30)
+    old = datetime.now(UTC) - timedelta(days=40)
+    store._db.execute("INSERT INTO calls VALUES ('CA1', 'x', ?)", (old.isoformat(),))
+    store._db.execute(
+        "INSERT INTO turns (call_sid, at, transcript, intent, answer, latency_ms) "
+        "VALUES ('CA1', ?, 't', 'i', 'a', 1)",
+        (old.isoformat(),),
+    )
+    assert store.purge() == 2
+    assert store._db.execute("SELECT COUNT(*) FROM turns").fetchone()[0] == 0

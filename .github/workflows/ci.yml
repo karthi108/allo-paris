@@ -16,6 +16,7 @@ jobs:
       - run: ruff format --check .
       - run: mypy app
       - run: pytest -q
+      - run: python eval/run_eval.py --check
 
   secrets:
     runs-on: ubuntu-latest

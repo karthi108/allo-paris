@@ -6,6 +6,7 @@ ruff check . ; if ($LASTEXITCODE -ne 0) { exit 1 }
 ruff format --check . ; if ($LASTEXITCODE -ne 0) { exit 1 }
 mypy app ; if ($LASTEXITCODE -ne 0) { exit 1 }
 pytest -q ; if ($LASTEXITCODE -ne 0) { exit 1 }
+python eval/run_eval.py --check ; if ($LASTEXITCODE -ne 0) { exit 1 }
 git add -A
 git status --short
 git commit -m $Message

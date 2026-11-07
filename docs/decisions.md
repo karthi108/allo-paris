@@ -83,6 +83,30 @@ Never delete an entry; mark it superseded and link the replacement.
 - **Not copied:** no Navigo / IDFM / RATP logos, fonts or pictograms. Line badges use own shapes per mode with colours from IDFM open data.
 - **Quota:** disruption messages cached 5 min server-side (they change slowly).
 
+## D-014 · Vélib' from Paris open data, not the operator's GBFS
+- **Status:** accepted
+- **Date:** 2026-11-07
+- **Context:** The operator GBFS URL returned a Cloudflare bot check (HTTP 403) when tested.
+- **Decision:** Use the City of Paris Opendatasoft dataset `velib-disponibilite-en-temps-reel` with a server-side distance query (500 m, 3 nearest). No key, cache 60 s, daily budget 2000.
+- **Consequences:** Station reports can be old; answers flag stations not updated for more than 30 minutes.
+
+## D-015 · Name what v1 cannot do
+- **Status:** accepted
+- **Date:** 2026-11-07
+- **Context:** A phrase test showed journeys ("comment aller de A à B"), future times and buses were silently answered as a next-departure question for the first station heard.
+- **Decision:** Detect them and reply with a fixed "not supported yet" message. Airports without a name get a clarifying question.
+
+## D-016 · Offline eval on the full station list
+- **Status:** accepted
+- **Date:** 2026-11-07
+- **Decision:** `eval/questions.jsonl` (FR/EN, labelled synthetic) run against a snapshot of the real IDFM station list with a fixed fake data source. Metrics: intent, line and station accuracy, invented numbers. Runs in CI with thresholds (95% accuracy, 0 invented numbers).
+- **Found by the eval:** equal-score ties picked the shortest name ("Palaiseau" for "Massy Palaiseau"); fixed by preferring the name covering more words.
+
+## D-017 · Free hosting on Render
+- **Status:** proposed (config in `render.yaml`, not deployed yet)
+- **Decision:** Free web service, Frankfurt. Liveness `/healthz` for the host; `/health` returns 503 when the PRIM feed fails, for an external uptime monitor.
+- **Trade-off:** free instances sleep; acceptable for a portfolio demo, stated in the README.
+
 ---
 
 ## Data source verification (fill in Phase 0)
@@ -91,8 +115,8 @@ Never delete an entry; mark it superseded and link the replacement.
 |---|---|---|---|---|---|
 | PRIM next departures | apikey header (community code; confirm) | | 1000/day for new accounts (third-party claim; confirm) | partial | |
 | IDFM arrets-lignes / arrets / zones-d-arrets | open, Opendatasoft API | | | n/a | 2026-11-05 (fields verified) |
-| IDFM traffic messages | | | | | |
-| Vélib GBFS | | | | | |
+| IDFM traffic messages (general-message) | PRIM key | IDFM PRIM | shared 900/day budget (ours) | live | 2026-11-05 (live answers) |
+| Vélib (Paris open data) | open, no key | Ville de Paris open data | daily budget 2000 (ours) | live station reports | 2026-11-07 (fields verified) |
 
 ## Processor data handling (fill in Phase 0)
 

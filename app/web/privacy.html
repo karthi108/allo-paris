@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Allô Paris · Confidentialité / Privacy</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root { --bg:#f4f4f6; --card:#fff; --ink:#121318; --muted:#626775; --line:#e7e7ec; --brand:#5b3df5; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0e0f13; --card:#17181e; --ink:#ecedf2; --muted:#a2a6b3; --line:#272a33; --brand:#8c76ff; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-top: 16px; }
+h1 { font-size: 26px; margin: 0 0 4px; } h2 { font-size: 19px; margin: 0 0 12px; }
+p, li { color: var(--ink); } .muted { color: var(--muted); font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 6px; border-top: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; border-top: 0; }
+a { color: var(--brand); }
+@media (max-width: 560px) { table, tbody, tr, td { display: block; } thead { display: none; } td { border-top: 0; padding: 2px 0; } tr { border-top: 1px solid var(--line); padding: 8px 0; } }
+</style>
+</head>
+<body>
+<main>
+  <a href="/">← Allô Paris</a>
+  <h1>Confidentialité · Privacy</h1>
+  <p class="muted">Dernière mise à jour / Last updated: 7 novembre 2026. Projet indépendant, non affilié à Île-de-France Mobilités ni à la RATP. Les horaires viennent des données temps réel officielles d'IDFM (open data PRIM). / Independent project, not affiliated with IDFM or RATP; times come from official IDFM real-time open data.</p>
+
+  <section class="card">
+    <h2>Site web · Website</h2>
+    <table>
+      <thead><tr><th>Donnée / Data</th><th>Traitement / Handling</th><th>Conservation / Kept</th></tr></thead>
+      <tbody>
+        <tr><td>Question (texte)</td><td>Traitée en mémoire pour répondre. / Processed in memory to answer.</td><td>Non enregistrée. / Not stored.</td></tr>
+        <tr><td>Micro / Microphone</td><td>La reconnaissance vocale est faite par votre navigateur (Google ou Microsoft selon le navigateur). Nous recevons seulement le texte. / Speech recognition is done by your browser vendor; we only receive the text.</td><td>Aucun audio chez nous. / No audio on our side.</td></tr>
+        <tr><td>Position « Près de moi »</td><td>Calculée uniquement dans votre navigateur. / Computed in your browser only.</td><td>Jamais envoyée. / Never sent.</td></tr>
+        <tr><td>Favoris, thème, langue</td><td>Stockage local de votre navigateur. / Your browser's local storage.</td><td>Sur votre appareil. / On your device.</td></tr>
+        <tr><td>Adresse IP</td><td>Limitation de débit en mémoire. / In-memory rate limiting.</td><td>Non enregistrée. / Not stored.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Ligne téléphonique · Phone line</h2>
+    <table>
+      <thead><tr><th>Donnée / Data</th><th>Traitement / Handling</th><th>Conservation / Kept</th></tr></thead>
+      <tbody>
+        <tr><td>Numéro de l'appelant / Caller number</td><td>Jamais stocké en clair : remplacé par une empreinte HMAC-SHA256 avec clé secrète (donnée pseudonymisée). / Never stored in clear: HMAC-SHA256 with a secret key (pseudonymised).</td><td>30 jours / 30 days</td></tr>
+        <tr><td>Audio</td><td>Traité par l'opérateur téléphonique (Twilio). Pas d'enregistrement de notre part. / Handled by the telephony provider (Twilio); we do not record.</td><td>Aucun chez nous. / None on our side.</td></tr>
+        <tr><td>Transcription, réponse, latence</td><td>Pour mesurer la qualité du service. / To measure service quality.</td><td>Supprimées automatiquement après 30 jours. / Deleted automatically after 30 days.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Services tiers · Third parties</h2>
+    <ul>
+      <li><b>Île-de-France Mobilités (PRIM)</b> : reçoit l'arrêt et la ligne demandés, rien sur vous. / Receives the stop and line asked, nothing about you.</li>
+      <li><b>Ville de Paris open data (Vélib')</b> : reçoit les coordonnées de la station demandée. / Receives the coordinates of the station asked.</li>
+      <li><b>OpenStreetMap, cdnjs</b> : votre navigateur charge la carte et sa bibliothèque depuis ces serveurs (ils voient votre adresse IP). / Your browser loads map tiles and the map library from them (they see your IP).</li>
+    </ul>
+    <p class="muted">Pas de publicité, pas de traceur, pas de cookie de suivi. / No ads, no trackers, no tracking cookies.</p>
+  </section>
+</main>
+</body>
+</html>

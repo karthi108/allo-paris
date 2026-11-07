@@ -1,0 +1,25 @@
+# Render Blueprint: free web service. Deploy: Render dashboard > New > Blueprint > this repo.
+# Free instances sleep after ~15 min idle; the first request then takes ~30-60 s to wake.
+services:
+  - type: web
+    name: allo-paris
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install . && python scripts/build_stops.py
+    startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips "*"
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.10"
+      - key: ALLO_ENV
+        value: prod
+      - key: ALLO_PRIM_API_KEY
+        sync: false # paste your PRIM token in the dashboard, never in this file
+      - key: ALLO_CALLER_HMAC_KEY
+        generateValue: true
+      - key: ALLO_VERIFY_TWILIO_SIGNATURE
+        value: "true"
+      - key: ALLO_PRIM_DAILY_BUDGET
+        value: "900"

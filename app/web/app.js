@@ -17,12 +17,13 @@ const I18N = {
     feedErr: (e) => `Problème de données : ${e}`, feedUnknown: "Données IDFM prêtes",
     tooMany: "Trop de requêtes, réessayez dans une minute.", error: "Erreur réseau.",
     ask: (q) => `Demander : « ${q} »`,
-    examples: ["prochain RER A à Châtelet", "ligne 14 Saint-Lazare", "perturbations RER B", "tram T2 La Défense"],
+    examples: ["prochain RER A à Châtelet", "la 14 à Saint-Lazare", "perturbations RER B", "Vélib près de la tour Eiffel"],
+    velib: "Vélib à proximité", bikes: "vélos", ebikes: "élec.", docks: "places", closed: "fermée", velibNone: "Aucune station Vélib à moins de 500 m.",
     modes: { Metro: "Métro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
     geoNo: "Position indisponible.", nearNone: "Aucune station à moins de 2 km.",
     m: (d) => d < 1000 ? `${Math.round(d / 10) * 10} m` : `${(d / 1000).toFixed(1)} km`,
-    disclaimer: "Service non officiel, non affilié à Île-de-France Mobilités ni à la RATP. Les horaires viennent uniquement des données temps réel IDFM.",
+    disclaimer: "Projet indépendant utilisant les données temps réel officielles d'Île-de-France Mobilités (open data PRIM). Non affilié à IDFM ni à la RATP.",
   },
   en: {
     search: "Station or question: line 4 Gare du Nord",
@@ -38,12 +39,13 @@ const I18N = {
     feedErr: (e) => `Data problem: ${e}`, feedUnknown: "IDFM data ready",
     tooMany: "Too many requests, try again in a minute.", error: "Network error.",
     ask: (q) => `Ask: “${q}”`,
-    examples: ["next RER A at Châtelet", "line 14 Saint-Lazare", "disruptions RER B", "tram T2 La Défense"],
+    examples: ["next RER A at Châtelet", "line 14 Saint-Lazare", "disruptions RER B", "Vélib near the Eiffel Tower"],
+    velib: "Vélib nearby", bikes: "bikes", ebikes: "e-bikes", docks: "docks", closed: "closed", velibNone: "No Vélib station within 500 m.",
     modes: { Metro: "Metro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Microphone not available in this browser.", listening: "Listening…",
     geoNo: "Location unavailable.", nearNone: "No station within 2 km.",
     m: (d) => d < 1000 ? `${Math.round(d / 10) * 10} m` : `${(d / 1000).toFixed(1)} km`,
-    disclaimer: "Unofficial service, not affiliated with Île-de-France Mobilités or RATP. Times come only from IDFM real-time data.",
+    disclaimer: "Independent project using official Île-de-France Mobilités real-time open data (PRIM). Not affiliated with or endorsed by IDFM or RATP.",
   },
 };
 
@@ -185,6 +187,7 @@ function openStation(s, lineId) {
   renderStation();
   loadBoard();
   loadTraffic();
+  loadVelib();
 }
 function closeStation() {
   clearTimeout(state.timer); state.selected = null;
@@ -199,16 +202,37 @@ function renderStation() {
   v.append(el("div", { class: "station-head" },
     el("h2", { textContent: stop.name }),
     el("button", { type: "button", class: "star", textContent: fav ? "★" : "☆", attrs: { "aria-pressed": String(fav), "aria-label": t.favorites },
-      onclick: () => { state.favs = fav ? state.favs.filter((x) => x !== stop.id) : [stop.id, ...state.favs].slice(0, 12); store.set("allo.favs", state.favs); renderStation(); } })));
+      onclick: () => { state.favs = fav ? state.favs.filter((x) => x !== stop.id) : [stop.id, ...state.favs].slice(0, 12); store.set("allo.favs", state.favs); renderStation(); loadBoard(); loadTraffic(); loadVelib(); } })));
   const tabs = el("div", { class: "tabs", attrs: { role: "tablist" } });
   for (const l of stop.lines) {
     tabs.append(el("button", { type: "button", class: "tab", attrs: { role: "tab", "aria-selected": String(l.id === line.id), "aria-label": l.label },
-      onclick: () => { state.selected.line = l; renderStation(); loadBoard(); loadTraffic(); } }, badge(l)));
+      onclick: () => { state.selected.line = l; renderStation(); loadBoard(); loadTraffic(); loadVelib(); } }, badge(l)));
   }
   v.append(tabs);
   v.append(el("div", { id: "banner" }));
   v.append(el("div", { class: "board", id: "board" }, el("div", { class: "skeleton" }), el("div", { class: "skeleton", style: "border-top:1px solid var(--line)" })));
   v.append(el("div", { class: "fresh", id: "fresh" }));
+  v.append(el("div", { id: "velib" }));
+}
+
+async function loadVelib() {
+  const sel = state.selected; if (!sel) return;
+  try {
+    const d = await api(`/api/velib?stop=${encodeURIComponent(sel.stop.id)}`);
+    if (state.selected !== sel) return;
+    const box = $("velib"); if (!box || d.error) return;
+    const t = tr();
+    box.replaceChildren(el("div", { class: "section-title", textContent: t.velib }));
+    if (!d.stations.length) { box.append(el("div", { class: "empty", textContent: t.velibNone })); return; }
+    const ul = el("ul", { class: "list" });
+    for (const s of d.stations) {
+      const meta = s.renting ? `${s.bikes} ${t.bikes} (${s.ebikes} ${t.ebikes}) · ${s.docks} ${t.docks}` : t.closed;
+      ul.append(el("li", { onclick: () => map.flyTo([s.lat, s.lon], 17, { duration: 0.5 }) },
+        el("span", { class: "name", textContent: s.name }),
+        el("span", { class: "meta", textContent: `${s.distance_m} m · ${meta}` })));
+    }
+    box.append(ul);
+  } catch { /* optional section */ }
 }
 
 async function loadBoard() {
@@ -322,10 +346,26 @@ async function ask(q) {
       body: JSON.stringify({ q, session: state.session, lang: state.lang }) });
     if (r.lang && r.lang !== state.lang) setLang(r.lang);
     $("answer").textContent = r.answer;
+    speak(r.answer);
     if (r.stop) { const s = state.byId.get(r.stop.id); if (s) openStation(s, r.line && r.line.id); }
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
 }
+
+// Read-aloud with the browser's own voices (free, nothing sent to us)
+function speak(text) {
+  if (!store.get("allo.speak", false) || !("speechSynthesis" in window) || !text) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = state.lang === "fr" ? "fr-FR" : "en-GB";
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+function renderSpeak() {
+  const on = store.get("allo.speak", false);
+  $("speak").setAttribute("aria-pressed", String(on));
+  $("speak").title = state.lang === "fr" ? (on ? "Lecture à voix haute : activée" : "Lecture à voix haute : désactivée")
+    : (on ? "Read aloud: on" : "Read aloud: off");
+}
+$("speak").onclick = () => { store.set("allo.speak", !store.get("allo.speak", false)); if (!store.get("allo.speak", false) && "speechSynthesis" in window) speechSynthesis.cancel(); renderSpeak(); };
 
 // Browser speech recognition (Chrome/Edge): audio goes to the browser vendor, not to us.
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -362,8 +402,10 @@ function setLang(lang) {
   $("langFr").setAttribute("aria-pressed", String(lang === "fr"));
   $("langEn").setAttribute("aria-pressed", String(lang === "en"));
   $("locate").title = t.nearMe; $("locate").setAttribute("aria-label", t.nearMe);
+  $("privacyLink").textContent = lang === "fr" ? "Confidentialité" : "Privacy";
+  renderSpeak();
   renderFilters();
-  if (state.selected) { renderStation(); loadBoard(); loadTraffic(); } else renderHome();
+  if (state.selected) { renderStation(); loadBoard(); loadTraffic(); loadVelib(); } else renderHome();
 }
 $("langFr").onclick = () => setLang("fr");
 $("langEn").onclick = () => setLang("en");
