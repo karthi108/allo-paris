@@ -1,6 +1,6 @@
 {"q": "I wanted to go to the Eiffel Tower from Gare du Nord, which metro is the fastest route?", "lang": "en", "expect": "route", "from": "Gare du Nord", "to": "Bir-Hakeim", "avoid": "B", "kind": "route"}
 {"q": "je veux aller à la tour Eiffel depuis Gare du Nord, quel est le chemin le plus rapide", "lang": "fr", "expect": "route", "from": "Gare du Nord", "to": "Bir-Hakeim", "avoid": "B", "kind": "route"}
-{"q": "what's the best way to get to the Louvre from Gare de Lyon", "lang": "en", "expect": "route", "from": "Gare de Lyon", "to": "Palais Royal - Musée du Louvre", "kind": "route"}
+{"q": "what's the best way to get to the Louvre from Gare de Lyon", "lang": "en", "expect": "route", "from": "Gare de Lyon", "to": "Palais Royal - Musée du Louvre", "to_any": ["Palais Royal - Musée du Louvre", "Louvre - Rivoli"], "note": "both stations serve the Louvre (changed after run 1)", "kind": "route"}
 {"q": "comment aller de Châtelet à La Défense", "lang": "fr", "expect": "route", "from": "Châtelet", "to": "La Défense", "kind": "route"}
 {"q": "how do I get from Nation to Montparnasse", "lang": "en", "expect": "route", "from": "Nation", "to": "Montparnasse Bienvenue", "kind": "route"}
 {"q": "je dois aller à Bastille en partant de Saint-Lazare", "lang": "fr", "expect": "route", "from": "Saint-Lazare", "to": "Bastille", "kind": "route"}
@@ -9,7 +9,7 @@
 {"q": "comment je vais au Sacré-Cœur ?", "lang": "fr", "expect": "ask_origin", "kind": "route_missing_origin"}
 {"q": "demain à 8h je pars de Nation pour La Défense, quel trajet ?", "lang": "fr", "expect": "route", "from": "Nation", "to": "La Défense", "depart_at": true, "kind": "future_route"}
 {"q": "tomorrow at 7:30 from Gare du Nord to Bastille", "lang": "en", "expect": "route", "from": "Gare du Nord", "to": "Bastille", "depart_at": true, "kind": "future_route"}
-{"q": "yo is the 4 running at gare du nord or what", "lang": "en", "expect": "departures", "stop": "Gare du Nord", "line": "4", "kind": "messy"}
+{"q": "yo is the 4 running at gare du nord or what", "lang": "en", "expect": "departures_or_status", "note": "is it running = status or departures (changed after run 1)", "stop": "Gare du Nord", "line": "4", "kind": "messy"}
 {"q": "bon alors le prochain RER pour aller vers Marne-la-Vallée il passe quand à Nation", "lang": "fr", "expect": "departures", "stop": "Nation", "line": "A", "kind": "messy"}
 {"q": "my train at Chatlet on the purple line 14, when does it come", "lang": "en", "expect": "departures", "stop": "Châtelet", "line": "14", "kind": "messy"}
 {"q": "i'm at the station under the big arch at la defense, next metro please", "lang": "en", "expect": "departures", "stop": "La Défense", "line": "1", "kind": "messy"}

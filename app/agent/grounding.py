@@ -3,8 +3,15 @@
 Checks:
 - every number in the answer (minutes, times, counts, distances) appears in tool output
 - every line mentioned (ligne 4, RER B, T2, line 14, metro 1) appears in tool output
+- when the answer states numbers (a data claim), the lines it mentions must come from a tool
+  that returned data (departures, route, status, Vélib), not from find_station's list of
+  lines at a station. This blocks "line 1 departs in 3 min" when only RER A was queried
+  (found in agent eval run 1, 2026-11-08).
 If anything fails, the agent retries once with the problems listed, then falls back to a
 deterministic template. The model can phrase; it cannot invent.
+
+Known limit: it checks that values exist in tool results, not every association between
+them (e.g. which destination goes with which minute). Templates remain the strict path.
 """
 
 from __future__ import annotations
@@ -59,14 +66,28 @@ def allowed_from(outputs: list[dict[str, Any]]) -> tuple[set[str], set[str]]:
     return numbers, lines
 
 
+LOOKUP_TOOLS = {"find_station"}  # lists candidates, carries no live data
+
+
 def check(answer: str, outputs: list[dict[str, Any]]) -> list[str]:
     """Return a list of problems; empty means the answer is grounded."""
-    numbers, lines = allowed_from(outputs)
+    numbers, _ = allowed_from(outputs)
+    stated = _NUM.findall(answer)
+    # Numbers that are part of a line name ("line 1", "T2") are not data claims
+    without_lines = _fold(answer)
+    for _, rx in _LINE_REFS:
+        without_lines = rx.sub(" ", without_lines)
+    claims = _NUM.findall(without_lines)
+    data_outputs = [o for o in outputs if o.get("_tool") not in LOOKUP_TOOLS]
+    # A clarifying question may list a station's lines; a data claim may only name lines
+    # that a data tool actually returned.
+    _, lines = allowed_from(data_outputs if claims else outputs)
     problems: list[str] = []
-    for n in _NUM.findall(answer):
+    for n in stated:
         if n not in numbers:
             problems.append(f"number {n} is not in the tool results")
     for code in _line_codes(answer):
         if code not in lines:
-            problems.append(f"line {code.split(':', 1)[1]} is not in the tool results")
+            where = "the data tool results" if claims else "the tool results"
+            problems.append(f"line {code.split(':', 1)[1]} is not in {where}")
     return sorted(set(problems))

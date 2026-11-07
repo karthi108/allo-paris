@@ -133,7 +133,7 @@ class Toolbox:
             out = {"error": "data source unavailable", "detail": str(exc)}
         except (ToolError, TypeError, ValueError) as exc:
             out = {"error": str(exc)}
-        self.outputs.append(out)
+        self.outputs.append({"_tool": name, **out})  # tool name kept for the grounding guard
         return json.dumps(out, ensure_ascii=False)
 
     def _area(self, station_id: str) -> StopArea:

@@ -226,9 +226,9 @@ def test_repeated_invention_falls_back_to_template(source: FakeSource) -> None:
     d, _ = _dialog(llm, source)
     reply = d.handle("comment aller de Gare du Nord à Bir-Hakeim", CallState())
     assert reply.path == "ai_fallback"
-    assert (
-        reply.text
-        == "De Gare du Nord à Bir-Hakeim : RER B jusqu’à Châtelet - Les Halles, puis ligne 6 jusqu’à Bir-Hakeim. Durée 24 minutes."
+    assert reply.text == (
+        "De Gare du Nord à Bir-Hakeim : RER B jusqu’à Châtelet - Les Halles, puis ligne 6 "
+        "jusqu’à Bir-Hakeim. Durée 24 minutes. Départ 18:30, arrivée 18:54."
     )
     assert d.metrics.guard_fallbacks == 1
 
@@ -458,3 +458,83 @@ def test_fallback_text_departures() -> None:
     ]
     assert fallback_text(out, "en") == "line 1 at Nation: towards La Défense in 3 minutes."
     _ = datetime.now(UTC) - timedelta(seconds=1)
+
+
+# ---------- fixes from agent eval run 1 (2026-11-08) ----------
+
+
+def test_guard_blocks_line_misattribution() -> None:
+    """Run 1: RER A times were announced as 'metro line 1 and RER A'."""
+    outputs = [
+        {
+            "_tool": "find_station",
+            "stations": [
+                {
+                    "name": "La Défense",
+                    "lines": [
+                        {"label": "line 1", "mode": "Metro"},
+                        {"label": "RER A", "mode": "RapidTransit"},
+                    ],
+                }
+            ],
+        },
+        {
+            "_tool": "next_departures",
+            "station": "La Défense",
+            "line": "RER A",
+            "departures": [{"towards": "X", "in_minutes": 3, "at": "00:31"}],
+        },
+    ]
+    problems = grounding.check("Metro line 1 and RER A depart in 3 minutes at 00:31.", outputs)
+    assert problems == ["line 1 is not in the data tool results"]
+    assert grounding.check("RER A departs in 3 minutes at 00:31.", outputs) == []
+
+
+def test_guard_allows_station_lines_in_a_clarifying_question() -> None:
+    outputs = [
+        {
+            "_tool": "find_station",
+            "stations": [
+                {
+                    "name": "La Défense",
+                    "lines": [
+                        {"label": "line 1", "mode": "Metro"},
+                        {"label": "RER A", "mode": "RapidTransit"},
+                    ],
+                }
+            ],
+        }
+    ]
+    assert grounding.check("Which line: line 1 or RER A?", outputs) == []
+
+
+def test_fallback_avoids_disrupted_line_and_says_why() -> None:
+    out = {
+        "_tool": "plan_route",
+        "from": "Gare du Nord",
+        "to": "Bastille",
+        "journeys": [
+            {
+                "total_minutes": 24,
+                "depart": "07:30",
+                "arrive": "07:54",
+                "legs": [
+                    {"line": "B", "mode": "RapidTransit", "to": "Châtelet - Les Halles"},
+                    {"line": "1", "mode": "Metro", "to": "Bastille"},
+                ],
+            },
+            {
+                "total_minutes": 31,
+                "depart": "07:31",
+                "arrive": "08:02",
+                "legs": [{"line": "5", "mode": "Metro", "to": "Bastille"}],
+            },
+        ],
+        "disruptions_on_lines_used": {"B": ["Trafic interrompu"]},
+    }
+    assert fallback_text([out], "en") == (
+        "RER B disrupted, alternative route. From Gare du Nord to Bastille: line 5 to Bastille. "
+        "31 minutes. Leave 07:31, arrive 08:02."
+    )
+    out["disruptions_on_lines_used"] = {}
+    assert fallback_text([out], "fr").startswith("De Gare du Nord à Bastille : RER B")

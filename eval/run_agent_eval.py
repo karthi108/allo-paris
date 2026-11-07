@@ -134,6 +134,31 @@ class EvalPlanner:
         ]
 
 
+def git_state() -> tuple[str, bool]:
+    import subprocess
+
+    try:
+        commit = subprocess.run(  # noqa: S603, S607 (fixed git command)
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            check=True,
+        ).stdout.strip()
+        dirty = bool(
+            subprocess.run(  # noqa: S603, S607
+                ["git", "status", "--porcelain", "--untracked-files=no"],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
+                check=True,
+            ).stdout.strip()
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown", True
+    return commit, dirty
+
+
 def names_for(index: StopIndex, station_id: str) -> set[str]:
     area = index.by_id.get(str(station_id))
     return {s.name for s in index.siblings(area)} if area else set()
@@ -150,7 +175,8 @@ def judge(
         if not routes:
             return False, "plan_route not called"
         r = routes[-1]
-        if case["to"] not in names_for(index, r.get("to_station_id", "")):
+        targets = set(case.get("to_any") or [case["to"]])
+        if not targets & names_for(index, r.get("to_station_id", "")):
             return False, f"wrong destination {names_for(index, r.get('to_station_id', ''))}"
         if case["from"] not in names_for(index, r.get("from_station_id", "")):
             return False, f"wrong origin {names_for(index, r.get('from_station_id', ''))}"
@@ -166,6 +192,17 @@ def judge(
             text.strip().endswith("?"),
             "" if text.strip().endswith("?") else "did not ask for the origin",
         )
+    if exp == "departures_or_status":
+        if any(name == "line_status" for name, _ in calls):
+            line_ids = [a.get("line_id") for n, a in calls if n == "line_status"]
+            ok = any(
+                ln.short == case["line"]
+                for a in index.areas
+                for ln in a.lines
+                if ln.line_id in line_ids
+            )
+            return ok, "" if ok else f"status for wrong line {line_ids}"
+        exp = "departures"
     if exp == "departures":
         deps = [args for name, args in calls if name == "next_departures"]
         if reply.path == "rules":

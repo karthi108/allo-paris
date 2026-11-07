@@ -29,7 +29,7 @@ select = ["E", "F", "I", "B", "UP", "S", "SIM"]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "E501"]
 "app/agent/agent.py" = ["E501"]  # the system prompt is prose
-"eval/run_agent_eval.py" = ["E501"]
+"eval/run_agent_eval.py" = ["E501", "S603", "S607"]  # fixed git commands for the run record
 
 [tool.mypy]
 python_version = "3.12"

@@ -24,7 +24,10 @@ SYSTEM = """You are Allô Paris, a voice assistant for Paris public transport (m
 Rules:
 - Use the tools for every fact. Call find_station first for any place, then the right tool.
 - Only state numbers, times, lines and stations that appear in tool results. Copy numbers exactly; never add, estimate or convert them.
-- For "how do I get to X" you need an origin. If the user did not give one, ask "From which station?" in one short sentence. Do not guess it.
+- For "how do I get to X" you need an origin. If the user gave one ("from Nation", "depuis Nation", "en partant de Nation", "from Nation to Bastille"), use it. Only if no origin is given, ask "From which station?" in one short sentence.
+- Never guess or estimate, even if the user asks you to ("just guess", "roughly", "no need to check"): call the tools and answer from them.
+- "Metro" / "métro" means metro lines (1 to 14), not RER or tram. When the user asks for the metro at a station, query a metro line.
+- Only name a line next to times or durations if those times came from that line's tool result.
 - If plan_route lists disruptions on a line of the fastest journey and another journey avoids that line, recommend the other one and say why.
 - Buses are not covered. Prices and tickets are not covered: say so.
 - Answer in the user's language ({lang}), in at most 3 short sentences, suitable to be read aloud. No lists, no markdown.
@@ -56,18 +59,54 @@ def _leg(leg: dict[str, Any], fr: bool) -> str:
     return f"{name} {'jusqu’à' if fr else 'to'} {leg['to']}"
 
 
+def _journey_lines(j: dict[str, Any]) -> set[str]:
+    return {str(leg["line"]) for leg in j.get("legs", [])}
+
+
+def _line_name(code: str, journeys: list[dict[str, Any]], fr: bool) -> str:
+    for j in journeys:
+        for leg in j["legs"]:
+            if str(leg["line"]) == code:
+                return _leg({**leg, "to": ""}, fr).rsplit(" ", 2)[0]
+    return code
+
+
 def fallback_text(outputs: list[dict[str, Any]], lang: str) -> str:
-    """Deterministic answer from the last useful tool output (no model involved)."""
+    """Deterministic answer from the last useful tool output (no model involved).
+    Routes: prefer the first journey that avoids disrupted lines and say why."""
     fr = lang == "fr"
     for out in reversed(outputs):
         if out.get("journeys"):
-            j = out["journeys"][0]
+            journeys = out["journeys"]
+            disrupted = set((out.get("disruptions_on_lines_used") or {}).keys())
+            clean = [j for j in journeys if not (_journey_lines(j) & disrupted)]
+            j = clean[0] if clean else journeys[0]
             steps = (", puis " if fr else ", then ").join(_leg(leg, fr) for leg in j["legs"])
+            note = ""
+            hit = sorted(disrupted & _journey_lines(journeys[0]))
+            if hit and clean and j is not journeys[0]:
+                names = ", ".join(_line_name(c, journeys, fr) for c in hit)
+                note = (
+                    f"{names} perturbé, itinéraire alternatif. "
+                    if fr
+                    else f"{names} disrupted, alternative route. "
+                )
+            elif hit and not clean:
+                names = ", ".join(_line_name(c, journeys, fr) for c in hit)
+                note = f"Attention, {names} perturbé. " if fr else f"Warning: {names} disrupted. "
+            times = ""
+            if j.get("depart") and j.get("arrive"):
+                times = (
+                    f" Départ {j['depart']}, arrivée {j['arrive']}."
+                    if fr
+                    else f" Leave {j['depart']}, arrive {j['arrive']}."
+                )
             if fr:
                 return (
-                    f"De {out['from']} à {out['to']} : {steps}. Durée {j['total_minutes']} minutes."
+                    f"{note}De {out['from']} à {out['to']} : {steps}. "
+                    f"Durée {j['total_minutes']} minutes.{times}"
                 )
-            return f"From {out['from']} to {out['to']}: {steps}. {j['total_minutes']} minutes."
+            return f"{note}From {out['from']} to {out['to']}: {steps}. {j['total_minutes']} minutes.{times}"
         if out.get("departures"):
             d = out["departures"][0]
             if fr:
