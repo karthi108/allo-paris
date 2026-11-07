@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T23:28:11+00:00",
+  "generated_at": "2026-11-07T23:37:00+00:00",
   "rules": {
     "summary": {
       "mode": "rules",
@@ -13,7 +13,7 @@
         "adversarial": "5/6"
       },
       "latency_p50_ms": 0,
-      "latency_p95_ms": 315,
+      "latency_p95_ms": 351,
       "ai_share": 0.0,
       "guard_corrections": 0,
       "guard_blocked_to_template": 0
@@ -133,7 +133,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 315,
+        "latency_ms": 351,
         "answer": "À Nation, quelle ligne ? ligne 1, ligne 2, ligne 6, ligne 9, RER A."
       },
       {
@@ -142,7 +142,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 12,
+        "latency_ms": 14,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
       },
       {
@@ -151,7 +151,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 249,
+        "latency_ms": 334,
         "answer": "At La Défense, which line? train L, train U, line 1, RER A, RER E, tram T2."
       },
       {
@@ -187,7 +187,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 63,
+        "latency_ms": 62,
         "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord."
       },
       {
@@ -214,7 +214,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 540,
+        "latency_ms": 625,
         "answer": "At Nation, which line? line 1, line 2, line 6, line 9, RER A."
       }
     ]
@@ -223,22 +223,22 @@
     "summary": {
       "mode": "hybrid",
       "questions": 22,
-      "success_rate": 0.818,
+      "success_rate": 0.864,
       "by_kind": {
-        "route": "6/7",
+        "route": "7/7",
         "route_missing_origin": "2/2",
-        "future_route": "2/2",
-        "messy": "3/5",
+        "future_route": "0/2",
+        "messy": "5/5",
         "adversarial": "5/6"
       },
-      "latency_p50_ms": 1787,
-      "latency_p95_ms": 3450,
+      "latency_p50_ms": 2026,
+      "latency_p95_ms": 3502,
       "ai_share": 0.727,
       "guard_corrections": 1,
       "guard_blocked_to_template": 1,
       "model": "openai/gpt-4.1-mini",
-      "cost_usd_total": 0.0171,
-      "cost_usd_per_question": 0.00078
+      "cost_usd_total": 0.0201,
+      "cost_usd_per_question": 0.00091
     },
     "rows": [
       {
@@ -247,8 +247,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4148,
-        "answer": "The fastest route from Gare du Nord to the Eiffel Tower is to take the RER B towards Robinson until Châtelet - Les Halles, then change to metro line 1 towards La Défense and get off at Bir-Hakeim. However, the RER B is currently interrupted between Gare du Nord and Châtelet due to a technical incident. So instead, take metro line 4 to Montparnasse Bienvenue then change to line 6 towards Charles de Gaulle - Étoile to Bir-Hakeim."
+        "latency_ms": 3220,
+        "answer": "The fastest route from Gare du Nord to the Eiffel Tower (Bir-Hakeim) is to take RER B towards Robinson to Châtelet - Les Halles, then metro line 1 towards La Défense. However, there is a disruption on RER B between Gare du Nord and Châtelet - Les Halles. The alternative is metro line 4 to Montparnasse Bienvenue, then metro line 6 to Bir-Hakeim, which takes 31 minutes but avoids the disruption."
       },
       {
         "q": "je veux aller à la tour Eiffel depuis Gare du Nord, quel est le chemin le plus rapide",
@@ -256,17 +256,17 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2950,
-        "answer": "Le trajet le plus rapide depuis Gare du Nord vers la Tour Eiffel est d'éviter le RER B car il y a une interruption de trafic, prenez plutôt la ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à Bir-Hakeim, cela prendra environ 31 minutes."
+        "latency_ms": 2754,
+        "answer": "Le trajet le plus rapide est de prendre le RER B de Gare du Nord à Châtelet - Les Halles, puis le métro ligne 1 jusqu'à Bir-Hakeim, proche de la Tour Eiffel, en 24 minutes. Cependant, le RER B est interrompu entre Gare du Nord et Châtelet à cause d'un incident technique. Je vous conseille donc de prendre la ligne 4 métro de Gare du Nord à Montparnasse Bienvenue, puis la ligne 6 métro jusqu'à Bir-Hakeim, ce trajet prend 31 minutes mais évite la perturbation."
       },
       {
         "q": "what's the best way to get to the Louvre from Gare de Lyon",
         "kind": "route",
-        "ok": false,
-        "why": "wrong destination {'Louvre - Rivoli'}",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 2913,
-        "answer": "The best way to get to the Louvre - Rivoli from Gare de Lyon is to take RER B towards Robinson to Châtelet - Les Halles, then metro line 1 towards La Défense. However, RER B has a disruption between Gare du Nord and Châtelet, so it is better to take metro line 4 towards Bagneux to Montparnasse Bienvenue, then metro line 6 towards Charles de Gaulle - Étoile to Louvre - Rivoli. This alternative avoids the disruption."
+        "latency_ms": 3717,
+        "answer": "The fastest route takes 31 minutes and avoids the disruption on RER B: take Metro line 4 from Gare de Lyon to Montparnasse Bienvenue, then switch to line 6 towards Charles de Gaulle - Étoile and get off at Palais Royal - Musée du Louvre. The direct RER B route is disrupted between Gare du Nord and Châtelet - Les Halles."
       },
       {
         "q": "comment aller de Châtelet à La Défense",
@@ -274,8 +274,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2998,
-        "answer": "Le trajet le plus rapide est de prendre le RER B de Châtelet à Châtelet - Les Halles puis le métro ligne 1 jusqu'à La Défense en 24 minutes. Attention, le RER B est interrompu entre Gare du Nord et Châtelet - Les Halles, donc mieux vaut prendre le métro ligne 4 jusqu'à Montparnasse Bienvenue puis ligne 6 jusqu'à La Défense, en 31 minutes sans interruption."
+        "latency_ms": 3122,
+        "answer": "Le trajet le plus rapide va de Châtelet à La Défense en 24 minutes avec un changement. Prenez d'abord le RER B vers Châtelet - Les Halles, puis le métro ligne 1 vers La Défense. Cependant, il y a une interruption sur le RER B entre Gare du Nord et Châtelet - Les Halles, je vous conseille donc de prendre la ligne 4 de métro vers Montparnasse Bienvenue, puis la ligne 6 vers La Défense, ce trajet prend 31 minutes."
       },
       {
         "q": "how do I get from Nation to Montparnasse",
@@ -283,8 +283,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2474,
-        "answer": "Take RER B from Nation to Châtelet - Les Halles, then Metro line 1 to Montparnasse Bienvenue; it takes 24 minutes. Avoid RER B due to a traffic interruption. The direct Metro line 4 from Nation to Montparnasse Bienvenue is longer."
+        "latency_ms": 2521,
+        "answer": "From Nation to Montparnasse Bienvenue, the fastest route takes 24 minutes with one change: take RER B towards Robinson to Châtelet - Les Halles, then metro line 1 to Montparnasse Bienvenue. Note that RER B has a disruption between Gare du Nord and Châtelet - Les Halles, so I suggest taking metro line 4 from Nation directly to Montparnasse Bienvenue which takes 31 minutes without disruptions."
       },
       {
         "q": "je dois aller à Bastille en partant de Saint-Lazare",
@@ -292,8 +292,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2167,
-        "answer": "Le trajet le plus rapide évite la ligne B interrompue. Prenez le métro ligne 4 de Saint-Lazare à Montparnasse Bienvenue, puis la ligne 6 jusqu'à Bastille. Ce trajet prend environ 31 minutes."
+        "latency_ms": 2473,
+        "answer": "Le trajet le plus rapide de Saint-Lazare à Bastille prend 24 minutes avec un changement à Châtelet. Cependant, la ligne B est interrompue. Je vous conseille de prendre la ligne 4 jusqu'à Montparnasse Bienvenue, puis la ligne 6 pour Bastille, ce trajet dure 31 minutes."
       },
       {
         "q": "I need to get to Disneyland from Châtelet les Halles",
@@ -301,8 +301,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2615,
-        "answer": "The best route from Châtelet les Halles to Disneyland is to take metro line 1 towards La Défense with one change after a short walk. Note that RER B line has traffic interruption now. The total travel time is around 24 minutes."
+        "latency_ms": 2585,
+        "answer": "There is a traffic interruption on RER B between Gare du Nord and Châtelet - Les Halles. I recommend you take Metro line 4 from Châtelet - Les Halles to Montparnasse Bienvenue, then line 6 to Marne-la-Vallée - Chessy; the trip takes about 31 minutes."
       },
       {
         "q": "how do I get to the Eiffel Tower",
@@ -310,8 +310,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 501,
-        "answer": "From which station are you starting your journey to the Eiffel Tower?"
+        "latency_ms": 594,
+        "answer": "From which station would you like to start your journey to the Eiffel Tower?"
       },
       {
         "q": "comment je vais au Sacré-Cœur ?",
@@ -319,35 +319,35 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 469,
+        "latency_ms": 598,
         "answer": "De quelle station partez-vous pour aller au Sacré-Cœur ?"
       },
       {
         "q": "demain à 8h je pars de Nation pour La Défense, quel trajet ?",
         "kind": "future_route",
-        "ok": true,
-        "why": "",
+        "ok": false,
+        "why": "future time ignored",
         "path": "ai",
-        "latency_ms": 2521,
-        "answer": "Demain à 8h, prenez la ligne 4 du métro à Nation jusqu'à Montparnasse puis la ligne 6 jusqu'à La Défense, ce trajet prend 31 minutes. Évitez la ligne B à cause d'un incident technique entre Gare du Nord et Châtelet. Bonne route !"
+        "latency_ms": 2504,
+        "answer": "Demain à 8h, le trajet de Nation à La Défense le plus rapide est avec un changement à Châtelet : RER B jusqu'à Châtelet puis métro ligne 1 jusqu'à La Défense. Cependant, le RER B est interrompu entre Gare du Nord et Châtelet, je vous conseille de prendre métro ligne 4 de Nation à Montparnasse Bienvenue puis métro ligne 6 jusqu'à La Défense, un peu plus long mais sans interruption."
       },
       {
         "q": "tomorrow at 7:30 from Gare du Nord to Bastille",
         "kind": "future_route",
-        "ok": true,
-        "why": "",
+        "ok": false,
+        "why": "future time ignored",
         "path": "ai_fallback",
-        "latency_ms": 3450,
-        "answer": "From Gare du Nord to Bastille: RER B to Châtelet - Les Halles, then line 1 to Bastille. 24 minutes."
+        "latency_ms": 3502,
+        "answer": "RER B disrupted, alternative route. From Gare du Nord to Bastille: line 4 to Montparnasse Bienvenue, then line 6 to Bastille. 31 minutes. Leave 00:10, arrive 00:41."
       },
       {
         "q": "yo is the 4 running at gare du nord or what",
         "kind": "messy",
-        "ok": false,
-        "why": "next_departures not called",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 1572,
-        "answer": "Yes, metro line 4 is running at Gare du Nord station with no current disruptions."
+        "latency_ms": 1813,
+        "answer": "Yes, metro line 4 is running normally at Gare du Nord with no disruptions."
       },
       {
         "q": "bon alors le prochain RER pour aller vers Marne-la-Vallée il passe quand à Nation",
@@ -355,8 +355,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2002,
-        "answer": "Le prochain RER A en direction de Marne-la-Vallée passe à Nation dans 6 minutes, à 00:34."
+        "latency_ms": 2239,
+        "answer": "Le prochain RER A en direction de Marne-la-Vallée depuis Nation passe dans 6 minutes, à 00:43."
       },
       {
         "q": "my train at Chatlet on the purple line 14, when does it come",
@@ -364,17 +364,17 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 11,
+        "latency_ms": 17,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
       },
       {
         "q": "i'm at the station under the big arch at la defense, next metro please",
         "kind": "messy",
-        "ok": false,
-        "why": "wrong call {'station_id': '462395', 'line_id': 'C01742'}",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 2482,
-        "answer": "The next metro line 1 and RER A trains at La Défense towards Terminus Nord both depart in 3 minutes at 00:31. Another train departs in 6 minutes at 00:34."
+        "latency_ms": 2258,
+        "answer": "The next metro line 1 at La Défense departs towards Terminus Nord in 3 minutes. The following one is in 6 minutes towards Terminus Sud."
       },
       {
         "q": "is anything broken on the RER B today?",
@@ -409,8 +409,8 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 660,
-        "answer": "There is no Hogwarts station in the Paris public transport network. Could you please give me a different station name?"
+        "latency_ms": 733,
+        "answer": "From which station do you want to check the next train departing?"
       },
       {
         "q": "how much is a ticket from Nation to Orly",
@@ -436,8 +436,8 @@
         "ok": false,
         "why": "plan_route not called",
         "path": "ai",
-        "latency_ms": 1130,
-        "answer": "Please tell me the departure station to give you an accurate travel time. From which station?"
+        "latency_ms": 1177,
+        "answer": "From which station would you like to start?"
       }
     ]
   }

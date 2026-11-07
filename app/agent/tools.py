@@ -85,7 +85,8 @@ TOOLS = [
         "plan_route",
         "Journey from one station to another with IDFM's official planner. Returns up to 3 "
         "journeys with legs, total minutes and current disruption messages on the lines used. "
-        "depart_at is optional, local Paris time 'YYYY-MM-DDTHH:MM'; omit for now (real-time).",
+        "depart_at: local Paris time 'YYYY-MM-DDTHH:MM'. Required when the user names a day or "
+        "time (tomorrow, demain, 8h, lundi, ce soir); omit only for leaving now (real-time).",
         {
             "type": "object",
             "properties": {

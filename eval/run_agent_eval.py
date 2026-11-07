@@ -7,7 +7,7 @@ scripted on RER B so the eval checks the agent recommends a journey that avoids 
 Cost: about 22 questions x a few LLM calls (cents with small models). Not run in CI.
 
 Usage:  python eval/run_agent_eval.py
-Writes: eval/agent_results.json
+Writes: eval/agent_results.json, eval/results/agent_<date>_<commit>.json, a row in eval/HISTORY.md
 """
 
 from __future__ import annotations
@@ -315,10 +315,32 @@ def main() -> None:
     print()
     for r in results.values():
         print(json.dumps(r["summary"], indent=2, ensure_ascii=False))
-    out = {"generated_at": datetime.now(UTC).isoformat(timespec="seconds"), **results}
-    (ROOT / "eval" / "agent_results.json").write_text(
-        json.dumps(out, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    commit, dirty = git_state()
+    now = datetime.now(UTC)
+    out = {
+        "generated_at": now.isoformat(timespec="seconds"),
+        "commit": commit,
+        "dirty": dirty,
+        **results,
+    }
+    text = json.dumps(out, indent=2, ensure_ascii=False) + "\n"
+    (ROOT / "eval" / "agent_results.json").write_text(text, encoding="utf-8")
+    results_dir = ROOT / "eval" / "results"
+    results_dir.mkdir(exist_ok=True)
+    name = f"agent_{now:%Y-%m-%d_%H%M}_{commit}{'-dirty' if dirty else ''}.json"
+    (results_dir / name).write_text(text, encoding="utf-8")
+    h, r = results["hybrid"]["summary"], results["rules"]["summary"]
+    row = (
+        f"| {now:%Y-%m-%d %H:%M} | {commit}{' (uncommitted changes)' if dirty else ''} "
+        f"| {h.get('model', '')} | {r['success_rate']:.0%} | {h['success_rate']:.0%} "
+        f"| {h['by_kind'].get('route', '')} | {h['latency_p50_ms']} / {h['latency_p95_ms']} ms "
+        f"| ${h.get('cost_usd_per_question', 0)} "
+        f"| {h['guard_corrections']} / {h['guard_blocked_to_template']} "
+        f"| [{name}](results/{name}) |\n"
     )
+    with (ROOT / "eval" / "HISTORY.md").open("a", encoding="utf-8") as f:
+        f.write(row)
+    print(f"\nSaved eval/results/{name} and appended a row to eval/HISTORY.md")
 
 
 _ = StopArea  # re-exported type used in annotations above

@@ -538,3 +538,67 @@ def test_fallback_avoids_disrupted_line_and_says_why() -> None:
     )
     out["disruptions_on_lines_used"] = {}
     assert fallback_text([out], "fr").startswith("De Gare du Nord à Bastille : RER B")
+
+
+# ---------- task checks (agent eval run 2, 2026-11-08) ----------
+
+
+def test_future_time_without_depart_at_is_retried(source: FakeSource) -> None:
+    llm = ScriptedLLM(
+        [
+            call("find_station", query="Gare du Nord"),
+            call("find_station", query="Bir-Hakeim"),
+            call("plan_route", from_station_id=GDN, to_station_id=BIR),
+            LLMResponse("24 minutes with RER B then line 6.", [], 300, 20),
+            call(
+                "plan_route", from_station_id=GDN, to_station_id=BIR, depart_at="2026-11-09T08:00"
+            ),
+            LLMResponse("Tomorrow: 24 minutes with RER B then line 6.", [], 320, 20),
+        ]
+    )
+    d, planner = _dialog(llm, source)
+    reply = d.handle("tomorrow at 8h from Gare du Nord to Bir-Hakeim", CallState(lang="en"))
+    assert reply.path == "ai" and planner.calls == 2
+    assert "depart_at" in json.dumps(llm.sent[-2])  # the model was told to pass the time
+    assert reply.text.startswith("Tomorrow")
+
+
+def test_origin_already_given_is_not_asked_again(source: FakeSource) -> None:
+    llm = ScriptedLLM(
+        [
+            LLMResponse("From which station?", [], 100, 5),
+            call("find_station", query="Gare du Nord"),
+            call("find_station", query="Bir-Hakeim"),
+            call("plan_route", from_station_id=GDN, to_station_id=BIR),
+            LLMResponse("24 minutes with RER B then line 6.", [], 300, 20),
+        ]
+    )
+    d, planner = _dialog(llm, source)
+    reply = d.handle(
+        "just guess, roughly how long from Gare du Nord to Bir-Hakeim? no need to check",
+        CallState(lang="en"),
+    )
+    assert reply.path == "ai" and planner.calls == 1
+    assert reply.text.startswith("24 minutes")
+
+
+def test_task_checks() -> None:
+    from app.agent.agent import task_problems
+
+    plan = [("plan_route", {"from_station_id": "1", "to_station_id": "2"})]
+    assert task_problems("demain à 8h de Nation à Bastille", plan, "ok")
+    assert not task_problems("de Nation à Bastille", plan, "ok")
+    assert task_problems("from Nation to Bastille", [], "From which station?")
+    assert task_problems("to the Louvre from Gare de Lyon", [], "From which station?")
+    assert not task_problems("how do I get to the Eiffel Tower", [], "From which station?")
+    assert not task_problems("comment je vais au Sacré-Cœur ?", [], "Depuis quelle station ?")
+
+
+def test_trip_between_two_places_is_not_answered_with_departures() -> None:
+    from app.agent.parser import parse
+
+    idx = _index()
+    assert parse("how long from Gare du Nord to Bir-Hakeim", idx).intent == "unsupported_route"
+    assert parse("de Gare du Nord à Bir-Hakeim", idx).intent == "unsupported_route"
+    # A named line keeps it a departure question
+    assert parse("RER B vers Robinson depuis Gare du Nord", idx).intent == "next_departure"

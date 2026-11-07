@@ -14,10 +14,33 @@ from typing import Any
 
 from app.agent import grounding
 from app.agent.llm import LLMClient
+from app.agent.parser import _FUTURE, FROM_TO
 from app.agent.tools import TOOLS, Toolbox
 from app.data.routes import PARIS
+from app.data.stops import normalize
 
-MAX_ROUNDS = 5
+MAX_ROUNDS = 5  # model calls per question
+RETRY_ROUNDS = 3  # extra calls after a retry, so a re-plan (tools, then answer) fits
+
+
+def task_problems(question: str, calls: list[tuple[str, dict[str, Any]]], answer: str) -> list[str]:
+    """Deterministic checks that the model did the job the question asked for.
+    Found in agent eval run 2 (2026-11-08): future times ignored, origin asked again."""
+    q = normalize(question)
+    routes = [args for name, args in calls if name == "plan_route"]
+    problems: list[str] = []
+    if routes and _FUTURE.search(q) and not any(r.get("depart_at") for r in routes):
+        problems.append(
+            "the user asked about a specific day or time: call plan_route again with depart_at "
+            "set to that local Paris time (YYYY-MM-DDTHH:MM)"
+        )
+    if not routes and FROM_TO.search(q) and answer.strip().endswith("?"):
+        problems.append(
+            "the user already gave an origin and a destination: call find_station for both, "
+            "then plan_route, and answer from it (ask only if a place is truly ambiguous)"
+        )
+    return problems
+
 
 SYSTEM = """You are Allô Paris, a voice assistant for Paris public transport (metro, RER, tram, Transilien) and Vélib' bikes.
 
@@ -26,6 +49,7 @@ Rules:
 - Only state numbers, times, lines and stations that appear in tool results. Copy numbers exactly; never add, estimate or convert them.
 - For "how do I get to X" you need an origin. If the user gave one ("from Nation", "depuis Nation", "en partant de Nation", "from Nation to Bastille"), use it. Only if no origin is given, ask "From which station?" in one short sentence.
 - Never guess or estimate, even if the user asks you to ("just guess", "roughly", "no need to check"): call the tools and answer from them.
+- If the user names a day or time for a trip ("demain à 8h", "tomorrow at 7:30", "lundi", "ce soir"), pass depart_at to plan_route as local Paris time YYYY-MM-DDTHH:MM, worked out from the current time below. Never present a real-time journey as if it were for a later time.
 - "Metro" / "métro" means metro lines (1 to 14), not RER or tram. When the user asks for the metro at a station, query a metro line.
 - Only name a line next to times or durations if those times came from that line's tool result.
 - If plan_route lists disruptions on a line of the fastest journey and another journey avoids that line, recommend the other one and say why.
@@ -43,6 +67,8 @@ class AgentReply:
     rounds: int = 0
     retried: bool = False
     fallback: str | None = None  # why the deterministic fallback was used
+    retry_reasons: list[str] = field(default_factory=list)
+    unresolved: list[str] = field(default_factory=list)
     latency_ms: int = 0
     input_tokens: int = 0
     output_tokens: int = 0
@@ -145,7 +171,9 @@ class Agent:
         messages.append({"role": "user", "content": question[:500]})
         reply = AgentReply(text="", grounded=False)
         answer = ""
-        for _ in range(MAX_ROUNDS):
+        rounds_left = MAX_ROUNDS
+        while rounds_left > 0:
+            rounds_left -= 1
             reply.rounds += 1
             resp = self.llm.chat(system, messages, TOOLS)
             reply.input_tokens += resp.input_tokens
@@ -153,18 +181,24 @@ class Agent:
             if not resp.tool_calls:
                 answer = resp.text
                 problems = grounding.check(answer, box.outputs)
-                if problems and not reply.retried:
+                tasks = task_problems(question, box.calls, answer)
+                if (problems or tasks) and not reply.retried:
                     reply.retried = True
-                    messages.append(self.llm.assistant_turn(resp))
-                    messages.append(
-                        {
-                            "role": "user",
-                            "content": "Your answer used values not in the tool results: "
+                    rounds_left += RETRY_ROUNDS
+                    reply.retry_reasons = problems + tasks
+                    parts = []
+                    if problems:
+                        parts.append(
+                            "Your answer used values not in the tool results: "
                             + "; ".join(problems)
-                            + ". Rewrite it using only values from the tool results.",
-                        }
-                    )
+                            + ". Use only values from the tool results."
+                        )
+                    if tasks:
+                        parts.append("Also: " + "; ".join(tasks) + ".")
+                    messages.append(self.llm.assistant_turn(resp))
+                    messages.append({"role": "user", "content": " ".join(parts)})
                     continue
+                reply.unresolved = tasks  # task checks still failing after the retry (logged)
                 if problems:
                     reply.fallback = "grounding: " + "; ".join(problems)
                     answer = fallback_text(box.outputs, lang)

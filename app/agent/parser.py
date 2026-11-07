@@ -104,6 +104,13 @@ _ROUTE = re.compile(
     r"how (do i|to|can i|should i) (get|go)|(i want|i d like|i need|we want) to (go|get)|"
     r"directions?|fastest (way|route)|quickest (way|route)|best (way|route)|get to)\b"
 )
+# Origin and destination both given, either order (normalized text): "from Nation to Bastille",
+# "de Nation à Bastille", "to the Louvre from Gare de Lyon", "à Bastille en partant de Nation".
+# Only used when no line is named: "RER A vers La Défense depuis Nation" stays a departure question.
+FROM_TO = re.compile(
+    r"\b(from|de|depuis|en partant de) \w.* (to|a|au|vers|pour|jusqu a) \w"
+    r"|\b(to|a|au) \w.* (from|depuis|en partant de) \w"
+)
 _FUTURE = re.compile(
     r"\b(demain|tomorrow|ce soir|tonight|apres demain|lundi|mardi|mercredi|jeudi|vendredi|"
     r"samedi|dimanche|monday|tuesday|wednesday|thursday|friday|saturday|sunday|"
@@ -196,6 +203,10 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
                 stops, landmark = near[:1], found[0]
         return ParsedQuery("velib", stops=stops, landmark=landmark)
     line, heard, rest = _extract_line(text, index)
+    if line is None and heard is None and FROM_TO.search(text):
+        # A trip between two places: rules cannot plan it (the AI can). Found in agent eval
+        # run 2: "from Gare du Nord to Bir-Hakeim" was answered with line 6 departures.
+        return ParsedQuery("unsupported_route")
     intent = "line_status" if _STATUS_WORDS.search(text) else "next_departure"
     if intent == "line_status":
         return ParsedQuery(intent, line=line, line_heard=heard)

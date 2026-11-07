@@ -6,4 +6,5 @@ Changes to expectations are listed under the table, so scores stay comparable.
 
 | Date (UTC) | Commit | Model | Rules | Hybrid | Routes (hybrid) | p50 / p95 (hybrid) | Cost / question | Guard | Results |
 |---|---|---|---|---|---|---|---|---|---|
-| 2026-11-08 00:28 | 70c1d03 | openai/gpt-4.1-mini | 32% | 82% | 6/7 | 1787 / 3450 ms | $0.00078 | 1 / 1 | [agent_2026-11-08_0028_70c1d03.json](results/agent_2026-11-08_0028_70c1d03.json) |
+| 2026-11-07 23:28 | 70c1d03 | openai/gpt-4.1-mini | 32% | 82% | 6/7 | 1787 / 3450 ms | $0.00078 | 1 / 1 | [agent_2026-11-08_0028_70c1d03.json](results/agent_2026-11-08_0028_70c1d03.json) |
+| 2026-11-07 23:37 | f5e0499 | openai/gpt-4.1-mini | 32% | 86% | 7/7 | 2026 / 3502 ms | $0.00091 | 1 / 1 | [agent_2026-11-07_2337_f5e0499.json](results/agent_2026-11-07_2337_f5e0499.json) |
