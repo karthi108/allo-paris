@@ -15,11 +15,16 @@ from urllib.parse import parse_qsl
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
 
+from app.agent.agent import Agent
 from app.agent.dialog import Dialog
+from app.agent.llm import make_client
+from app.agent.tools import Toolbox
 from app.api.web import RateLimiter, WebApi
 from app.core.config import get_settings
+from app.core.metrics import Metrics
 from app.core.store import Store
 from app.data.prim import PrimClient
+from app.data.routes import RouteClient
 from app.data.stops import StopIndex
 from app.data.velib import VelibClient
 from app.voice import twiml
@@ -38,7 +43,27 @@ prim = PrimClient(
     daily_budget=settings.prim_daily_budget,
 )
 velib = VelibClient()
-dialog = Dialog(index, prim, stale_after=settings.realtime_stale_after_seconds, bikes=velib)
+routes = RouteClient(
+    settings.prim_api_key, url=settings.navitia_url, daily_budget=settings.route_daily_budget
+)
+llm = make_client(
+    settings.llm_provider,
+    settings.llm_api_key,
+    model=settings.llm_model,
+    daily_usd=settings.llm_daily_budget_usd,
+    price_in=settings.llm_price_in,
+    price_out=settings.llm_price_out,
+)
+agent = Agent(llm, lambda: Toolbox(index, prim, velib, routes)) if llm else None
+metrics = Metrics()
+dialog = Dialog(
+    index,
+    prim,
+    stale_after=settings.realtime_stale_after_seconds,
+    bikes=velib,
+    agent=agent,
+    metrics=metrics,
+)
 store = Store(settings.db_path, settings.transcript_retention_days)
 calls = CallHandler(
     dialog,
@@ -114,6 +139,48 @@ def health() -> JSONResponse:
         "velib": velib.status(),
     }
     return JSONResponse(body, status_code=503 if failing else 200)
+
+
+def _ai_status() -> dict[str, Any]:
+    if llm is None:
+        return {"enabled": False}
+    return {
+        "enabled": True,
+        "provider": llm.provider,
+        "model": llm.model,
+        "calls_today": llm.budget.calls_today,
+        "spent_usd_today": round(llm.budget.spent_usd, 4),
+        "daily_budget_usd": llm.budget.daily_usd,
+    }
+
+
+@app.get("/api/metrics")
+def api_metrics() -> dict[str, Any]:
+    """Public, aggregate only: no question text, no IPs."""
+    return {
+        "service": metrics.snapshot(),
+        "ai": _ai_status(),
+        "prim": prim.status(),
+        "routes": routes.status(),
+        "velib": velib.status(),
+    }
+
+
+@app.get("/metrics")
+def metrics_page() -> FileResponse:
+    return FileResponse(
+        WEB_DIR / "metrics.html",
+        headers={"Content-Security-Policy": CSP, "Cache-Control": "no-cache"},
+    )
+
+
+@app.get("/metrics.js")
+def metrics_js() -> FileResponse:
+    return FileResponse(
+        WEB_DIR / "metrics.js",
+        media_type="application/javascript",
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
 @app.get("/healthz")
@@ -222,6 +289,8 @@ def api_status() -> dict[str, Any]:
     return {
         "prim": prim.status(),
         "velib": velib.status(),
+        "routes": routes.status(),
+        "ai": _ai_status(),
         "stops": len(index.areas),
         "phone": settings.public_phone,
     }

@@ -23,7 +23,7 @@ Method: asset → threat → control → verification. Status: `planned` · `imp
 | T1 | Cost attack: repeated or long calls | Budget drain | Per-caller rate limit (HMAC ID), daily global cap, max call duration, provider budget alerts | Unit tests for per-caller and global caps, max duration | implemented |
 | T2 | Toll fraud via outbound calling | Large bill | Outbound disabled at provider; geo permissions restricted | Attempted outbound fails | planned |
 | T3 | Spoofed webhook / WebSocket | Fake calls, cost, data injection | Validate provider request signatures; reject unsigned | Signature round-trip and tamper tests | implemented |
-| T4 | Voice prompt injection ("ignore instructions") | Off-topic or harmful output | LLM output is schema-validated intent JSON only; deterministic rendering; unknown intent → fixed reply | Injection phrase in eval set maps to `unknown` | verified |
+| T4 | Prompt injection by voice or text | Off-topic output, false claims | Injection phrasing refused by rules before the LLM; LLM limited to 5 tools; grounding guard blocks values not returned by tools; system prompt tells the model to ignore rule changes | Tests: injection refused with no data or AI call; agent eval adversarial set | verified (rules), eval pending (AI) |
 | T5 | Invented or wrong data spoken | User misses a train; trust loss | Deterministic templates; output validator; freshness stated; stale threshold → "real-time unavailable" | Eval invented numbers = 0 (CI); stale and feed-down tests | verified |
 | T6 | Malformed / stale feed data | Wrong answers, crash | Schema validation on ingest; `fetched_at` checks; per-source circuit breaker | Malformed payload and stale tests | implemented |
 | T7 | Caller number exposure | GDPR breach | HMAC-SHA256 with secret key; raw number never logged | Test: raw number absent from DB dump; hashing tests | verified |
@@ -32,6 +32,15 @@ Method: asset → threat → control → verification. Status: `planned` · `imp
 | T10 | Secret leak | Account takeover, cost | Env vars from secret manager; `.env` gitignored; secret scanning in CI | gitleaks full-history scan in CI | verified |
 | T11 | Caller enumeration / data access | Privacy breach | No caller-facing data lookup; no personal data in answers | Design review | planned |
 | T12 | Dependency compromise | Code execution | Pinned dependencies, Dependabot, minimal deps | CI audit step | planned |
+
+## AI-specific controls
+| # | Threat | Control | Status |
+|---|---|---|---|
+| A1 | Hallucinated times, lines or durations | Grounding guard on every AI answer; retry then template | implemented, tested |
+| A2 | Runaway cost | Daily USD cap checked before every call; rules path when reached | implemented, tested |
+| A3 | Tool misuse / loops | Fixed tool list, max 5 rounds, unknown tools return errors | implemented, tested |
+| A4 | Provider outage | Falls back to rules; counted on /metrics | implemented, tested |
+| A5 | Data sent to the LLM provider | Question text and tool results only; no caller number, no location | by design; stated on /privacy |
 
 ## Web-specific controls
 | # | Threat | Control | Status |

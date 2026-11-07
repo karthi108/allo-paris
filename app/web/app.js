@@ -17,7 +17,8 @@ const I18N = {
     feedErr: (e) => `Problème de données : ${e}`, feedUnknown: "Données IDFM prêtes",
     tooMany: "Trop de requêtes, réessayez dans une minute.", error: "Erreur réseau.",
     ask: (q) => `Demander : « ${q} »`,
-    examples: ["prochain RER A à Châtelet", "la 14 à Saint-Lazare", "perturbations RER B", "Vélib près de la tour Eiffel"],
+    pathRules: "⚡ Règles", pathAi: "✦ IA vérifiée", pathAiFb: "✦ IA → modèle sûr", pathRulesFb: "⚡ Règles (IA indisponible)", tools: "outils",
+    examples: ["prochain RER A à Châtelet", "comment aller à la tour Eiffel depuis Gare du Nord", "perturbations RER B", "Vélib près de la tour Eiffel"],
     velib: "Vélib à proximité", bikes: "vélos", ebikes: "élec.", docks: "places", closed: "fermée", velibNone: "Aucune station Vélib à moins de 500 m.",
     modes: { Metro: "Métro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
@@ -39,7 +40,8 @@ const I18N = {
     feedErr: (e) => `Data problem: ${e}`, feedUnknown: "IDFM data ready",
     tooMany: "Too many requests, try again in a minute.", error: "Network error.",
     ask: (q) => `Ask: “${q}”`,
-    examples: ["next RER A at Châtelet", "line 14 Saint-Lazare", "disruptions RER B", "Vélib near the Eiffel Tower"],
+    pathRules: "⚡ Rules", pathAi: "✦ AI, verified", pathAiFb: "✦ AI → safe template", pathRulesFb: "⚡ Rules (AI unavailable)", tools: "tools",
+    examples: ["next RER A at Châtelet", "fastest way from Gare du Nord to the Eiffel Tower", "disruptions RER B", "Vélib near the Eiffel Tower"],
     velib: "Vélib nearby", bikes: "bikes", ebikes: "e-bikes", docks: "docks", closed: "closed", velibNone: "No Vélib station within 500 m.",
     modes: { Metro: "Metro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Microphone not available in this browser.", listening: "Listening…",
@@ -192,7 +194,7 @@ function openStation(s, lineId) {
 function closeStation() {
   clearTimeout(state.timer); state.selected = null;
   if (ring) { ring.remove(); ring = null; }
-  $("station").hidden = true; $("home").hidden = false; $("answer").textContent = ""; renderHome();
+  $("station").hidden = true; $("home").hidden = false; $("answer").textContent = ""; $("answerMeta").replaceChildren(); renderHome();
 }
 function renderStation() {
   const t = tr(), { stop, line } = state.selected, v = $("station");
@@ -316,7 +318,7 @@ function updateSuggest() {
     el("span", { class: "name", textContent: tr().ask(raw) })));
   $("q").setAttribute("aria-expanded", "true");
 }
-function pick(s) { $("q").value = ""; $("suggest").replaceChildren(); $("answer").textContent = ""; openStation(s); $("q").blur(); }
+function pick(s) { $("q").value = ""; $("suggest").replaceChildren(); $("answer").textContent = ""; $("answerMeta").replaceChildren(); openStation(s); $("q").blur(); }
 function moveActive(delta) {
   const items = [...$("suggest").children]; if (!items.length) return;
   state.active = (state.active + delta + items.length) % items.length;
@@ -340,16 +342,27 @@ $("searchForm").onsubmit = (e) => {
 async function ask(q) {
   q = (q || "").trim(); if (!q) return;
   $("suggest").replaceChildren(); $("q").blur();
-  $("answer").textContent = "…"; $("card").classList.remove("collapsed");
+  $("answer").textContent = "…"; $("answerMeta").replaceChildren(); $("card").classList.remove("collapsed");
   try {
     const r = await api("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ q, session: state.session, lang: state.lang }) });
     if (r.lang && r.lang !== state.lang) setLang(r.lang);
     $("answer").textContent = r.answer;
+    renderMeta(r);
     speak(r.answer);
     if (r.stop) { const s = state.byId.get(r.stop.id); if (s) openStation(s, r.line && r.line.id); }
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
+}
+
+function renderMeta(r) {
+  const t = tr(), m = $("answerMeta"); m.replaceChildren();
+  if (!r || !r.path) return;
+  const label = { rules: t.pathRules, ai: t.pathAi, ai_fallback: t.pathAiFb, rules_fallback: t.pathRulesFb }[r.path] || r.path;
+  const ms = r.latency_ms >= 1000 ? (r.latency_ms / 1000).toFixed(1) + " s" : r.latency_ms + " ms";
+  m.append(el("span", { class: "pathtag" + (r.path.startsWith("ai") ? " ai" : ""), textContent: label }),
+    el("span", { textContent: ms + (r.tools && r.tools.length ? ` · ${r.tools.length} ${t.tools}` : "") }),
+    el("a", { href: "/metrics", textContent: "↗" }));
 }
 
 // Read-aloud with the browser's own voices (free, nothing sent to us)

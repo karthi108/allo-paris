@@ -19,7 +19,10 @@ Working phone line first, hardening after. Scope cuts recorded in decisions.md D
 - [x] Web app with live data, tested in the browser on real PRIM data (2026-11-07)
 - [x] Vélib nearby, landmarks, unsupported-question replies, privacy page, 30-day purge job
 - [x] Eval set in CI: 61/61, 0 invented numbers (synthetic questions)
-- [ ] Live latency p50/p95 (scripts/measure.py)
+- [x] Live latency: p50 76 ms, p95 311 ms, 20/20 live answers (2026-11-07)
+- [x] AI agent: hybrid routing, 5 tools, grounding guard, budget cap, metrics page (tests with scripted LLM)
+- [x] Routes via IDFM planner with disruptions; agent eval harness (rules baseline 7/22)
+- [ ] Confirm planner URL (scripts/check_routes.py) and run agent eval with a real key
 - [ ] Public deploy (render.yaml ready)
 - [ ] First real phone call (Twilio trial)
 - [ ] 7 days unattended after deploy

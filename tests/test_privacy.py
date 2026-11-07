@@ -28,3 +28,21 @@ def test_empty_key_rejected() -> None:
 def test_garbage_rejected() -> None:
     with pytest.raises(ValueError):
         normalize_e164("hello")
+
+
+def test_dotenv_with_bom(monkeypatch: pytest.MonkeyPatch) -> None:
+    from pathlib import Path
+
+    from app.core.config import _load_dotenv
+
+    monkeypatch.delenv("ALLO_BOM_TEST", raising=False)
+    env = Path(__file__).parent / "fixtures" / "bom.env"
+    env.write_bytes(b"\xef\xbb\xbfALLO_BOM_TEST=ok\n")
+    try:
+        _load_dotenv(env)
+        import os
+
+        assert os.environ["ALLO_BOM_TEST"] == "ok"
+    finally:
+        env.unlink()
+        monkeypatch.delenv("ALLO_BOM_TEST", raising=False)

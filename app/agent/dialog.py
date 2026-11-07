@@ -6,12 +6,16 @@ inserts values taken from the data source, so it cannot invent a time.
 
 from __future__ import annotations
 
+import time
 from collections import OrderedDict
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Protocol
 
+from app.agent.agent import Agent, fallback_text
+from app.agent.llm import LLMUnavailable
 from app.agent.parser import ParsedQuery, parse
+from app.core.metrics import Metrics
 from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.stops import Line, StopArea, StopIndex, StopMatch, normalize
 from app.data.velib import VelibResult
@@ -35,6 +39,8 @@ class CallState:
     pending_line: Line | None = None  # asked "which station?" for this line
     misses: int = 0
     log: list[dict[str, str]] = field(default_factory=list)
+    history: list[dict[str, str]] = field(default_factory=list)  # AI conversation turns
+    ai_followup: bool = False  # the AI just asked a question; route the answer to it
 
 
 T = {
@@ -51,6 +57,10 @@ T = {
         "départs à une station : dites par exemple, RER A à Châtelet.",
         "unsupported_time": "Je donne uniquement les prochains départs en temps réel, pas les "
         "horaires futurs. Dites par exemple : ligne 4 à Gare du Nord.",
+        "refused": "Je réponds uniquement aux questions sur les transports à Paris : horaires, "
+        "perturbations, trajets et Vélib.",
+        "unsupported_price": "Je ne donne pas les tarifs ni les titres de transport. Je réponds "
+        "sur les horaires, les perturbations, les trajets et les Vélib.",
         "unsupported_bus": "Les bus ne sont pas encore couverts. Je réponds pour le métro, le "
         "RER, le tram et les trains.",
         "clarify_airport": "Quel aéroport : Orly ou Charles-de-Gaulle ?",
@@ -100,6 +110,10 @@ T = {
         "station: say for example, RER A at Châtelet.",
         "unsupported_time": "I only give the next real-time departures, not future timetables. "
         "Say for example: line 4 at Gare du Nord.",
+        "refused": "I only answer Paris transport questions: departures, disruptions, routes "
+        "and Vélib'.",
+        "unsupported_price": "I don't give fares or ticket prices. I answer about departures, "
+        "disruptions, routes and Vélib'.",
         "unsupported_bus": "Buses aren't covered yet. I answer for metro, RER, tram and trains.",
         "clarify_airport": "Which airport: Orly or Charles de Gaulle?",
         "velib_which": "Vélib near which station? For example: Vélib at Bastille.",
@@ -146,6 +160,28 @@ T = {
 
 def t(lang: str, key: str, **kw: object) -> str:
     return T[lang][key].format(**kw)
+
+
+_PLACE_EN = {
+    "la tour Eiffel": "the Eiffel Tower",
+    "le Louvre": "the Louvre",
+    "l'Arc de Triomphe": "the Arc de Triomphe",
+    "le Sacré-Cœur": "Sacré-Cœur",
+    "les Champs-Élysées": "the Champs-Élysées",
+    "le château de Versailles": "the Palace of Versailles",
+    "le Stade de France": "the Stade de France",
+    "l'aéroport d'Orly": "Orly airport",
+    "l'aéroport Charles-de-Gaulle": "Charles de Gaulle airport",
+    "le Centre Pompidou": "the Centre Pompidou",
+    "le musée d'Orsay": "the Musée d'Orsay",
+}
+_PLACE_FR = {v: k for k, v in _PLACE_EN.items()}
+
+
+def _place(landmark: str, lang: str) -> str:
+    if lang == "fr":
+        return _de(_PLACE_FR.get(landmark, landmark))
+    return _PLACE_EN.get(landmark, landmark)
 
 
 def _de(place: str) -> str:
@@ -255,6 +291,28 @@ class Reply:
     expect_more: bool = True  # keep listening after speaking
     stop: StopArea | None = None  # what the answer was about (web UI focuses the map)
     line: Line | None = None
+    path: str = "rules"  # rules | ai | ai_fallback | rules_fallback
+    grounded: bool = True  # every number/line in the text came from a data source
+    latency_ms: int = 0
+    tools: list[str] = field(default_factory=list)
+
+
+# Rule outcomes the AI agent may improve on (when an LLM is configured)
+AI_INTENTS = {"unknown", "unsupported_route", "unsupported_time"}
+
+
+def _needs_ai(reply: Reply, utterance: str) -> bool:
+    """Escalate when rules could not answer, or could only ask back about a long natural
+    sentence (short replies to a clarifying question stay on the free rules path)."""
+    if reply.intent in AI_INTENTS:
+        return True
+    long_sentence = len(utterance.split()) >= 6
+    return long_sentence and reply.intent in ("clarify_line", "clarify_stop", "line_unknown")
+
+
+def _mark(reply: Reply, path: str) -> Reply:
+    reply.path = path
+    return reply
 
 
 class Dialog:
@@ -264,13 +322,64 @@ class Dialog:
         source: TransitSource,
         stale_after: int = 120,
         bikes: BikeSource | None = None,
+        agent: Agent | None = None,
+        metrics: Metrics | None = None,
     ) -> None:
         self.index = index
         self.source = source
         self.stale_after = stale_after
         self.bikes = bikes
+        self.agent = agent
+        self.metrics = metrics or Metrics()
 
     def handle(self, utterance: str, state: CallState) -> Reply:
+        """Hybrid: rules first (free, fast, deterministic); the AI agent only for what
+        rules cannot answer, or to continue a conversation the AI started."""
+        t0 = time.perf_counter()
+        reply: Reply | None = None
+        if self.agent is not None and state.ai_followup:
+            reply = self._try_agent(utterance, state)
+        if reply is None:
+            reply = self._handle_rules(utterance, state)
+            if self.agent is not None and _needs_ai(reply, utterance):
+                reply = self._try_agent(utterance, state) or _mark(reply, "rules_fallback")
+        reply.latency_ms = int((time.perf_counter() - t0) * 1000)
+        self.metrics.record(reply.path, reply.intent, reply.latency_ms)
+        return reply
+
+    def _try_agent(self, utterance: str, state: CallState) -> Reply | None:
+        if self.agent is None:
+            return None
+        try:
+            r = self.agent.run(utterance, state.lang, state.history)
+        except LLMUnavailable:
+            state.ai_followup = False
+            return None
+        text = r.text.strip() or fallback_text(r.tool_outputs, state.lang)
+        state.history = (
+            state.history
+            + [{"role": "user", "content": utterance[:500]}, {"role": "assistant", "content": text}]
+        )[-8:]
+        state.ai_followup = text.endswith("?")
+        stop = None
+        for out in r.tool_outputs:
+            if out.get("stations"):
+                stop = self.index.by_id.get(out["stations"][0].get("station_id", ""))
+                break
+        if r.retried:
+            self.metrics.guard_retries += 1
+        if r.fallback:
+            self.metrics.guard_fallbacks += 1
+        return Reply(
+            text,
+            "ai",
+            stop=stop,
+            path="ai" if r.fallback is None else "ai_fallback",
+            grounded=True,  # either passed the guard or replaced by a template
+            tools=r.tools,
+        )
+
+    def _handle_rules(self, utterance: str, state: CallState) -> Reply:
         q = parse(utterance, self.index)
         if q.wants_english:
             state.lang = "en"
@@ -292,21 +401,27 @@ class Dialog:
             if not q.line:
                 return Reply(t(lang, "status_which_line"), "clarify_line")
             return self._traffic(q.line, lang)
-        if q.intent in ("unsupported_route", "unsupported_time", "unsupported_bus"):
+        if q.intent in (
+            "unsupported_route",
+            "unsupported_time",
+            "unsupported_bus",
+            "unsupported_price",
+            "refused",
+        ):
             return Reply(t(lang, q.intent), q.intent)
         if q.intent == "clarify_airport":
             return Reply(t(lang, "clarify_airport"), "clarify_stop")
         if q.intent == "velib":
             reply = self._velib(q, lang)
             if q.landmark and reply.stop:
-                place = _de(q.landmark) if lang == "fr" else q.landmark
+                place = _place(q.landmark, lang)
                 reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
             return reply
         if q.intent == "unknown":
             return self._miss(state)
         reply = self._departures(q, state)
         if q.landmark and reply.stop:
-            place = _de(q.landmark) if lang == "fr" else q.landmark
+            place = _place(q.landmark, lang)
             reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
         return reply
 

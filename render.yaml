@@ -23,3 +23,11 @@ services:
         value: "true"
       - key: ALLO_PRIM_DAILY_BUDGET
         value: "900"
+      - key: ALLO_LLM_PROVIDER
+        sync: false # anthropic or openai; leave empty to run rules-only
+      - key: ALLO_LLM_API_KEY
+        sync: false # paste in the dashboard, never in this file
+      - key: ALLO_LLM_DAILY_BUDGET_USD
+        value: "1.0"
+      - key: ALLO_ROUTE_DAILY_BUDGET
+        value: "300"

@@ -1,0 +1,135 @@
+{
+  "summary": {
+    "measured_at": "2026-11-07T20:30:15+00:00",
+    "questions": 20,
+    "answered_with_live_data": 20,
+    "feed_errors": 0,
+    "p50_ms": 76,
+    "p95_ms": 311,
+    "max_ms": 321,
+    "prim_calls": 18,
+    "note": "server-side, cache off, home connection; excludes browser/phone network"
+  },
+  "rows": [
+    {
+      "q": "prochain RER A à Châtelet",
+      "intent": "next_departure",
+      "ms": 311,
+      "answer": "RER A à Châtelet - Les Halles. Direction Saint-Germain-en-Laye : 3 minutes puis 8 minutes. Direction Marne-la-Vallée Che"
+    },
+    {
+      "q": "ligne 4 Gare du Nord",
+      "intent": "next_departure",
+      "ms": 68,
+      "answer": "Ligne 4 à Gare du Nord. Direction Bagneux - Lucie Aubrac : 2 minutes puis 6 minutes. Direction Porte de Clignancourt : 3"
+    },
+    {
+      "q": "RER B Gare du Nord",
+      "intent": "next_departure",
+      "ms": 132,
+      "answer": "RER B à Gare du Nord. Direction Massy-Palaiseau : moins d'une minute puis 18 minutes. Direction Robinson : 6 minutes pui"
+    },
+    {
+      "q": "la 13 à Saint-Lazare",
+      "intent": "next_departure",
+      "ms": 101,
+      "answer": "Ligne 13 à Saint-Lazare. Direction Châtillon Montrouge : 1 minute puis 2 minutes. Direction Asnières-Gennevilliers Les C"
+    },
+    {
+      "q": "le 14 à Gare de Lyon",
+      "intent": "next_departure",
+      "ms": 79,
+      "answer": "Ligne 14 à Gare de Lyon. Direction Saint-Denis - Pleyel : moins d'une minute puis 3 minutes. Direction Aéroport d'Orly :"
+    },
+    {
+      "q": "ligne 1 La Défense",
+      "intent": "next_departure",
+      "ms": 54,
+      "answer": "Ligne 1 à La Défense. Direction Château de Vincennes : 1 minute puis 4 minutes. Direction La Défense (Grande Arche) : 2 "
+    },
+    {
+      "q": "tram T2 La Défense",
+      "intent": "next_departure",
+      "ms": 45,
+      "answer": "Tram T2 à La Défense. Direction Porte de Versailles (Parc des Expositions) : 7 minutes puis 18 minutes. Direction Pont d"
+    },
+    {
+      "q": "ligne 6 Bir-Hakeim",
+      "intent": "next_departure",
+      "ms": 69,
+      "answer": "Ligne 6 à Bir-Hakeim. Direction Nation : 3 minutes puis 7 minutes. Direction Kléber : 3 minutes puis 8 minutes. Données "
+    },
+    {
+      "q": "ligne 5 Bastille",
+      "intent": "next_departure",
+      "ms": 75,
+      "answer": "Ligne 5 à Bastille. Direction Bobigny-Pablo-Picasso : 3 minutes puis 6 minutes. Direction Place d'Italie : 5 minutes pui"
+    },
+    {
+      "q": "ligne 3 République",
+      "intent": "next_departure",
+      "ms": 74,
+      "answer": "Ligne 3 à République. Direction Gallieni (Parc de Bagnolet) : 1 minute puis 5 minutes. Direction Pont de Levallois-Bécon"
+    },
+    {
+      "q": "RER C Invalides",
+      "intent": "next_departure",
+      "ms": 47,
+      "answer": "RER C à Invalides. Direction Versailles Château Rive Gauche : 4 minutes puis 34 minutes. Direction Saint-Quentin en Yvel"
+    },
+    {
+      "q": "ligne 9 Trocadéro",
+      "intent": "next_departure",
+      "ms": 109,
+      "answer": "Ligne 9 à Trocadéro. Direction Mairie de Montreuil : 5 minutes puis 9 minutes. Direction Pont de Sèvres : 5 minutes puis"
+    },
+    {
+      "q": "ligne 2 Pigalle",
+      "intent": "next_departure",
+      "ms": 184,
+      "answer": "Ligne 2 à Pigalle. Direction Nation : 1 minute puis 5 minutes. Direction Porte Dauphine (Maréchal de Lattre de Tassigny)"
+    },
+    {
+      "q": "RER D Gare de Lyon",
+      "intent": "next_departure",
+      "ms": 72,
+      "answer": "RER D à Gare de Lyon. Direction Melun : 8 minutes puis 38 minutes. Direction Stade de France Saint-Denis : 13 minutes pu"
+    },
+    {
+      "q": "ligne 7 Place d'Italie",
+      "intent": "next_departure",
+      "ms": 78,
+      "answer": "Ligne 7 à Place d'Italie. Direction Mairie d'Ivry : 1 minute puis 8 minutes. Direction La Courneuve-8-Mai-1945 : 3 minut"
+    },
+    {
+      "q": "perturbations RER B",
+      "intent": "line_status",
+      "ms": 69,
+      "answer": "Pour le RER B : Travaux RER B, le week-end du 21 au 22 novembre inclus, le trafic sera interrompu entre Aulnay-sous-Bois"
+    },
+    {
+      "q": "trafic ligne 13",
+      "intent": "line_status",
+      "ms": 43,
+      "answer": "Pour la ligne 13 : Du 26 novembre au 29 novembre inclus, l'arrêt ne sera pas desservi à Mairie de Saint-Ouen en raison d"
+    },
+    {
+      "q": "Vélib à Bastille",
+      "intent": "velib",
+      "ms": 222,
+      "answer": "Vélib près de Bastille. Place de la Bastille - Bourdon, à 62 mètres : station fermée. Bastille - Biscornet, à 78 mètres "
+    },
+    {
+      "q": "Vélib à République",
+      "intent": "velib",
+      "ms": 321,
+      "answer": "Vélib près de République. Place de la République - Temple, à 58 mètres : station fermée. Faubourg Du Temple - Republique"
+    },
+    {
+      "q": "near the eiffel tower line 6",
+      "intent": "next_departure",
+      "ms": 194,
+      "answer": "Station la plus proche de the Eiffel Tower : Bir-Hakeim. Ligne 6 à Bir-Hakeim. Direction Nation : 3 minutes puis 7 minut"
+    }
+  ]
+}

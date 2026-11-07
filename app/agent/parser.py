@@ -49,7 +49,8 @@ def _landmark(text: str) -> tuple[str, str, float] | None:
 _STATUS_WORDS = re.compile(
     r"\b(perturbation|perturbations|trafic|traffic|incident|incidents|probleme|problemes|"
     r"panne|greve|retard|retards|travaux|disruption|disruptions|delay|delays|status|statut|"
-    r"fonctionne|marche|working|running|info|infos)\b"
+    r"fonctionne|marche|working|running|info|infos|broken|down|cancelled|canceled|annule|"
+    r"annulee|bloque|bloquee|ferme|fermee|closed|issue|issues|problem|problems|greves|strike)\b"
 )
 
 # Number words the speech recogniser may return instead of digits
@@ -98,7 +99,10 @@ _LINE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 # Questions v1 cannot answer honestly: say so instead of guessing.
 _ROUTE = re.compile(
     r"\b(comment (aller|me rendre|je vais|on va|faire pour aller)|itineraire|trajet|"
-    r"how (do i|to|can i) get|directions?|fastest way|quickest way)\b"
+    r"(je veux|je voudrais|j aimerais|je dois|on veut) (aller|me rendre)|pour aller a|"
+    r"chemin le plus (rapide|court)|meilleur chemin|le plus rapide pour|"
+    r"how (do i|to|can i|should i) (get|go)|(i want|i d like|i need|we want) to (go|get)|"
+    r"directions?|fastest (way|route)|quickest (way|route)|best (way|route)|get to)\b"
 )
 _FUTURE = re.compile(
     r"\b(demain|tomorrow|ce soir|tonight|apres demain|lundi|mardi|mercredi|jeudi|vendredi|"
@@ -106,6 +110,16 @@ _FUTURE = re.compile(
     r"\d{1,2} ?h(?: ?\d\d)?|\d{1,2} ?(?:am|pm)|\d{1,2} \d\d)\b"
 )
 _VELIB = re.compile(r"\b(velib|velibs|velo|velos|bike|bikes|bicycle|bicycles|cycle)\b")
+# Prompt-injection phrasing: refused deterministically, never sent to the LLM or data APIs
+_INJECTION = re.compile(
+    r"\b(ignore (all |your |the |any )?(previous |prior |above )?(instructions|rules|prompt)|"
+    r"developer mode|system prompt|jailbreak|you are now|act as|pretend (to be|you are)|"
+    r"oublie (tes|les|toutes les) (instructions|regles|consignes)|mode developpeur)\b"
+)
+_PRICE = re.compile(
+    r"\b(prix|tarif|tarifs|ticket|tickets|billet|billets|navigo|combien (coute|ca coute)|"
+    r"how much|price|prices|fare|fares|cost)\b"
+)
 _BUS = re.compile(r"\b(bus|autobus|noctilien)\b")
 _AIRPORT = re.compile(r"\b(aeroport|airport)\b")
 _AIRPORT_NAMED = re.compile(r"\b(orly|roissy|cdg|charles de gaulle|beauvais)\b")
@@ -159,8 +173,12 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
     wants_english = bool(re.fullmatch(r"(in )?english( please)?|anglais", text))
     if wants_english:
         return ParsedQuery("unknown", wants_english=True)
+    if _INJECTION.search(text):
+        return ParsedQuery("refused")
     if _ROUTE.search(text):
         return ParsedQuery("unsupported_route")
+    if _PRICE.search(text):
+        return ParsedQuery("unsupported_price")
     if _BUS.search(text):
         return ParsedQuery("unsupported_bus")
     if _FUTURE.search(text) and not _STATUS_WORDS.search(text):

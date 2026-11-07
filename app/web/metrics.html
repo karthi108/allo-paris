@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Allô Paris · Live metrics</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root { --bg:#f4f4f6; --card:#fff; --ink:#121318; --muted:#626775; --line:#e7e7ec; --brand:#5b3df5; --ok:#10a35a; --warn:#b26b00; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0e0f13; --card:#17181e; --ink:#ecedf2; --muted:#a2a6b3; --line:#272a33; --brand:#8c76ff; --ok:#3fd68a; --warn:#f4c46a; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+main { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+a { color: var(--brand); }
+h1 { font-size: 24px; margin: 8px 0 2px; } .sub { color: var(--muted); font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 18px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.tile .k { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.tile .v { font-size: 28px; font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.tile .d { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.ok { color: var(--ok); } .warn { color: var(--warn); }
+table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-top: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; border-top: 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 12px; }
+.card h2 { font-size: 16px; margin: 0 0 4px; }
+</style>
+</head>
+<body>
+<main>
+  <a href="/">← Allô Paris</a>
+  <h1>Live metrics</h1>
+  <div class="sub" id="since">Aggregates only: no question text, no IP addresses. Refreshes every 10 s.</div>
+  <div class="grid" id="tiles"></div>
+  <div class="card"><h2>Answer paths</h2><div class="sub">Rules answer first (free, deterministic). The AI agent only handles what rules cannot; every AI answer is checked against tool results before it is shown.</div><table id="paths"></table></div>
+  <div class="card"><h2>Data sources</h2><table id="sources"></table></div>
+</main>
+<script src="/metrics.js"></script>
+</body>
+</html>

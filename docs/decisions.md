@@ -107,6 +107,25 @@ Never delete an entry; mark it superseded and link the replacement.
 - **Decision:** Free web service, Frankfurt. Liveness `/healthz` for the host; `/health` returns 503 when the PRIM feed fails, for an external uptime monitor.
 - **Trade-off:** free instances sleep; acceptable for a portfolio demo, stated in the README.
 
+## D-018 · Hybrid: rules first, LLM agent with tools, grounding guard
+- **Status:** accepted
+- **Date:** 2026-11-07
+- **Context:** A rules-only eval scored 3/22 on route, messy and adversarial questions. Routes and free phrasing need language understanding; times must stay trustworthy.
+- **Decision:** Rules answer when confident. Otherwise an LLM agent (OpenAI or Anthropic, plain HTTP, tool calling) uses five tools over the existing data layer. A grounding guard checks every number and line in the draft against tool outputs: one corrective retry, then a deterministic template.
+- **Why not LLM-only:** cost and latency on the common questions, and determinism where it matters.
+- **Controls:** daily USD cap, max 5 tool rounds, no free-text tool, provider errors fall back to rules.
+
+## D-019 · Routes from IDFM's official planner, disruption-aware
+- **Status:** accepted (endpoint to confirm with `scripts/check_routes.py`)
+- **Date:** 2026-11-07
+- **Decision:** `plan_route` calls PRIM Navitia journeys (data_freshness=realtime) and attaches current traffic messages for every line used. The agent is instructed to prefer a journey that avoids a disrupted line, and the agent eval checks it does.
+- **Quota:** 1,000/day for new PRIM accounts (PRIM page); our cap 300/day.
+
+## D-020 · Deterministic refusals before the AI
+- **Status:** accepted
+- **Date:** 2026-11-07
+- **Decision:** Prompt-injection phrasing, fares and buses are answered by fixed templates and never reach the LLM or data APIs. Found by the agent eval baseline (fares were answered with a list of lines).
+
 ---
 
 ## Data source verification (fill in Phase 0)

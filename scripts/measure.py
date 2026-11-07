@@ -15,6 +15,7 @@ import sys
 import time
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -60,7 +61,7 @@ def main() -> None:
         sys.exit("ALLO_PRIM_API_KEY missing in .env")
     prim = PrimClient(s.prim_api_key, cache_ttl=0, timeout=8)
     dialog = Dialog(StopIndex.load(s.stops_path), prim, bikes=VelibClient(cache_ttl=0, timeout=8))
-    rows = []
+    rows: list[dict[str, Any]] = []
     for q in QUESTIONS:
         t0 = time.perf_counter()
         reply = dialog.handle(q, CallState())

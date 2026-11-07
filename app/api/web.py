@@ -182,6 +182,9 @@ class WebApi:
         reply = self.dialog.handle(question, state)
         return {
             "intent": reply.intent,
+            "path": reply.path,
+            "latency_ms": reply.latency_ms,
+            "tools": reply.tools,
             "answer": reply.text,
             "lang": state.lang,
             "stop": stop_json(reply.stop) if reply.stop else None,

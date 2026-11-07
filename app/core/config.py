@@ -14,12 +14,18 @@ def _load_dotenv(path: Path) -> None:
     """Minimal .env loader: KEY=VALUE lines, # comments. Real env vars take precedence."""
     if not path.exists():
         return
-    for line in path.read_text(encoding="utf-8").splitlines():
+    # utf-8-sig: Windows PowerShell 5.1 Set-Content -Encoding utf8 adds a BOM
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+def _opt_float(name: str) -> float | None:
+    raw = os.environ.get(name, "").strip()
+    return float(raw) if raw else None
 
 
 def _int(name: str, default: int) -> int:
@@ -47,6 +53,14 @@ class Settings:
     tts_voice_fr: str
     tts_voice_en: str
     public_phone: str
+    llm_provider: str
+    llm_api_key: str
+    llm_model: str
+    llm_daily_budget_usd: float
+    llm_price_in: float | None
+    llm_price_out: float | None
+    navitia_url: str
+    route_daily_budget: int
 
 
 @lru_cache
@@ -76,4 +90,15 @@ def get_settings() -> Settings:
         tts_voice_fr=os.environ.get("ALLO_TTS_VOICE_FR", ""),
         tts_voice_en=os.environ.get("ALLO_TTS_VOICE_EN", ""),
         public_phone=os.environ.get("ALLO_PUBLIC_PHONE", ""),
+        llm_provider=os.environ.get("ALLO_LLM_PROVIDER", ""),
+        llm_api_key=os.environ.get("ALLO_LLM_API_KEY", ""),
+        llm_model=os.environ.get("ALLO_LLM_MODEL", ""),
+        llm_daily_budget_usd=float(os.environ.get("ALLO_LLM_DAILY_BUDGET_USD", "1.0")),
+        llm_price_in=_opt_float("ALLO_LLM_PRICE_IN"),
+        llm_price_out=_opt_float("ALLO_LLM_PRICE_OUT"),
+        navitia_url=os.environ.get(
+            "ALLO_NAVITIA_URL",
+            "https://prim.iledefrance-mobilites.fr/marketplace/v2/navitia/journeys",
+        ),
+        route_daily_budget=_int("ALLO_ROUTE_DAILY_BUDGET", 300),
     )
