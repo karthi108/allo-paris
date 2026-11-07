@@ -109,13 +109,37 @@ def _limit(request: Request) -> None:
 def home() -> FileResponse:
     return FileResponse(
         WEB_DIR / "index.html",
-        headers={"Content-Security-Policy": CSP, "X-Content-Type-Options": "nosniff"},
+        headers={
+            "Content-Security-Policy": CSP,
+            "X-Content-Type-Options": "nosniff",
+            "Cache-Control": "no-cache",
+        },
     )
 
 
 @app.get("/app.js")
 def app_js() -> FileResponse:
-    return FileResponse(WEB_DIR / "app.js", media_type="application/javascript")
+    return FileResponse(
+        WEB_DIR / "app.js",
+        media_type="application/javascript",
+        headers={"Cache-Control": "no-cache"},  # always revalidate so updates show up
+    )
+
+
+@app.get("/favicon.svg")
+def favicon() -> FileResponse:
+    return FileResponse(WEB_DIR / "favicon.svg", media_type="image/svg+xml")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon_ico() -> FileResponse:
+    return favicon()
+
+
+@app.get("/api/traffic")
+def api_traffic(request: Request, line: str) -> dict[str, Any]:
+    _limit(request)
+    return web.traffic(line)
 
 
 @app.get("/api/stops")

@@ -1,67 +1,96 @@
-// Allô Paris web companion. All times come from /api (PRIM). No innerHTML with data.
+// Allô Paris web app. Every time shown comes from /api (IDFM PRIM). DOM is built with
+// textContent only: no HTML is ever built from data.
 "use strict";
 
 const I18N = {
   fr: {
-    tagline: "Prochains départs en temps réel, par téléphone ou ici.",
-    ask: "Posez votre question", placeholder: "prochain RER A à Châtelet", send: "OK",
-    speak: "Lire la réponse", station: "Station", pick: "Cliquez une station sur la carte.",
-    map: "Carte", realtime: "temps réel", scheduled: "théorique", now: "à l'approche",
-    min: "min", none: "Aucun départ annoncé pour le moment.",
+    search: "Station ou question : ligne 4 Gare du Nord",
+    call: "Appeler", nearMe: "Près de moi", favorites: "Favoris", tryAsking: "Essayez",
+    noFav: "Touchez ☆ sur une station pour l'ajouter ici.",
+    back: "← Retour", to: "Direction", live: "Temps réel", sched: "Théorique",
+    now: "à quai", min: "min", none: "Aucun départ annoncé pour le moment.",
     feedDown: "Données temps réel indisponibles. Aucun horaire affiché.",
     stale: "Données trop anciennes. Aucun horaire affiché.",
     updated: (s) => `Mis à jour il y a ${s} s · actualisation auto`,
+    disruption: "Info trafic", more: "Lire la suite", less: "Réduire",
     feedOk: (n, b) => `Données IDFM OK · ${n}/${b} requêtes aujourd'hui`,
-    feedErr: (e) => `Problème de données : ${e}`, feedUnknown: "Données IDFM : pas encore interrogées",
+    feedErr: (e) => `Problème de données : ${e}`, feedUnknown: "Données IDFM prêtes",
     tooMany: "Trop de requêtes, réessayez dans une minute.", error: "Erreur réseau.",
-    examples: ["prochain RER A à Châtelet", "ligne 4 Gare du Nord", "perturbations RER B", "tram T2 La Défense"],
+    ask: (q) => `Demander : « ${q} »`,
+    examples: ["prochain RER A à Châtelet", "ligne 14 Saint-Lazare", "perturbations RER B", "tram T2 La Défense"],
     modes: { Metro: "Métro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
-    micUnsupported: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
+    micNo: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
+    geoNo: "Position indisponible.", nearNone: "Aucune station à moins de 2 km.",
+    m: (d) => d < 1000 ? `${Math.round(d / 10) * 10} m` : `${(d / 1000).toFixed(1)} km`,
+    disclaimer: "Service non officiel, non affilié à Île-de-France Mobilités ni à la RATP. Les horaires viennent uniquement des données temps réel IDFM.",
   },
   en: {
-    tagline: "Live next departures, by phone or right here.",
-    ask: "Ask a question", placeholder: "next RER A at Châtelet", send: "Go",
-    speak: "Read answer aloud", station: "Station", pick: "Click a station on the map.",
-    map: "Map", realtime: "real-time", scheduled: "scheduled", now: "arriving",
-    min: "min", none: "No departures announced right now.",
+    search: "Station or question: line 4 Gare du Nord",
+    call: "Call", nearMe: "Near me", favorites: "Favourites", tryAsking: "Try",
+    noFav: "Tap ☆ on a station to pin it here.",
+    back: "← Back", to: "Towards", live: "Real-time", sched: "Scheduled",
+    now: "now", min: "min", none: "No departures announced right now.",
     feedDown: "Real-time data unavailable. No times shown.",
     stale: "Data too old. No times shown.",
     updated: (s) => `Updated ${s} s ago · auto-refresh`,
+    disruption: "Service update", more: "Read more", less: "Show less",
     feedOk: (n, b) => `IDFM data OK · ${n}/${b} requests today`,
-    feedErr: (e) => `Data problem: ${e}`, feedUnknown: "IDFM data: not queried yet",
+    feedErr: (e) => `Data problem: ${e}`, feedUnknown: "IDFM data ready",
     tooMany: "Too many requests, try again in a minute.", error: "Network error.",
-    examples: ["next RER A at Châtelet", "line 4 Gare du Nord", "disruptions RER B", "tram T2 La Défense"],
+    ask: (q) => `Ask: “${q}”`,
+    examples: ["next RER A at Châtelet", "line 14 Saint-Lazare", "disruptions RER B", "tram T2 La Défense"],
     modes: { Metro: "Metro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
-    micUnsupported: "Microphone not available in this browser.", listening: "Listening…",
+    micNo: "Microphone not available in this browser.", listening: "Listening…",
+    geoNo: "Location unavailable.", nearNone: "No station within 2 km.",
+    m: (d) => d < 1000 ? `${Math.round(d / 10) * 10} m` : `${(d / 1000).toFixed(1)} km`,
+    disclaimer: "Unofficial service, not affiliated with Île-de-France Mobilités or RATP. Times come only from IDFM real-time data.",
   },
 };
 
+// ---------- helpers ----------
 const $ = (id) => document.getElementById(id);
+const HEX = /^[0-9a-f]{6}$/i;
+function el(tag, props = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === "class") n.className = v;
+    else if (k === "attrs") for (const [a, b] of Object.entries(v)) n.setAttribute(a, b);
+    else n[k] = v;
+  }
+  for (const k of kids) if (k != null) n.append(k);
+  return n;
+}
+const norm = (s) => s.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
+};
+function haversine(a, b) {
+  const R = 6371e3, r = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
 const state = {
-  lang: "fr", stops: [], markers: new Map(), current: null, timer: null,
-  modes: new Set(["Metro", "RapidTransit", "Tramway", "LocalTrain"]),
-  session: (() => {
-    try {
-      let s = localStorage.getItem("allo.session");
-      if (!s) { s = crypto.randomUUID(); localStorage.setItem("allo.session", s); }
-      return s;
-    } catch { return Math.random().toString(36).slice(2); }
-  })(),
+  lang: store.get("allo.lang", (navigator.language || "fr").startsWith("fr") ? "fr" : "en"),
+  stops: [], byId: new Map(), markers: new Map(), selected: null, timer: null,
+  modes: new Set(store.get("allo.modes", ["Metro", "RapidTransit", "Tramway", "LocalTrain"])),
+  favs: store.get("allo.favs", []), near: null, suggest: [], active: -1,
+  session: store.get("allo.session", null) || (() => { const s = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); store.set("allo.session", s); return s; })(),
 };
 const tr = () => I18N[state.lang];
 
-function el(tag, props = {}, ...children) {
-  const n = document.createElement(tag);
-  Object.assign(n, props);
-  for (const c of children) n.append(c);
-  return n;
-}
-
-function pill(line) {
-  const b = el("span", { className: "pill", textContent: line.short, title: line.label });
-  if (/^[0-9a-f]{6}$/i.test(line.color)) b.style.background = "#" + line.color;
-  if (/^[0-9a-f]{6}$/i.test(line.text_color)) b.style.color = "#" + line.text_color;
+function badge(line) {
+  const b = el("span", { class: `badge ${line.mode}`, textContent: line.short, title: line.label });
+  if (HEX.test(line.color)) b.style.background = "#" + line.color;
+  if (HEX.test(line.text_color)) b.style.color = "#" + line.text_color;
   return b;
+}
+function badges(stop, max = 8) {
+  const w = el("span", { class: "badges" });
+  stop.lines.filter((l) => state.modes.has(l.mode)).slice(0, max).forEach((l) => w.append(badge(l)));
+  return w;
 }
 
 async function api(path, opts) {
@@ -71,186 +100,309 @@ async function api(path, opts) {
   return r.json();
 }
 
-// ---------- language ----------
-function applyLang() {
-  const t = tr();
-  document.documentElement.lang = state.lang;
-  $("tagline").textContent = t.tagline;
-  $("askLabel").textContent = t.ask;
-  $("q").placeholder = t.placeholder;
-  $("send").textContent = t.send;
-  $("speakLabel").textContent = t.speak;
-  $("boardLabel").textContent = t.station;
-  $("boardEmpty").textContent = t.pick;
-  $("mapLabel").textContent = t.map;
-  $("langFr").setAttribute("aria-pressed", String(state.lang === "fr"));
-  $("langEn").setAttribute("aria-pressed", String(state.lang === "en"));
-  const ex = $("examples"); ex.replaceChildren();
-  for (const q of t.examples) {
-    ex.append(el("button", { type: "button", textContent: q, onclick: () => { $("q").value = q; ask(q); } }));
-  }
-  renderFilters();
-  if (state.current) loadDepartures(state.current.stop, state.current.line);
-}
-$("langFr").onclick = () => { state.lang = "fr"; applyLang(); };
-$("langEn").onclick = () => { state.lang = "en"; applyLang(); };
-
 // ---------- map ----------
-const map = L.map("map", { zoomControl: true }).setView([48.8566, 2.3522], 12);
+const map = L.map("map", { zoomControl: true, attributionControl: true }).setView([48.8566, 2.3522], 12);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 18, attribution: "© OpenStreetMap",
+  maxZoom: 19, attribution: "© OpenStreetMap contributors",
 }).addTo(map);
+let ring = null;
 
-function markerColor(stop) {
-  const ln = stop.lines.find((l) => state.modes.has(l.mode) && /^[0-9a-f]{6}$/i.test(l.color));
-  return ln ? "#" + ln.color : "#666";
+function stopColor(s) {
+  const l = s.lines.find((x) => state.modes.has(x.mode) && HEX.test(x.color));
+  return l ? "#" + l.color : "#777";
 }
-
 function drawMarkers() {
   for (const m of state.markers.values()) m.remove();
   state.markers.clear();
   for (const s of state.stops) {
-    if (!s.lines.some((l) => state.modes.has(l.mode))) continue;
-    const big = s.lines.length > 2;
+    const visible = s.lines.filter((l) => state.modes.has(l.mode));
+    if (!visible.length) continue;
+    const hub = visible.length >= 3;
     const m = L.circleMarker([s.lat, s.lon], {
-      radius: big ? 6 : 4, color: "#fff", weight: 1.5, fillColor: markerColor(s), fillOpacity: 0.95,
+      radius: hub ? 7 : 5, color: "#ffffff", weight: hub ? 2.5 : 2, fillColor: stopColor(s), fillOpacity: 1,
     }).addTo(map);
-    m.bindTooltip(s.name);
-    m.on("click", () => selectStop(s));
+    m.bindTooltip(s.name, { direction: "top", offset: [0, -6] });
+    m.on("click", () => openStation(s));
     state.markers.set(s.id, m);
   }
+}
+function highlight(s) {
+  if (ring) ring.remove();
+  ring = L.circleMarker([s.lat, s.lon], { radius: 14, color: stopColor(s), weight: 3, fill: false, interactive: false }).addTo(map);
 }
 
 function renderFilters() {
   const f = $("filters"); f.replaceChildren();
   for (const [mode, label] of Object.entries(tr().modes)) {
-    const b = el("button", { type: "button", textContent: label });
-    b.setAttribute("aria-pressed", String(state.modes.has(mode)));
-    b.onclick = () => {
-      state.modes.has(mode) ? state.modes.delete(mode) : state.modes.add(mode);
-      renderFilters(); drawMarkers();
-    };
-    f.append(b);
+    const on = state.modes.has(mode);
+    f.append(el("button", {
+      type: "button", class: "chip" + (on ? " on" : ""), textContent: label, attrs: { "aria-pressed": String(on) },
+      onclick: () => {
+        on ? state.modes.delete(mode) : state.modes.add(mode);
+        if (!state.modes.size) state.modes.add(mode);
+        store.set("allo.modes", [...state.modes]); renderFilters(); drawMarkers();
+      },
+    }));
   }
 }
 
-// ---------- station board ----------
-function selectStop(stop, lineId) {
-  const lines = stop.lines.filter((l) => state.modes.has(l.mode));
-  const line = lines.find((l) => l.id === lineId) || lines[0] || stop.lines[0];
-  map.flyTo([stop.lat, stop.lon], Math.max(map.getZoom(), 14), { duration: 0.6 });
-  loadDepartures(stop, line);
+// ---------- home ----------
+function renderHome() {
+  const t = tr(), h = $("home"); h.replaceChildren();
+  const favs = state.favs.map((id) => state.byId.get(id)).filter(Boolean);
+  h.append(el("div", { class: "section-title", textContent: t.favorites }));
+  if (!favs.length) h.append(el("div", { class: "empty", textContent: t.noFav }));
+  else h.append(stationList(favs));
+
+  if (state.near) {
+    h.append(el("div", { class: "section-title", textContent: t.nearMe }));
+    if (!state.near.length) h.append(el("div", { class: "empty", textContent: t.nearNone }));
+    else h.append(stationList(state.near.map((n) => n.stop), state.near.map((n) => t.m(n.d))));
+  }
+
+  h.append(el("div", { class: "section-title", textContent: t.tryAsking }));
+  const chips = el("div", { class: "chips" });
+  t.examples.forEach((q) => chips.append(el("button", { type: "button", class: "chip", textContent: q, onclick: () => { $("q").value = q; ask(q); } })));
+  h.append(chips);
+  h.append(el("p", { class: "empty", textContent: t.disclaimer, style: "font-size:12px;margin-top:16px" }));
+}
+function stationList(stops, metas = []) {
+  const ul = el("ul", { class: "list" });
+  stops.forEach((s, i) => ul.append(el("li", { onclick: () => openStation(s) },
+    el("span", { class: "name", textContent: s.name }), metas[i] ? el("span", { class: "meta", textContent: metas[i] }) : null, badges(s, 5))));
+  return ul;
 }
 
-async function loadDepartures(stop, line) {
-  clearTimeout(state.timer);
-  state.current = { stop, line };
-  $("boardEmpty").hidden = true;
-  $("boardBody").hidden = false;
-  $("stopName").textContent = stop.name;
-  const pills = $("linePills"); pills.replaceChildren();
+// ---------- station ----------
+function openStation(s, lineId) {
+  const lines = s.lines.filter((l) => state.modes.has(l.mode));
+  const line = lines.find((l) => l.id === lineId) || lines[0] || s.lines[0];
+  state.selected = { stop: s, line };
+  map.flyTo([s.lat, s.lon], Math.max(map.getZoom(), 15), { duration: 0.6 });
+  highlight(s);
+  $("home").hidden = true; $("station").hidden = false;
+  $("card").classList.remove("collapsed");
+  renderStation();
+  loadBoard();
+  loadTraffic();
+}
+function closeStation() {
+  clearTimeout(state.timer); state.selected = null;
+  if (ring) { ring.remove(); ring = null; }
+  $("station").hidden = true; $("home").hidden = false; $("answer").textContent = ""; renderHome();
+}
+function renderStation() {
+  const t = tr(), { stop, line } = state.selected, v = $("station");
+  v.replaceChildren();
+  const fav = state.favs.includes(stop.id);
+  v.append(el("button", { type: "button", class: "back", textContent: t.back, onclick: closeStation }));
+  v.append(el("div", { class: "station-head" },
+    el("h2", { textContent: stop.name }),
+    el("button", { type: "button", class: "star", textContent: fav ? "★" : "☆", attrs: { "aria-pressed": String(fav), "aria-label": t.favorites },
+      onclick: () => { state.favs = fav ? state.favs.filter((x) => x !== stop.id) : [stop.id, ...state.favs].slice(0, 12); store.set("allo.favs", state.favs); renderStation(); } })));
+  const tabs = el("div", { class: "tabs", attrs: { role: "tablist" } });
   for (const l of stop.lines) {
-    const b = el("button", { type: "button", className: "pill", onclick: () => loadDepartures(stop, l) });
-    b.append(pill(l));
-    b.style.padding = "0"; b.style.background = "transparent"; b.style.border = "0";
-    if (l.id === line.id) b.style.outline = "2px solid var(--accent)";
-    pills.append(b);
+    tabs.append(el("button", { type: "button", class: "tab", attrs: { role: "tab", "aria-selected": String(l.id === line.id), "aria-label": l.label },
+      onclick: () => { state.selected.line = l; renderStation(); loadBoard(); loadTraffic(); } }, badge(l)));
   }
-  const deps = $("deps");
+  v.append(tabs);
+  v.append(el("div", { id: "banner" }));
+  v.append(el("div", { class: "board", id: "board" }, el("div", { class: "skeleton" }), el("div", { class: "skeleton", style: "border-top:1px solid var(--line)" })));
+  v.append(el("div", { class: "fresh", id: "fresh" }));
+}
+
+async function loadBoard() {
+  clearTimeout(state.timer);
+  const sel = state.selected; if (!sel) return;
   try {
-    const d = await api(`/api/departures?stop=${encodeURIComponent(stop.id)}&line=${encodeURIComponent(line.id)}&lang=${state.lang}`);
+    const d = await api(`/api/departures?stop=${encodeURIComponent(sel.stop.id)}&line=${encodeURIComponent(sel.line.id)}&lang=${state.lang}`);
+    if (state.selected !== sel) return;
     renderBoard(d);
   } catch (e) {
-    deps.replaceChildren(el("div", { className: "empty", textContent: e.message }));
-    $("fresh").textContent = "";
+    const b = $("board"); if (b) b.replaceChildren(el("div", { class: "dir" }, el("span", { class: "empty", textContent: e.message })));
   }
   refreshStatus();
-  state.timer = setTimeout(() => {
-    if (state.current && state.current.stop.id === stop.id) loadDepartures(stop, state.current.line);
-  }, 30000);
+  state.timer = setTimeout(() => { if (state.selected === sel) loadBoard(); }, 30000);
 }
-
 function renderBoard(d) {
-  const t = tr(), deps = $("deps");
-  deps.replaceChildren();
-  if (d.error === "feed_down") { deps.append(el("div", { className: "empty", textContent: t.feedDown })); $("fresh").textContent = ""; return; }
-  if (d.stale) { deps.append(el("div", { className: "empty", textContent: t.stale })); $("fresh").textContent = ""; return; }
-  if (!d.departures || !d.departures.length) {
-    deps.append(el("div", { className: "empty", textContent: t.none }));
+  const t = tr(), b = $("board"), f = $("fresh");
+  if (!b) return;
+  b.replaceChildren(); f.replaceChildren();
+  const msg = d.error === "feed_down" ? t.feedDown : d.stale ? t.stale : !d.departures?.length ? t.none : null;
+  if (msg) { b.append(el("div", { class: "dir" }, el("span", { class: "empty", textContent: msg }))); return; }
+  const groups = new Map();
+  for (const x of d.departures) { if (!groups.has(x.destination)) groups.set(x.destination, []); groups.get(x.destination).push(x); }
+  for (const [dest, xs] of groups) {
+    const times = el("div", { class: "times" });
+    xs.slice(0, 3).forEach((x, i) => {
+      const label = x.minutes <= 0 ? t.now : String(x.minutes);
+      const node = el("span", { class: `t ${i ? "later" : "next"}${x.realtime ? "" : " sched"}`, textContent: label,
+        title: (x.realtime ? t.live : t.sched) + " · " + new Date(x.at).toLocaleTimeString(state.lang, { hour: "2-digit", minute: "2-digit" }) });
+      if (x.minutes > 0) node.append(el("small", { textContent: t.min }));
+      times.append(node);
+    });
+    b.append(el("div", { class: "dir" },
+      el("div", {}, el("div", { class: "to", textContent: t.to }), el("div", { class: "dest", textContent: dest })), times));
   }
-  for (const x of d.departures || []) {
-    const mins = x.minutes <= 0 ? t.now : `${x.minutes} ${t.min}`;
-    deps.append(el("div", { className: "dep" },
-      el("span", { textContent: x.destination }),
-      el("span", { className: "tag" + (x.realtime ? " rt" : ""), textContent: x.realtime ? t.realtime : t.scheduled }),
-      el("span", { className: "min", textContent: mins }),
-    ));
-  }
-  $("fresh").textContent = t.updated(d.age_seconds);
+  const allLive = d.departures.every((x) => x.realtime);
+  f.append(allLive ? el("span", { class: "live", attrs: { "aria-hidden": "true" } }) : null,
+    document.createTextNode((allLive ? t.live : t.sched) + " · " + t.updated(d.age_seconds)));
 }
 
-// ---------- ask ----------
-async function ask(q) {
-  q = (q || "").trim();
-  if (!q) return;
-  $("answer").textContent = "…";
+async function loadTraffic() {
+  const sel = state.selected; if (!sel) return;
   try {
-    const r = await api("/api/ask", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q, session: state.session, lang: state.lang }),
-    });
-    if (r.lang && r.lang !== state.lang) { state.lang = r.lang; applyLang(); }
-    $("answer").textContent = r.answer;
-    if ($("speak").checked && "speechSynthesis" in window) {
-      const u = new SpeechSynthesisUtterance(r.answer);
-      u.lang = state.lang === "fr" ? "fr-FR" : "en-GB";
-      speechSynthesis.cancel(); speechSynthesis.speak(u);
+    const d = await api(`/api/traffic?line=${encodeURIComponent(sel.line.id)}`);
+    if (state.selected !== sel) return;
+    const box = $("banner"); if (!box) return;
+    box.replaceChildren();
+    if (!d.messages?.length) return;
+    const t = tr(), full = d.messages.join(" ");
+    const short = full.length > 170 ? full.slice(0, 167).trimEnd() + "…" : full;
+    const text = el("span", { textContent: short });
+    const banner = el("div", { class: "banner", attrs: { role: "status" } }, el("b", { textContent: t.disruption }), text);
+    if (short !== full) {
+      let open = false;
+      const tog = el("button", { type: "button", textContent: " " + t.more });
+      tog.onclick = () => { open = !open; text.textContent = open ? full : short; tog.textContent = " " + (open ? t.less : t.more); };
+      banner.append(tog);
     }
-    if (r.stop) {
-      const s = state.stops.find((x) => x.id === r.stop.id) || r.stop;
-      if (s.lat != null) selectStop(s, r.line && r.line.id);
-    }
-  } catch (e) {
-    $("answer").textContent = e.message;
+    box.append(banner);
+  } catch { /* banner is optional */ }
+}
+
+// ---------- search / ask ----------
+function updateSuggest() {
+  const q = norm($("q").value), ul = $("suggest");
+  ul.replaceChildren(); state.active = -1;
+  if (q.length < 2) { $("q").setAttribute("aria-expanded", "false"); return; }
+  const scored = [];
+  for (const s of state.stops) {
+    const n = s._n;
+    const i = n.indexOf(q);
+    if (i === -1 || !s.lines.some((l) => state.modes.has(l.mode))) continue;
+    scored.push({ s, score: (i === 0 ? 0 : n[i - 1] === " " ? 1 : 2) * 100 + n.length });
   }
+  scored.sort((a, b) => a.score - b.score);
+  state.suggest = scored.slice(0, 6).map((x) => x.s);
+  state.suggest.forEach((s, i) => ul.append(el("li", { attrs: { role: "option", id: `sg${i}` }, onmousedown: (e) => { e.preventDefault(); pick(s); } },
+    el("span", { class: "name", textContent: s.name }), badges(s, 5))));
+  const raw = $("q").value.trim();
+  ul.append(el("li", { class: "ask-row", attrs: { role: "option" }, onmousedown: (e) => { e.preventDefault(); ask(raw); } },
+    el("span", { class: "name", textContent: tr().ask(raw) })));
+  $("q").setAttribute("aria-expanded", "true");
+}
+function pick(s) { $("q").value = ""; $("suggest").replaceChildren(); $("answer").textContent = ""; openStation(s); $("q").blur(); }
+function moveActive(delta) {
+  const items = [...$("suggest").children]; if (!items.length) return;
+  state.active = (state.active + delta + items.length) % items.length;
+  items.forEach((li, i) => li.setAttribute("aria-selected", String(i === state.active)));
+}
+$("q").addEventListener("input", updateSuggest);
+$("q").addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); moveActive(1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); moveActive(-1); }
+  else if (e.key === "Escape") { $("suggest").replaceChildren(); }
+});
+$("q").addEventListener("blur", () => setTimeout(() => $("suggest").replaceChildren(), 120));
+$("searchForm").onsubmit = (e) => {
+  e.preventDefault();
+  const items = [...$("suggest").children];
+  if (state.active >= 0 && state.active < state.suggest.length) return pick(state.suggest[state.active]);
+  if (state.active === items.length - 1 && items.length) return ask($("q").value);
+  ask($("q").value);
+};
+
+async function ask(q) {
+  q = (q || "").trim(); if (!q) return;
+  $("suggest").replaceChildren(); $("q").blur();
+  $("answer").textContent = "…"; $("card").classList.remove("collapsed");
+  try {
+    const r = await api("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ q, session: state.session, lang: state.lang }) });
+    if (r.lang && r.lang !== state.lang) setLang(r.lang);
+    $("answer").textContent = r.answer;
+    if (r.stop) { const s = state.byId.get(r.stop.id); if (s) openStation(s, r.line && r.line.id); }
+  } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
 }
-$("askForm").onsubmit = (e) => { e.preventDefault(); ask($("q").value); };
 
-// Browser speech recognition (Chrome/Edge). Audio is handled by the browser vendor.
+// Browser speech recognition (Chrome/Edge): audio goes to the browser vendor, not to us.
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 $("mic").onclick = () => {
-  if (!SR) { $("answer").textContent = tr().micUnsupported; return; }
-  const rec = new SR();
-  rec.lang = state.lang === "fr" ? "fr-FR" : "en-GB";
-  rec.interimResults = false; rec.maxAlternatives = 1;
-  $("answer").textContent = tr().listening;
+  if (!SR) { $("answer").textContent = tr().micNo; return; }
+  const rec = new SR(); rec.lang = state.lang === "fr" ? "fr-FR" : "en-GB"; rec.interimResults = false;
+  $("mic").classList.add("rec"); $("answer").textContent = tr().listening;
   rec.onresult = (ev) => { const text = ev.results[0][0].transcript; $("q").value = text; ask(text); };
-  rec.onerror = () => { $("answer").textContent = tr().micUnsupported; };
+  rec.onerror = () => { $("answer").textContent = tr().micNo; };
+  rec.onend = () => $("mic").classList.remove("rec");
   rec.start();
 };
 
-// ---------- status ----------
+// ---------- near me ----------
+$("locate").onclick = () => {
+  if (!navigator.geolocation) { $("answer").textContent = tr().geoNo; return; }
+  navigator.geolocation.getCurrentPosition((pos) => {
+    const me = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+    state.near = state.stops.map((s) => ({ stop: s, d: haversine(me, s) }))
+      .filter((x) => x.d <= 2000 && x.stop.lines.some((l) => state.modes.has(l.mode)))
+      .sort((a, b) => a.d - b.d).slice(0, 5);
+    map.flyTo([me.lat, me.lon], 15, { duration: 0.6 });
+    if (state.selected) closeStation(); else renderHome();
+    $("card").classList.remove("collapsed");
+  }, () => { $("answer").textContent = tr().geoNo; }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
+};
+
+// ---------- language, sheet, status ----------
+function setLang(lang) {
+  state.lang = lang; store.set("allo.lang", lang);
+  const t = tr();
+  document.documentElement.lang = lang;
+  $("q").placeholder = t.search; $("callLabel").textContent = t.call;
+  $("langFr").setAttribute("aria-pressed", String(lang === "fr"));
+  $("langEn").setAttribute("aria-pressed", String(lang === "en"));
+  $("locate").title = t.nearMe; $("locate").setAttribute("aria-label", t.nearMe);
+  renderFilters();
+  if (state.selected) { renderStation(); loadBoard(); loadTraffic(); } else renderHome();
+}
+$("langFr").onclick = () => setLang("fr");
+$("langEn").onclick = () => setLang("en");
+$("handle").onclick = () => $("card").classList.toggle("collapsed");
+
+// Theme: auto (follows the system) -> light -> dark
+const THEMES = { auto: "◐", light: "☀", dark: "☾" };
+const THEME_LABEL = { auto: "Auto", light: "Light", dark: "Dark" };
+function applyTheme(mode) {
+  if (mode === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", mode);
+  $("theme").textContent = THEMES[mode];
+  $("theme").title = "Theme: " + THEME_LABEL[mode];
+  store.set("allo.theme", mode);
+}
+$("theme").onclick = () => {
+  const order = ["auto", "light", "dark"];
+  applyTheme(order[(order.indexOf(store.get("allo.theme", "auto")) + 1) % order.length]);
+};
+applyTheme(store.get("allo.theme", "auto"));
+
 async function refreshStatus() {
   try {
-    const s = await api("/api/status");
-    const p = s.prim, t = tr();
-    const dot = $("feedDot");
-    const recentError = p.last_error_at && (!p.last_ok_at || p.last_error_at > p.last_ok_at);
-    if (!p.configured || recentError) { dot.className = "dot bad"; $("feedText").textContent = t.feedErr(p.last_error || "API key missing"); }
-    else if (!p.last_ok_at) { dot.className = "dot warn"; $("feedText").textContent = t.feedUnknown; }
+    const s = await api("/api/status"), p = s.prim, t = tr(), dot = $("feedDot");
+    const err = p.last_error_at && (!p.last_ok_at || p.last_error_at > p.last_ok_at);
+    if (!p.configured || err) { dot.className = "dot bad"; $("feedText").textContent = t.feedErr(p.last_error || "API key missing"); }
+    else if (!p.last_ok_at) { dot.className = "dot ok"; $("feedText").textContent = t.feedUnknown; }
     else { dot.className = "dot ok"; $("feedText").textContent = t.feedOk(p.calls_today, p.daily_budget); }
-    if (s.phone) {
-      $("phone").hidden = false;
-      $("phoneLink").textContent = s.phone;
-      $("phoneLink").href = "tel:" + s.phone.replace(/[^+\d]/g, "");
-    }
-  } catch { /* status is best-effort */ }
+    if (s.phone) { $("call").hidden = false; $("call").href = "tel:" + s.phone.replace(/[^+\d]/g, ""); $("call").title = s.phone; }
+  } catch { /* best effort */ }
 }
 
-// ---------- boot ----------
 (async () => {
-  applyLang();
-  try { state.stops = await api("/api/stops"); drawMarkers(); } catch (e) { $("answer").textContent = e.message; }
+  setLang(state.lang);
+  if (window.matchMedia("(max-width: 760px)").matches) $("card").classList.add("collapsed");
+  try {
+    state.stops = await api("/api/stops");
+    for (const s of state.stops) { s._n = norm(s.name); for (const id of s.ids || [s.id]) state.byId.set(id, s); }
+    drawMarkers(); renderHome();
+  } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
 })();

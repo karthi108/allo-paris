@@ -2,123 +2,213 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Allô Paris</title>
-<meta name="description" content="Live Paris transport answers from IDFM open data, by phone or on the web.">
+<meta name="description" content="Live Paris metro, RER, tram and train departures from IDFM open data. By phone or on the web.">
+<meta name="theme-color" content="#5b3df5">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 :root {
-  --bg: #f6f5f2; --panel: #ffffff; --ink: #16181d; --muted: #5f6672; --line: #e3e1dc;
-  --accent: #1f4fd6; --ok: #137a3f; --warn: #a35a00; --bad: #b3261e; --chip: #efede8;
+  --brand: #5b3df5; --brand-ink: #ffffff;
+  --bg: #f4f4f6; --card: #ffffff; --ink: #121318; --muted: #626775; --faint: #9196a1;
+  --line: #e7e7ec; --soft: #f2f2f6; --live: #10a35a; --warn-bg: #fff6e5; --warn-ink: #7a4a00;
+  --bad: #c7362b; --shadow: 0 10px 30px rgba(20, 20, 40, .14), 0 2px 6px rgba(20, 20, 40, .08);
+  --tile-filter: grayscale(1) contrast(.92) brightness(1.06);
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #111317; --panel: #191c21; --ink: #ecedf0; --muted: #9aa1ad; --line: #2a2e35;
-    --accent: #7ea2ff; --ok: #4cc27f; --warn: #f0a640; --bad: #ff7a70; --chip: #23272e; }
+  :root:not([data-theme=light]) {
+    --brand: #8c76ff; --brand-ink: #0d0b1a;
+    --bg: #0e0f13; --card: #17181e; --ink: #ecedf2; --muted: #a2a6b3; --faint: #6f7380;
+    --line: #272a33; --soft: #1f2129; --live: #3fd68a; --warn-bg: #2b2210; --warn-ink: #f4c46a;
+    --bad: #ff7a70; --shadow: 0 10px 30px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .4);
+    --tile-filter: grayscale(1) invert(1) brightness(1.15) contrast(.8);
+  }
 }
+:root[data-theme=dark] {
+    --brand: #8c76ff; --brand-ink: #0d0b1a;
+    --bg: #0e0f13; --card: #17181e; --ink: #ecedf2; --muted: #a2a6b3; --faint: #6f7380;
+    --line: #272a33; --soft: #1f2129; --live: #3fd68a; --warn-bg: #2b2210; --warn-ink: #f4c46a;
+    --bad: #ff7a70; --shadow: 0 10px 30px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .4);
+    --tile-filter: grayscale(1) invert(1) brightness(1.15) contrast(.8);
+  }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
-  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-.app { display: grid; grid-template-columns: 400px 1fr; height: 100vh; }
-aside { background: var(--panel); border-right: 1px solid var(--line); display: flex;
-  flex-direction: column; overflow-y: auto; }
-#map { height: 100%; overflow: hidden; }
-header { padding: 18px 20px 12px; border-bottom: 1px solid var(--line); }
-h1 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
-.sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
-.phone { margin-top: 10px; font-size: 14px; }
-.phone a { color: var(--accent); font-weight: 600; text-decoration: none; }
-section { padding: 14px 20px; border-bottom: 1px solid var(--line); }
-.label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
-  margin-bottom: 8px; }
-form { display: flex; gap: 6px; }
-input[type=text] { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--line);
-  border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
-button { font: inherit; border: 1px solid var(--line); background: var(--chip); color: var(--ink);
-  border-radius: 10px; padding: 8px 12px; cursor: pointer; }
-button.primary { background: var(--accent); color: #fff; border-color: transparent; }
-button[aria-pressed=true] { outline: 2px solid var(--accent); }
-.row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
-.examples button { font-size: 13px; padding: 5px 9px; }
-.answer { margin-top: 12px; padding: 12px; border-radius: 10px; background: var(--bg);
-  border: 1px solid var(--line); min-height: 20px; white-space: pre-wrap; }
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+#map { position: fixed; inset: 0; background: var(--bg); overflow: hidden; }
+.leaflet-tile-pane { filter: var(--tile-filter); }
+.leaflet-control-attribution { font-size: 10px; }
+.leaflet-tooltip { font-weight: 600; border-radius: 8px; }
+
+/* ---------- card / sheet ---------- */
+.card { position: fixed; top: 16px; left: 16px; width: 400px; max-height: calc(100vh - 32px);
+  background: var(--card); border-radius: 20px; box-shadow: var(--shadow); display: flex;
+  flex-direction: column; overflow: hidden; z-index: 1000; }
+.handle { display: none; }
+.top { padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { width: 30px; height: 30px; flex: none; }
+.brand h1 { font-size: 18px; margin: 0; letter-spacing: -.01em; }
+.brand .spacer { flex: 1; }
+.seg { display: inline-flex; background: var(--soft); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed=true] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.call { display: inline-flex; align-items: center; gap: 6px; border: 0; background: var(--brand); color: var(--brand-ink);
+  border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700; text-decoration: none; }
+.search { position: relative; margin-top: 12px; }
+.search-box { display: flex; align-items: center; gap: 6px; background: var(--soft); border-radius: 14px; padding: 4px 4px 4px 12px;
+  border: 1.5px solid transparent; }
+.search-box:focus-within { border-color: var(--brand); background: var(--card); }
+.search-box svg { flex: none; color: var(--faint); }
+#q { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; padding: 8px 0; }
+.icon-btn { border: 0; background: transparent; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); }
+.icon-btn:hover { background: var(--line); color: var(--ink); }
+.icon-btn.rec { background: var(--bad); color: #fff; }
+.suggest { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--card); border-radius: 14px;
+  box-shadow: var(--shadow); list-style: none; margin: 0; padding: 6px; z-index: 5; max-height: 320px; overflow-y: auto; }
+.suggest:empty { display: none; }
+.suggest li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; cursor: pointer; }
+.suggest li[aria-selected=true], .suggest li:hover { background: var(--soft); }
+.suggest .name { flex: 1; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.suggest .ask-row .name { font-weight: 500; color: var(--muted); }
+
+.body { overflow-y: auto; padding: 4px 16px 12px; flex: 1; }
+.section-title { font-size: 12px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+.chip:hover { border-color: var(--brand); }
+.chip.on { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { display: flex; align-items: center; gap: 10px; padding: 10px 6px; border-radius: 10px; cursor: pointer; }
+.list li:hover { background: var(--soft); }
+.list .name { flex: 1; font-weight: 600; }
+.list .meta { color: var(--muted); font-size: 13px; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+.answer { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: var(--soft); white-space: pre-wrap; font-size: 14px; }
 .answer:empty { display: none; }
-.pill { display: inline-flex; align-items: center; justify-content: center; min-width: 28px;
-  height: 24px; padding: 0 7px; border-radius: 6px; font-weight: 700; font-size: 13px;
-  background: #888; color: #fff; border: 0; }
-.board h2 { margin: 0 0 4px; font-size: 17px; }
-.dep { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 8px 0;
-  border-top: 1px solid var(--line); align-items: center; }
-.dep:first-of-type { border-top: 0; }
-.min { font-weight: 700; font-variant-numeric: tabular-nums; }
-.tag { font-size: 11px; padding: 2px 6px; border-radius: 5px; border: 1px solid var(--line);
-  color: var(--muted); }
-.tag.rt { color: var(--ok); border-color: currentColor; }
-.fresh { font-size: 12px; color: var(--muted); margin-top: 8px; }
-.empty { color: var(--muted); font-size: 14px; }
-.status { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
-.dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); } .dot.warn { background: var(--warn); }
-footer { padding: 14px 20px; font-size: 12px; color: var(--muted); margin-top: auto; }
-footer a { color: var(--muted); }
-.filters button { font-size: 12px; padding: 4px 9px; }
+
+/* line badges: own shapes per mode, colours from IDFM open data */
+.badge { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; font-weight: 800;
+  font-size: 12.5px; color: #fff; background: #777; flex: none; border: 0; line-height: 1; }
+.badge.Metro { border-radius: 50%; width: 24px; padding: 0; }
+.badge.RapidTransit { border-radius: 6px; }
+.badge.Tramway { border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.25); }
+.badge.LocalTrain { border-radius: 12px; }
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* station view */
+.station-head { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; }
+.station-head h2 { margin: 0; font-size: 20px; letter-spacing: -.01em; flex: 1; }
+.star { border: 0; background: transparent; font-size: 20px; color: var(--faint); padding: 2px 4px; }
+.star[aria-pressed=true] { color: #f2b300; }
+.back { border: 0; background: transparent; color: var(--brand); font-weight: 600; padding: 8px 0 0; font-size: 14px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.tab { border: 2px solid transparent; background: transparent; padding: 2px; border-radius: 10px; }
+.tab[aria-selected=true] { border-color: var(--ink); }
+.banner { margin-top: 12px; background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; }
+.banner b { display: block; margin-bottom: 2px; }
+.banner button { border: 0; background: transparent; color: inherit; text-decoration: underline; padding: 0; font-size: 13px; }
+.board { margin-top: 12px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.dir { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); }
+.dir:first-child { border-top: 0; }
+.dir .to { font-size: 12px; color: var(--faint); font-weight: 600; }
+.dir .dest { font-weight: 700; }
+.times { display: flex; gap: 6px; align-items: baseline; }
+.t { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 18px; }
+.t small { font-size: 12px; font-weight: 600; margin-left: 1px; }
+.t.next { color: var(--ink); }
+.t.later { color: var(--muted); font-size: 15px; font-weight: 700; }
+.t.sched { font-style: italic; }
+.live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--live); margin-right: 6px;
+  box-shadow: 0 0 0 0 var(--live); animation: pulse 2s infinite; vertical-align: middle; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,163,90,.55); } 70% { box-shadow: 0 0 0 7px rgba(16,163,90,0); } 100% { box-shadow: 0 0 0 0 rgba(16,163,90,0); } }
+@media (prefers-reduced-motion: reduce) { .live { animation: none; } }
+.fresh { font-size: 12px; color: var(--faint); margin-top: 8px; display: flex; align-items: center; }
+.skeleton { height: 54px; background: linear-gradient(90deg, var(--soft), var(--line), var(--soft)); background-size: 200% 100%; animation: sk 1.2s infinite; }
+@keyframes sk { to { background-position: -200% 0; } }
+
+.foot { border-top: 1px solid var(--line); padding: 10px 16px; font-size: 11.5px; color: var(--faint); display: flex; gap: 8px; align-items: center; }
+.foot a { color: var(--faint); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; }
+.dot.ok { background: var(--live); } .dot.bad { background: var(--bad); } .dot.warn { background: #e0a100; }
+.foot .grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.filters { position: fixed; top: 16px; right: 16px; z-index: 900; display: flex; gap: 6px; }
+.filters .chip { box-shadow: var(--shadow); border: 1px solid var(--line); font-weight: 600; background: var(--card); color: var(--faint); }
+.filters .chip.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.filters .chip:not(.on) { text-decoration: line-through; text-decoration-color: var(--faint); }
+.locate { position: fixed; right: 16px; bottom: 32px; z-index: 900; width: 44px; height: 44px; border-radius: 50%; border: 0;
+  background: var(--card); box-shadow: var(--shadow); display: grid; place-items: center; color: var(--ink); }
+.leaflet-top.leaflet-left { top: auto; bottom: 90px; left: auto; right: 16px; }
+.leaflet-left .leaflet-control { margin-left: 0; }
+
+/* ---------- mobile: bottom sheet ---------- */
 @media (max-width: 760px) {
-  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 45vh 1fr; height: auto; min-height: 100vh; }
-  #map { grid-row: 1; height: 45vh; }
-  aside { grid-row: 2; border-right: 0; overflow: visible; }
-  header, section, footer { padding-left: 16px; padding-right: 16px; }
+  .card { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 72vh; border-radius: 20px 20px 0 0;
+    transition: max-height .25s ease; padding-bottom: env(safe-area-inset-bottom); }
+  .card.collapsed { max-height: 168px; }
+  .card.collapsed .body, .card.collapsed .foot { display: none; }
+  .handle { display: block; width: 100%; border: 0; background: transparent; padding: 8px 0 0; }
+  .handle span { display: block; width: 40px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto; }
+  .top { padding-top: 6px; }
+  .filters { top: 12px; right: 12px; left: 12px; overflow-x: auto; }
+  .locate { bottom: auto; top: 60px; right: 12px; }
+  .leaflet-top.leaflet-left { display: none; }
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <aside>
-    <header>
-      <h1>Allô Paris</h1>
-      <div class="sub" id="tagline">Prochains départs en temps réel, par téléphone ou ici.</div>
-      <div class="phone" id="phone" hidden>📞 <a id="phoneLink" href="#"></a></div>
-    </header>
+<div id="map" role="region" aria-label="Carte des stations"></div>
 
-    <section>
-      <div class="label" id="askLabel">Posez votre question</div>
-      <form id="askForm" autocomplete="off">
-        <input type="text" id="q" maxlength="300" placeholder="prochain RER A à Châtelet" aria-label="Question">
-        <button type="button" id="mic" title="Parler" aria-label="Parler">🎤</button>
-        <button type="submit" class="primary" id="send">OK</button>
-      </form>
-      <div class="row">
+<div class="filters" id="filters" role="group" aria-label="Modes"></div>
+<button class="locate" id="locate" type="button" aria-label="Near me" title="Near me">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>
+</button>
+
+<div class="card" id="card">
+  <button class="handle" id="handle" type="button" aria-label="Expand"><span></span></button>
+  <div class="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#5b3df5"/><path d="M18 20h28a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H32l-9 7v-7h-5a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z" fill="#fff"/><circle cx="25" cy="32" r="3" fill="#5b3df5"/><circle cx="32" cy="32" r="3" fill="#5b3df5"/><circle cx="39" cy="32" r="3" fill="#5b3df5"/></svg>
+      <h1>Allô Paris</h1>
+      <span class="spacer"></span>
+      <a class="call" id="call" hidden href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+        <span id="callLabel">Appeler</span>
+      </a>
+      <button class="icon-btn" type="button" id="theme" aria-label="Theme" title="Theme"></button>
+      <div class="seg" role="group" aria-label="Langue">
         <button type="button" id="langFr" aria-pressed="true">FR</button>
         <button type="button" id="langEn" aria-pressed="false">EN</button>
-        <label class="status"><input type="checkbox" id="speak"> <span id="speakLabel">Lire la réponse</span></label>
       </div>
-      <div class="row examples" id="examples"></div>
-      <div class="answer" id="answer" aria-live="polite"></div>
-    </section>
-
-    <section class="board" id="board">
-      <div class="label" id="boardLabel">Station</div>
-      <div class="empty" id="boardEmpty">Cliquez une station sur la carte.</div>
-      <div id="boardBody" hidden>
-        <h2 id="stopName"></h2>
-        <div class="row" id="linePills"></div>
-        <div id="deps" style="margin-top:10px"></div>
-        <div class="fresh" id="fresh"></div>
+    </div>
+    <form class="search" id="searchForm" autocomplete="off" role="search">
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="text" maxlength="300" role="combobox" aria-autocomplete="list" aria-controls="suggest" aria-expanded="false">
+        <button class="icon-btn" type="button" id="mic" aria-label="Micro">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
       </div>
-    </section>
+      <ul class="suggest" id="suggest" role="listbox"></ul>
+    </form>
+  </div>
 
-    <section>
-      <div class="label" id="mapLabel">Carte</div>
-      <div class="row filters" id="filters"></div>
-    </section>
+  <div class="body" id="body">
+    <div class="answer" id="answer" aria-live="polite"></div>
+    <div id="home"></div>
+    <div id="station" hidden></div>
+  </div>
 
-    <footer>
-      <div class="status"><span class="dot" id="feedDot"></span><span id="feedText">…</span></div>
-      <p id="disclaimer">Projet non officiel, non affilié à Île-de-France Mobilités ni à la RATP.
-        Données : <a href="https://prim.iledefrance-mobilites.fr" rel="noopener">IDFM PRIM</a> ·
-        Carte : © OpenStreetMap.</p>
-    </footer>
-  </aside>
-  <div id="map" role="region" aria-label="Carte des stations"></div>
+  <div class="foot">
+    <span class="dot" id="feedDot"></span>
+    <span class="grow" id="feedText">…</span>
+    <a href="https://prim.iledefrance-mobilites.fr" rel="noopener" target="_blank" id="srcLink">IDFM open data</a>
+  </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="/app.js"></script>
 </body>

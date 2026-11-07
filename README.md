@@ -20,7 +20,7 @@ Caller ─► Twilio (speech-to-text, fr-FR/en-GB) ─► POST /voice/gather
 
 ## Two ways to use it
 - **Phone:** call the number, ask out loud, hear the answer.
-- **Web** (`http://localhost:8000/`): map of metro / RER / tram / train stations coloured by line. Click a station → live departures board (auto-refresh 30 s). Ask box with text or browser microphone, FR/EN, optional read-aloud. Feed status in the footer.
+- **Web** (`http://localhost:8000/`): full-screen map of metro / RER / tram / train stations. Search a station (autocomplete) or ask a question by text or microphone. Station board grouped by direction, auto-refresh 30 s, disruption banner, Near me, favourites, FR/EN, dark mode, mobile bottom sheet.
 
 Both use the same parser, PRIM client and answer templates, and share one PRIM daily budget.
 

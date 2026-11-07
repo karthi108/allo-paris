@@ -11,7 +11,7 @@ from collections import OrderedDict
 from datetime import UTC, datetime
 from typing import Any
 
-from app.agent.dialog import CallState, Dialog, render_departures
+from app.agent.dialog import CallState, Dialog, drop_terminating, render_departures
 from app.data.prim import FeedError
 from app.data.stops import Line, StopArea, StopIndex
 
@@ -66,20 +66,39 @@ class WebApi:
         self.dialog = dialog
         self.stale_after = stale_after
         self.sessions: OrderedDict[str, CallState] = OrderedDict()
-        self._stops_cache = [stop_json(a) for a in index.areas if a.lat is not None]
+        self._stops_cache = self._group_stations()
+
+    def _group_stations(self) -> list[dict[str, Any]]:
+        """One map entry per station: merges same-name stop areas that are close together
+        (e.g. Gare du Nord metro + RER). `ids` lists every stop area id it covers."""
+        done: set[str] = set()
+        out: list[dict[str, Any]] = []
+        for area in self.index.areas:
+            if area.zda_id in done or area.lat is None:
+                continue
+            group = self.index.siblings(area)
+            done.update(a.zda_id for a in group)
+            entry = stop_json(area)
+            entry["ids"] = [a.zda_id for a in group]
+            entry["lines"] = [line_json(ln) for ln in self.index.station_lines(area)]
+            out.append(entry)
+        return out
 
     def stops(self) -> list[dict[str, Any]]:
         return self._stops_cache
 
     def departures(self, stop_id: str, line_id: str, lang: str = "fr") -> dict[str, Any]:
-        area = self.index.by_id.get(stop_id)
-        if area is None:
+        station = self.index.by_id.get(stop_id)
+        if station is None:
             return {"error": "unknown_stop"}
-        line = next((ln for ln in area.lines if ln.line_id == line_id), None)
+        line = next((ln for ln in self.index.station_lines(station) if ln.line_id == line_id), None)
         if line is None:
             return {"error": "line_not_at_stop"}
+        area = self.index.area_for_line(station, line) or station
         try:
-            result = self.dialog.source.next_departures(area.monitoring_ref, line.line_id)
+            result = drop_terminating(
+                self.dialog.source.next_departures(area.monitoring_ref, line.line_id), area
+            )
         except FeedError:
             return {"error": "feed_down", "stop": stop_json(area), "line": line_json(line, lang)}
         now = datetime.now(UTC)
@@ -103,6 +122,20 @@ class WebApi:
                 for d in result.departures[:10]
             ],
             "answer": render_departures(result, line, area, lang, now, self.stale_after),
+        }
+
+    def traffic(self, line_id: str) -> dict[str, Any]:
+        line = next((ln for a in self.index.areas for ln in a.lines if ln.line_id == line_id), None)
+        if line is None:
+            return {"error": "unknown_line"}
+        try:
+            result = self.dialog.source.traffic(line.line_id)
+        except FeedError:
+            return {"error": "feed_down", "line": line_json(line)}
+        return {
+            "line": line_json(line),
+            "messages": result.messages[:3],
+            "fetched_at": result.fetched_at.isoformat(),
         }
 
     def ask(self, question: str, session_id: str, lang: str = "fr") -> dict[str, Any]:

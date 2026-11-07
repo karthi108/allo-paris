@@ -185,6 +185,10 @@ class StopIndex:
         self.areas = areas
         self._tokens = {a.zda_id: tokens(a.name) for a in areas}
         self.by_id = {a.zda_id: a for a in areas}
+        by_name: dict[str, list[StopArea]] = {}
+        for a in areas:
+            by_name.setdefault(normalize(a.name), []).append(a)
+        self._by_name = by_name
         self.lines: dict[tuple[str, str], Line] = {}
         for area in areas:
             for line in area.lines:
@@ -208,6 +212,30 @@ class StopIndex:
     @classmethod
     def load(cls, path: Path) -> StopIndex:
         return cls.from_records(json.loads(path.read_text(encoding="utf-8")))
+
+    def siblings(self, area: StopArea, max_m: float = 800) -> list[StopArea]:
+        """Stop areas with the same name close together (IDFM often splits one station,
+        e.g. Gare du Nord metro vs RER). The given area is always first."""
+        out = [area]
+        for other in self._by_name.get(normalize(area.name), []):
+            if other is area:
+                continue
+            if area.lat is None or other.lat is None or _distance_m(area, other) <= max_m:
+                out.append(other)
+        return out
+
+    def station_lines(self, area: StopArea) -> list[Line]:
+        seen: dict[str, Line] = {}
+        for a in self.siblings(area):
+            for ln in a.lines:
+                seen.setdefault(ln.line_id, ln)
+        return sorted(seen.values(), key=lambda ln: (ln.mode, ln.short))
+
+    def area_for_line(self, area: StopArea, line: Line) -> StopArea | None:
+        for a in self.siblings(area):
+            if line.line_id in {ln.line_id for ln in a.lines}:
+                return a
+        return None
 
     def find_line(self, mode: str | None, short: str) -> Line | None:
         key = normalize(short)
@@ -235,6 +263,16 @@ class StopIndex:
                 results.append(StopMatch(area, score))
         results.sort(key=lambda m: (-m.score, len(m.area.name)))
         return results[:limit]
+
+
+def _distance_m(a: StopArea, b: StopArea) -> float:
+    from math import asin, cos, radians, sin, sqrt
+
+    if a.lat is None or a.lon is None or b.lat is None or b.lon is None:
+        return 0.0
+    d_lat, d_lon = radians(b.lat - a.lat), radians(b.lon - a.lon)
+    h = sin(d_lat / 2) ** 2 + cos(radians(a.lat)) * cos(radians(b.lat)) * sin(d_lon / 2) ** 2
+    return 2 * 6_371_000 * asin(sqrt(h))
 
 
 _GENERIC_FIRST = {"saint", "sainte", "porte", "pont", "place", "rue", "avenue", "boulevard"}

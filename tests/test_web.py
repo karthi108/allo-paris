@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from app.agent.dialog import Dialog
+from app.agent.dialog import CallState, Dialog
 from app.api.web import RateLimiter, WebApi
 from app.data.prim import FeedError, PrimClient
 from app.data.stops import StopIndex, build_index_records
@@ -106,3 +106,82 @@ def test_coords_and_colors_in_records() -> None:
 def test_stops_endpoint_skips_areas_without_coords(index: StopIndex, source: FakeSource) -> None:
     assert _api(index, source).stops() == []  # sample fixture has no coordinates
     _ = datetime.now(UTC)
+
+
+def test_traffic_endpoint(index: StopIndex, source: FakeSource) -> None:
+    api = _api(index, source)
+    assert api.traffic("C99999") == {"error": "unknown_line"}
+    assert api.traffic("C01743")["messages"] == []
+    source.messages = ["Trafic perturbé"]
+    assert api.traffic("C01743")["messages"] == ["Trafic perturbé"]
+    source.down = True
+    assert api.traffic("C01743")["error"] == "feed_down"
+
+
+def _gare_du_nord_index() -> StopIndex:
+    rows = [
+        ("IDFM:C01374", "4", "Metro", "IDFM:463183", "Gare du Nord", "48.8797", "2.3567"),
+        ("IDFM:C01375", "5", "Metro", "IDFM:463182", "Gare du Nord", "48.8797", "2.3567"),
+        (
+            "IDFM:C01743",
+            "B",
+            "RapidTransit",
+            "IDFM:monomodalStopPlace:462394",
+            "Gare du Nord",
+            "48.8809",
+            "2.3553",
+        ),
+        (
+            "IDFM:C01728",
+            "D",
+            "RapidTransit",
+            "IDFM:monomodalStopPlace:462394",
+            "Gare du Nord",
+            "48.8809",
+            "2.3553",
+        ),
+    ]
+    line_rows = [
+        {
+            "id": r[0],
+            "shortname": r[1],
+            "mode": r[2],
+            "stop_id": r[3],
+            "stop_name": r[4],
+            "stop_lat": r[5],
+            "stop_lon": r[6],
+        }
+        for r in rows
+    ]
+    return StopIndex.from_records(
+        build_index_records(
+            line_rows,
+            [{"arrid": "463183", "zdaid": "462941"}, {"arrid": "463182", "zdaid": "462941"}],
+        )
+    )
+
+
+def test_same_name_station_merged_on_map(source: FakeSource) -> None:
+    idx = _gare_du_nord_index()
+    stops = WebApi(idx, Dialog(idx, source)).stops()
+    assert len(stops) == 1
+    assert sorted(stops[0]["ids"]) == ["462394", "462941"]
+    assert {ln["short"] for ln in stops[0]["lines"]} == {"4", "5", "B", "D"}
+
+
+def test_departures_use_the_area_that_serves_the_line(source: FakeSource) -> None:
+    idx = _gare_du_nord_index()
+    api = WebApi(idx, Dialog(idx, source))
+    metro_id = next(a.zda_id for a in idx.areas if any(ln.short == "4" for ln in a.lines))
+    api.departures(metro_id, "C01743")  # RER B requested from the metro area id
+    assert source.calls[-1] == ("STIF:StopArea:SP:462394:", "C01743")
+
+
+def test_dialog_offers_all_lines_of_a_split_station(source: FakeSource) -> None:
+    idx = _gare_du_nord_index()
+    d, state = Dialog(idx, source), CallState()
+    first = d.handle("Gare du Nord", state)
+    assert first.intent == "clarify_line"
+    assert "RER B" in first.text and "ligne 4" in first.text
+    assert d.handle("RER D", state).intent == "next_departure"
+    assert source.calls[-1] == ("STIF:StopArea:SP:462394:", "C01728")

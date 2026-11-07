@@ -156,12 +156,14 @@ class PrimClient:
             "daily_budget": self.daily_budget,
         }
 
-    def _get(self, path: str, params: dict[str, str]) -> tuple[datetime, dict[str, Any]]:
+    def _get(
+        self, path: str, params: dict[str, str], ttl: int | None = None
+    ) -> tuple[datetime, dict[str, Any]]:
         if not self.api_key:
             raise FeedError("PRIM API key not configured")
         url = f"{BASE}/{path}?{urllib.parse.urlencode(params)}"
         cached = self._cache.get(url)
-        if cached and time.monotonic() - cached[0] < self.cache_ttl:
+        if cached and time.monotonic() - cached[0] < (self.cache_ttl if ttl is None else ttl):
             return cached[1], cached[2]
         today = datetime.now(UTC).date()
         if today != self._day:
@@ -191,5 +193,8 @@ class PrimClient:
         return DeparturesResult(deps, fetched_at)
 
     def traffic(self, line_id: str) -> TrafficResult:
-        fetched_at, payload = self._get("general-message", {"LineRef": f"STIF:Line::{line_id}:"})
+        # Disruption messages change slowly: cache 5 min to protect the daily quota
+        fetched_at, payload = self._get(
+            "general-message", {"LineRef": f"STIF:Line::{line_id}:"}, ttl=300
+        )
         return TrafficResult(parse_general_message(payload), fetched_at)

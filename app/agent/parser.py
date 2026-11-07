@@ -9,7 +9,41 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from app.data.stops import Line, StopIndex, StopMatch, normalize
+from app.data.stops import Line, StopIndex, StopMatch, _best_window_score, normalize, tokens
+
+# Well-known places -> nearest station name (matched fuzzily, so typos like "effile tower" work).
+# Targets are resolved against IDFM stop names at query time; unknown targets are ignored.
+LANDMARKS: dict[str, tuple[str, str]] = {
+    "tour eiffel": ("la tour Eiffel", "Bir-Hakeim"),
+    "eiffel tower": ("the Eiffel Tower", "Bir-Hakeim"),
+    "louvre": ("le Louvre", "Palais Royal - Musée du Louvre"),
+    "notre dame": ("Notre-Dame", "Saint-Michel Notre-Dame"),
+    "arc de triomphe": ("l'Arc de Triomphe", "Charles de Gaulle - Étoile"),
+    "sacre coeur": ("le Sacré-Cœur", "Anvers"),
+    "montmartre": ("Montmartre", "Abbesses"),
+    "champs elysees": ("les Champs-Élysées", "Franklin D. Roosevelt"),
+    "disneyland": ("Disneyland Paris", "Marne-la-Vallée Chessy"),
+    "versailles chateau": ("le château de Versailles", "Versailles Château Rive Gauche"),
+    "chateau de versailles": ("le château de Versailles", "Versailles Château Rive Gauche"),
+    "stade de france": ("le Stade de France", "Stade de France - Saint-Denis"),
+    "orly": ("l'aéroport d'Orly", "Aéroport d'Orly"),
+    "roissy": ("l'aéroport Charles-de-Gaulle", "Aéroport Charles de Gaulle 2 (Terminal 2)"),
+    "cdg": ("l'aéroport Charles-de-Gaulle", "Aéroport Charles de Gaulle 2 (Terminal 2)"),
+    "beaubourg": ("le Centre Pompidou", "Rambuteau"),
+    "pompidou": ("le Centre Pompidou", "Rambuteau"),
+    "musee d orsay": ("le musée d'Orsay", "Musée d'Orsay"),
+}
+
+
+def _landmark(text: str) -> tuple[str, str] | None:
+    words = tokens(text)
+    best: tuple[float, tuple[str, str]] | None = None
+    for key, value in LANDMARKS.items():
+        score = _best_window_score(words, tokens(key))
+        if score >= 0.8 and (best is None or score > best[0]):
+            best = (score, value)
+    return best[1] if best else None
+
 
 _STATUS_WORDS = re.compile(
     r"\b(perturbation|perturbations|trafic|traffic|incident|incidents|probleme|problemes|"
@@ -66,6 +100,7 @@ class ParsedQuery:
     line_heard: str | None = None  # line mentioned but not found in reference data
     stops: list[StopMatch] = field(default_factory=list)
     wants_english: bool = False
+    landmark: str | None = None  # e.g. "la tour Eiffel" when the stop came from a landmark
 
     @property
     def stop_ambiguous(self) -> bool:
@@ -108,6 +143,13 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
     if not stops and line is not None:
         # Line found but stop does not serve it: retry without the line filter
         stops = index.match(rest)
+    landmark = None
+    if (not stops or stops[0].score < 0.95) and rest:
+        found = _landmark(rest)
+        if found:
+            near = index.match(found[1], line=line) or index.match(found[1])
+            if near and near[0].score >= 0.95:
+                stops, landmark = near[:1], found[0]
     if not stops and line is None and heard is None and not rest:
         return ParsedQuery("unknown")
-    return ParsedQuery(intent, line=line, line_heard=heard, stops=stops)
+    return ParsedQuery(intent, line=line, line_heard=heard, stops=stops, landmark=landmark)

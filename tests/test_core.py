@@ -257,3 +257,60 @@ def test_duplicate_title_and_body_spoken_once() -> None:
     }
     msgs = parse_general_message(payload)
     assert len(msgs) == 1 and "Bus de remplacement" in msgs[0] and "\n" not in msgs[0]
+
+
+# ---------- landmarks (found in live test 2026-11-07: "Effile tower") ----------
+
+
+def test_landmark_with_typo_maps_to_station(source: FakeSource) -> None:
+    from app.data.stops import StopIndex, build_index_records
+
+    rows = [
+        {
+            "id": "IDFM:C01376",
+            "shortname": "6",
+            "mode": "Metro",
+            "stop_id": "IDFM:1",
+            "stop_name": "Bir-Hakeim",
+        },
+    ]
+    idx = StopIndex.from_records(build_index_records(rows, [{"arrid": "1", "zdaid": "100"}]))
+    reply = Dialog(idx, source).handle("Effile tower", CallState(lang="en"))
+    assert reply.intent == "next_departure"
+    assert reply.text.startswith("Nearest station to the Eiffel Tower: Bir-Hakeim.")
+    assert source.calls == [("STIF:StopArea:SP:100:", "C01376")]
+
+
+def test_unknown_place_asks_for_a_station(index: StopIndex, source: FakeSource) -> None:
+    reply = Dialog(index, source).handle("zzzz qwerty", CallState())
+    assert reply.intent == "unknown" and "nom de station" in reply.text
+    assert not source.calls
+
+
+def test_trains_ending_here_are_not_departures(index: StopIndex) -> None:
+    from app.agent.dialog import drop_terminating
+    from app.data.prim import Departure, DeparturesResult
+
+    now = datetime.now(UTC)
+    gdn = index.by_id["462941"]
+    result = DeparturesResult(
+        [
+            Departure("C01743", "Paris Gare du Nord", now + timedelta(minutes=1), True),
+            Departure("C01743", "Gare du Nord", now + timedelta(minutes=2), True),
+            Departure("C01743", "Saint-Rémy-lès-Chevreuse", now + timedelta(minutes=3), True),
+        ],
+        now,
+    )
+    assert [d.destination for d in drop_terminating(result, gdn).departures] == [
+        "Saint-Rémy-lès-Chevreuse"
+    ]
+
+
+def test_french_de_contraction() -> None:
+    from app.agent.dialog import _de
+
+    assert _de("le Louvre") == "du Louvre"
+    assert _de("les Champs-Élysées") == "des Champs-Élysées"
+    assert _de("la tour Eiffel") == "de la tour Eiffel"
+    assert _de("l'aéroport d'Orly") == "de l'aéroport d'Orly"
+    assert _de("Montmartre") == "de Montmartre"

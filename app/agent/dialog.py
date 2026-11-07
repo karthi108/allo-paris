@@ -13,7 +13,7 @@ from typing import Protocol
 
 from app.agent.parser import ParsedQuery, parse
 from app.data.prim import DeparturesResult, FeedError, TrafficResult
-from app.data.stops import Line, StopArea, StopIndex
+from app.data.stops import Line, StopArea, StopIndex, StopMatch, normalize
 
 
 class TransitSource(Protocol):
@@ -42,7 +42,9 @@ T = {
         "not_understood": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
         "which_stop": "À quelle station ?",
         "which_stop_choice": "Vous voulez dire {a} ou {b} ?",
-        "stop_not_found": "Je ne trouve pas cette station. Pouvez-vous répéter le nom ?",
+        "stop_not_found": "Je ne trouve pas de station dans votre question. Donnez un nom de "
+        "station, par exemple : Bir-Hakeim, ou ligne 4 à Gare du Nord.",
+        "landmark": "Station la plus proche {place} : {stop}. ",
         "line_unknown": "Je ne connais pas cette ligne. Dites par exemple RER B ou ligne 13.",
         "which_line": "À {stop}, quelle ligne ? {lines}.",
         "line_not_at_stop": "{line} ne passe pas à {stop}. Lignes disponibles : {lines}.",
@@ -73,7 +75,9 @@ T = {
         "not_understood": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
         "which_stop": "Which station?",
         "which_stop_choice": "Do you mean {a} or {b}?",
-        "stop_not_found": "I can't find that station. Could you say the name again?",
+        "stop_not_found": "I can't find a station in your question. Give a station name, "
+        "for example: Bir-Hakeim, or line 4 at Gare du Nord.",
+        "landmark": "Nearest station to {place}: {stop}. ",
         "line_unknown": "I don't know that line. Say for example RER B or line 13.",
         "which_line": "At {stop}, which line? {lines}.",
         "line_not_at_stop": "{line} doesn't stop at {stop}. Available lines: {lines}.",
@@ -105,13 +109,21 @@ def t(lang: str, key: str, **kw: object) -> str:
     return T[lang][key].format(**kw)
 
 
+def _de(place: str) -> str:
+    """French 'de' + article: de le Louvre -> du Louvre, de les -> des."""
+    for art, out in (("le ", "du "), ("les ", "des "), ("la ", "de la "), ("l'", "de l'")):
+        if place.startswith(art):
+            return out + place[len(art) :]
+    return "de " + place
+
+
 def _cap(text: str) -> str:
     """Uppercase the first letter only (str.capitalize would turn 'RER A' into 'Rer a')."""
     return text[:1].upper() + text[1:]
 
 
-def _lines_list(area: StopArea, lang: str) -> str:
-    return ", ".join(ln.spoken(lang) for ln in area.lines[:8])
+def _lines_list(lines: list[Line], lang: str) -> str:
+    return ", ".join(ln.spoken(lang) for ln in lines[:8])
 
 
 def _format_minutes(at: datetime, now: datetime, lang: str) -> str:
@@ -121,6 +133,14 @@ def _format_minutes(at: datetime, now: datetime, lang: str) -> str:
     if mins == 1:
         return t(lang, "one_minute")
     return t(lang, "minutes", n=mins)
+
+
+def drop_terminating(result: DeparturesResult, stop: StopArea) -> DeparturesResult:
+    """Remove trains whose destination is this station: they arrive and end here, so they
+    are not departures (seen live: RER B at Gare du Nord -> "Paris Gare du Nord")."""
+    here = normalize(stop.name)
+    kept = [d for d in result.departures if normalize(d.destination) not in (here, f"paris {here}")]
+    return DeparturesResult(kept, result.fetched_at)
 
 
 def render_departures(
@@ -187,11 +207,8 @@ class Dialog:
 
         # Follow-up to a clarifying question
         if state.pending_stop and q.line and not q.stops:
-            q.stops = [
-                s
-                for s in self.index.match(state.pending_stop.name)
-                if s.area.zda_id == state.pending_stop.zda_id
-            ] or q.stops
+            target = self.index.area_for_line(state.pending_stop, q.line) or state.pending_stop
+            q.stops = [StopMatch(target, 1.0)]
         if state.pending_line and q.line is None and q.stops:
             q.line = state.pending_line
             q.intent = "next_departure"
@@ -205,7 +222,11 @@ class Dialog:
             return self._traffic(q.line, lang)
         if q.intent == "unknown":
             return self._miss(state)
-        return self._departures(q, state)
+        reply = self._departures(q, state)
+        if q.landmark and reply.stop:
+            place = _de(q.landmark) if lang == "fr" else q.landmark
+            reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
+        return reply
 
     def _miss(self, state: CallState) -> Reply:
         state.misses += 1
@@ -217,7 +238,8 @@ class Dialog:
             if q.line:
                 state.pending_line = q.line
                 return Reply(t(lang, "which_stop"), "clarify_stop")
-            return self._miss(state)
+            state.misses += 1
+            return Reply(t(lang, "stop_not_found"), "unknown")
         if q.stop_ambiguous and q.stops[0].area.name != q.stops[1].area.name:
             if q.line:
                 state.pending_line = q.line
@@ -227,31 +249,35 @@ class Dialog:
             )
         stop = q.stops[0].area
         line = q.line
+        station_lines = self.index.station_lines(stop)  # metro + RER areas of one station
         if line is None:
-            if len(stop.lines) == 1:
-                line = stop.lines[0]
+            if len(station_lines) == 1:
+                line = station_lines[0]
             else:
                 state.pending_stop = stop
                 return Reply(
-                    t(lang, "which_line", stop=stop.name, lines=_lines_list(stop, lang)),
+                    t(lang, "which_line", stop=stop.name, lines=_lines_list(station_lines, lang)),
                     "clarify_line",
                     stop=stop,
                 )
-        if line.line_id not in {ln.line_id for ln in stop.lines}:
+        served = self.index.area_for_line(stop, line)
+        if served is None:
             return Reply(
                 t(
                     lang,
                     "line_not_at_stop",
                     line=_cap(line.with_article(lang)),
                     stop=stop.name,
-                    lines=_lines_list(stop, lang),
+                    lines=_lines_list(station_lines, lang),
                 ),
                 "clarify_line",
             )
+        stop = served
         try:
             result = self.source.next_departures(stop.monitoring_ref, line.line_id)
         except FeedError:
             return Reply(t(lang, "feed_down"), "feed_down")
+        result = drop_terminating(result, stop)
         text = render_departures(result, line, stop, lang, datetime.now(UTC), self.stale_after)
         return Reply(text, "next_departure", stop=stop, line=line)
 

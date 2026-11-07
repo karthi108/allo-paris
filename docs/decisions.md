@@ -76,6 +76,13 @@ Never delete an entry; mark it superseded and link the replacement.
 - **Controls:** shared PRIM daily budget (quota protection), per-IP rate limit, CSP header, no HTML built from data (textContent only), per-session clarification state capped at 1000.
 - **Why:** recruiters can try it from a link; the phone line stays the differentiator.
 
+## D-013 · Web redesign: own identity, transit-app patterns
+- **Status:** accepted
+- **Date:** 2026-11-05
+- **Decision:** Full-screen map with greyscale base tiles (CSS filter on OSM, no extra provider), floating card on desktop / bottom sheet on mobile, station autocomplete (client-side over 1039 stop areas), board grouped by direction, disruption banner, Near me (browser geolocation, nothing sent to server), favourites in localStorage.
+- **Not copied:** no Navigo / IDFM / RATP logos, fonts or pictograms. Line badges use own shapes per mode with colours from IDFM open data.
+- **Quota:** disruption messages cached 5 min server-side (they change slowly).
+
 ---
 
 ## Data source verification (fill in Phase 0)
