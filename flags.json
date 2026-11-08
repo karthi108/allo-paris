@@ -1,0 +1,378 @@
+{
+ "generated_at": "2026-11-08T13:19:05+00:00",
+ "coverage": {
+  "first": "2026-11-08T10:02:45+00:00",
+  "covered_hours": 0.0,
+  "gaps": 1,
+  "stale_snapshots": 0
+ },
+ "thresholds": {
+  "stuck_hours": 24.0,
+  "ghost_hours": 72.0,
+  "flap_changes": 6,
+  "silent_days": 7.0
+ },
+ "thresholds_provisional": true,
+ "flags": [
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9005*01*1",
+   "station": "17 Place du Panthéon 75005 Paris",
+   "since": "2026-06-18T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 18 Jun 2026 (143 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9005*01*2",
+   "station": "17 Place du Panthéon 75005 Paris",
+   "since": "2026-06-18T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 18 Jun 2026 (143 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9005*01*3",
+   "station": "17 Place du Panthéon 75005 Paris",
+   "since": "2026-06-18T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 18 Jun 2026 (143 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9006*02*1",
+   "station": "11 Rue de Medicis 75006 Paris",
+   "since": "2026-10-09T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 09 Oct 2026 (30 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9006*02*2",
+   "station": "11 Rue de Medicis 75006 Paris",
+   "since": "2026-10-09T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 09 Oct 2026 (30 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9006*02*3",
+   "station": "11 Rue de Medicis 75006 Paris",
+   "since": "2026-10-09T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 09 Oct 2026 (30 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9015*02*3",
+   "station": "16/18 Avenue du Maine 75015 Paris",
+   "since": "2026-09-24T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 24 Sep 2026 (45 days), status available"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9017*04*1",
+   "station": "12 Boulevard de Courcelles 75017 Paris",
+   "since": "2026-06-26T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 26 Jun 2026 (135 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9017*04*2",
+   "station": "12 Boulevard de Courcelles 75017 Paris",
+   "since": "2026-06-26T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 26 Jun 2026 (135 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*E9017*04*3",
+   "station": "12 Boulevard de Courcelles 75017 Paris",
+   "since": "2026-06-26T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 26 Jun 2026 (135 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX06*07*1",
+   "station": "38 Rue du Four 75006 Paris",
+   "since": "2026-08-17T07:49:41+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 17 Aug 2026 (83 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX11*14*5",
+   "station": "5 Avenue de la République 75011 Paris",
+   "since": "2026-09-01T06:31:05+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 01 Sep 2026 (68 days), status available"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX11*14*6",
+   "station": "5 Avenue de la République 75011 Paris",
+   "since": "2026-09-01T05:52:14+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 01 Sep 2026 (68 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX12*07*4",
+   "station": "20 Boulevard de la Bastille 75012 Paris",
+   "since": "2026-06-16T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 16 Jun 2026 (145 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX12*07*5",
+   "station": "20 Boulevard de la Bastille 75012 Paris",
+   "since": "2026-06-16T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 16 Jun 2026 (145 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX15*02*6",
+   "station": "56 Rue Lacordaire 75015 Paris",
+   "since": "2026-09-02T13:38:02+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 02 Sep 2026 (66 days), status available"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX15*04*1",
+   "station": "",
+   "since": "2026-10-21T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 21 Oct 2026 (18 days), status available"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX15*20*4",
+   "station": "43 Rue du Docteur Finlay 75015 Paris",
+   "since": "2026-08-07T11:17:03+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 07 Aug 2026 (93 days), status available"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX15*27*1",
+   "station": "4 Rue Beaugrenelle 75015 Paris",
+   "since": "2026-08-03T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 03 Aug 2026 (97 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX15*27*5",
+   "station": "4 Rue Beaugrenelle 75015 Paris",
+   "since": "2026-10-16T10:17:21+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 16 Oct 2026 (23 days), status available"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*07*1",
+   "station": "2 square Tolstoï 75016 Paris",
+   "since": "2026-10-30T11:25:54+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*07*2",
+   "station": "2 square Tolstoï 75016 Paris",
+   "since": "2026-10-30T11:27:14+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*07*3",
+   "station": "2 square Tolstoï 75016 Paris",
+   "since": "2026-10-30T11:25:33+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*07*4",
+   "station": "2 square Tolstoï 75016 Paris",
+   "since": "2026-10-30T11:25:07+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*07*5",
+   "station": "2 square Tolstoï 75016 Paris",
+   "since": "2026-10-30T11:22:26+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*07*6",
+   "station": "2 square Tolstoï 75016 Paris",
+   "since": "2026-10-30T11:25:26+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*20*2",
+   "station": "70 Avenue Henri Martin 75016 Paris",
+   "since": "2026-06-08T05:25:57+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 08 Jun 2026 (153 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*23*1",
+   "station": "18 Avenue Victor Hugo 75016 Paris",
+   "since": "2026-10-13T05:06:35+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 13 Oct 2026 (26 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*23*2",
+   "station": "18 Avenue Victor Hugo 75016 Paris",
+   "since": "2026-10-13T05:06:36+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 13 Oct 2026 (26 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*23*3",
+   "station": "18 Avenue Victor Hugo 75016 Paris",
+   "since": "2026-10-13T05:09:47+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 13 Oct 2026 (26 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*23*4",
+   "station": "18 Avenue Victor Hugo 75016 Paris",
+   "since": "2026-10-16T05:55:56+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 16 Oct 2026 (23 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*23*5",
+   "station": "18 Avenue Victor Hugo 75016 Paris",
+   "since": "2026-10-16T05:55:57+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 16 Oct 2026 (23 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*23*6",
+   "station": "18 Avenue Victor Hugo 75016 Paris",
+   "since": "2026-10-16T05:55:58+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 16 Oct 2026 (23 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*34*5",
+   "station": "39 Avenue Paul Doumer 75016 Paris",
+   "since": "2026-10-15T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 15 Oct 2026 (24 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX16*36*2",
+   "station": "",
+   "since": "2026-06-18T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 18 Jun 2026 (143 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX19*04*3",
+   "station": "60 Boulevard Sérurier 75019 Paris",
+   "since": "2026-08-25T06:45:39+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 25 Aug 2026 (75 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX19*04*4",
+   "station": "60 Boulevard Sérurier 75019 Paris",
+   "since": "2026-08-25T06:45:13+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 25 Aug 2026 (75 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX19*04*5",
+   "station": "60 Boulevard Sérurier 75019 Paris",
+   "since": "2026-08-25T06:45:35+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 25 Aug 2026 (75 days), status unknown"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX19*07*2",
+   "station": "50 Rue Botzaris 75019 Paris",
+   "since": "2026-10-30T03:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 30 Oct 2026 (9 days), status maintenance"
+  },
+  {
+   "rule": "R4",
+   "point_id": "FR*V75*EPX20*17*2",
+   "station": "105 Rue Pelleport 75020 Paris",
+   "since": "2026-08-17T02:30:10+00:00",
+   "covered_hours": 0.0,
+   "lower_bound": false,
+   "detail": "no update from the operator since 17 Aug 2026 (83 days), status maintenance"
+  }
+ ]
+}
