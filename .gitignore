@@ -14,3 +14,5 @@ eval/audio/private/
 data/allo.db
 data/stops.json
 data/ev.db
+# Stray downloads at the repo root (data lives in data/ or eval/data/)
+/*.json
