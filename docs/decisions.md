@@ -183,3 +183,9 @@ Never delete an entry; mark it superseded and link the replacement.
 - CSV, not SQLite, in git: text diffs stay small; committing a binary database 144 times a day would bloat the repo.
 - The ev-data branch holds data only. CI runs on main and pull requests only.
 - A failed fetch or a stale feed fails the run (visible in Actions); a stale snapshot is still written so the gap is on record.
+
+## D-023 · Reliability rules R1-R4, thresholds set from data (2026-11-08)
+- R1 stuck out of service, R2 ghost available (only when another point at the same address was used), R3 flapping (normal charging sessions ignored), R4 silent operator data. Defined in app/ev/rules.py.
+- Durations count only time the collector observed; gaps and stale snapshots are excluded, never read as "stuck" or "fine".
+- Starting thresholds (24 h, 72 h, 6 changes/h, 7 days) are provisional. After 7 days of collection they are set from the observed distributions and the reasoning is recorded here.
+- Fixed rules, not ML or an LLM: testable, explainable, free per check.
