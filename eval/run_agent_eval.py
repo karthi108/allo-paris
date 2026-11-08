@@ -263,12 +263,16 @@ def judge(
         )
     if exp == "departures_or_status":
         if any(name == "line_status" for name, _ in calls):
-            line_ids = [a.get("line_id") for n, a in calls if n == "line_status"]
+            line_ids = [str(a.get("line_id", "")) for n, a in calls if n == "line_status"]
+            # The tool accepts ids or plain names ("4", "RER A") since 2026-11-08
             ok = any(
                 ln.short == case["line"]
                 for a in index.areas
                 for ln in a.lines
                 if ln.line_id in line_ids
+            ) or any(
+                re.sub(r"(?i)^(rer|line|ligne|m[ée]tro|m)\s*", "", x) == case["line"]
+                for x in line_ids
             )
             return ok, "" if ok else f"status for wrong line {line_ids}"
         exp = "departures"

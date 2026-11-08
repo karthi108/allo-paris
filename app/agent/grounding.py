@@ -82,9 +82,23 @@ def _has_data(outputs: list[dict[str, Any]]) -> bool:
     return any(o.get("_tool") not in LOOKUP_TOOLS and "error" not in o for o in outputs)
 
 
-def check(answer: str, outputs: list[dict[str, Any]]) -> list[str]:
+def _n(v: str) -> str:
+    return v.lstrip("0") or "0"  # "07" in "07:10" and "7" in "7:30" are the same number
+
+
+# Clock times in the question ("7:30", "9h", "22h15", "8 am") may be repeated in the answer.
+# Other user numbers may not: "the train is in 2 minutes, right?" must not be confirmed.
+_CLOCK = re.compile(r"\b(\d{1,2})\s*(?::|h)\s*(\d{2})?\b|\b(\d{1,2})\s*(?:am|pm)\b", re.I)
+
+
+def _clock_numbers(question: str) -> set[str]:
+    return {_n(g) for m in _CLOCK.finditer(question) for g in m.groups() if g}
+
+
+def check(answer: str, outputs: list[dict[str, Any]], question: str = "") -> list[str]:
     """Return a list of problems; empty means the answer is grounded."""
     numbers, _ = allowed_from(outputs)
+    numbers = {_n(x) for x in numbers} | _clock_numbers(question)
     stated = _NUM.findall(answer)
     # Numbers that are part of a line name ("line 1", "T2") are not data claims
     without_lines = _fold(answer)
@@ -97,7 +111,7 @@ def check(answer: str, outputs: list[dict[str, Any]]) -> list[str]:
     _, lines = allowed_from(data_outputs if claims else outputs)
     problems: list[str] = []
     for n in stated:
-        if n not in numbers:
+        if _n(n) not in numbers:
             problems.append(f"number {n} is not in the tool results")
     for code in _line_codes(answer):
         if code not in lines:

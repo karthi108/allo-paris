@@ -189,7 +189,7 @@ class Agent:
             reply.output_tokens += resp.output_tokens
             if not resp.tool_calls:
                 answer = resp.text
-                problems = grounding.check(answer, box.outputs)
+                problems = grounding.check(answer, box.outputs, question)
                 tasks = task_problems(question, box.calls, answer)
                 if (problems or tasks) and not reply.retried:
                     reply.retried = True

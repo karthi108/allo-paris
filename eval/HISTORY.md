@@ -10,3 +10,4 @@ Changes to expectations are listed under the table, so scores stay comparable.
 | 2026-11-07 23:37 | f5e0499 | openai/gpt-4.1-mini | 32% | 86% | 7/7 | 2026 / 3502 ms | $0.00091 | 1 / 1 | [agent_2026-11-07_2337_f5e0499.json](results/agent_2026-11-07_2337_f5e0499.json) |
 | 2026-11-07 23:56 | 22799de | openai/gpt-4.1-mini | 32% | 100% | 7/7 | 2237 / 3331 ms | $0.00103 | 2 / 1 | [agent_2026-11-07_2356_22799de.json](results/agent_2026-11-07_2356_22799de.json) |
 | 2026-11-08 13:28 | 3b6cf57 | openai/gpt-4.1-mini | 32% | 82% | 5/7 | 3056 / 3770 ms | $0.00117 | 2 / 1 | [agent_2026-11-08_1328_3b6cf57.json](results/agent_2026-11-08_1328_3b6cf57.json) |
+| 2026-11-08 13:33 | fd728f1 | openai/gpt-4.1-mini | 35% | 96% | 7/7 | 2986 / 3618 ms | $0.00109 | 2 / 1 | [agent_2026-11-08_1333_fd728f1.json](results/agent_2026-11-08_1333_fd728f1.json) |

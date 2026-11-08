@@ -710,3 +710,24 @@ def test_ca_roule_is_a_status_question() -> None:
     from app.agent.parser import parse
 
     assert parse("est-ce que le RER B roule ce soir", _index()).intent == "line_status"
+
+
+def test_guard_accepts_leading_zero_and_numbers_the_user_said() -> None:
+    outputs = [{"_tool": "plan_route", "journeys": [{"total_minutes": 31, "depart": "07:10"}]}]
+    # "7" matches "07"; "30" was said by the user ("at 7:30"), so repeating it is fine
+    assert (
+        grounding.check("Tomorrow at 7:30: leave 7:10, 31 minutes.", outputs, "tomorrow at 7:30")
+        == []
+    )
+    # A number neither the tools nor the user gave is still blocked
+    assert grounding.check("Leave 7:10, 25 minutes.", outputs, "tomorrow at 7:30") == [
+        "number 25 is not in the tool results"
+    ]
+
+
+def test_guard_does_not_confirm_durations_the_user_suggests() -> None:
+    outputs = [{"_tool": "next_departures", "departures": [{"in_minutes": 6}]}]
+    problems = grounding.check(
+        "Yes, in 2 minutes.", outputs, "the next train is in 2 minutes right?"
+    )
+    assert problems == ["number 2 is not in the tool results"]

@@ -42,3 +42,7 @@ Fixes (generic, tested on the dev set and unit tests):
 - Judge: a status answer that is the generic fallback fails; each row records the fallback reason.
 Honesty note: two fixes (route ordering, "roule") were motivated by held-out failures. The current held-out set is therefore no longer fully blind for those cases; a fresh held-out set is needed before quoting a final number.
 
+## Dev run 5 (fd728f1, 2026-11-08 13:33 UTC): 22/23
+- "yo is the 4 running": the answer was correct and grounded (line_status now accepts "4"), but the judge compared only internal line ids. Judge fixed to accept plain names. Under the fixed judge the run is 23/23.
+- "tomorrow at 7:30" used the fallback template because the guard flagged "7": tools return "07:10", and the user had said "7:30". Guard fixed: leading zeros are ignored and numbers the user said may be repeated. Numbers from neither source are still blocked (unit test).
+
