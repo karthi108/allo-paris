@@ -103,7 +103,7 @@ _ROUTE = re.compile(
     r"(je veux|je voudrais|j aimerais|je dois|on veut) (aller|me rendre)|pour aller a|"
     r"chemin le plus (rapide|court)|meilleur chemin|le plus rapide pour|"
     r"how (do i|to|can i|should i) (get|go)|(i want|i d like|i need|we want) to (go|get)|"
-    r"directions?|fastest (way|route)|quickest (way|route)|best (way|route)|get to)\b"
+    r"directions|fastest (way|route)|quickest (way|route)|best (way|route)|get to)\b"
 )
 # Origin and destination both given, either order (normalized text): "from Nation to Bastille",
 # "de Nation à Bastille", "to the Louvre from Gare de Lyon", "à Bastille en partant de Nation".
@@ -179,6 +179,26 @@ def _extract_line(text: str, index: StopIndex) -> tuple[Line | None, str | None,
     return None, None, text
 
 
+_DIRECTION = re.compile(r"\b(direction|vers|towards|terminus)\b")
+
+
+def _two_places(text: str, index: StopIndex) -> bool:
+    """True when the text names two different stations clearly (score >= 0.95), not one
+    station written in parts ("Châtelet - Les Halles" also matches "Châtelet") and not a
+    departure towards a direction ("... direction Château de Vincennes")."""
+    if _DIRECTION.search(text):
+        return False
+    names: list[set[str]] = []
+    for m in index.match(text, limit=6):
+        if m.score < 0.95:
+            continue
+        words = set(normalize(m.area.name).split())
+        if any(words <= other or other <= words for other in names):
+            continue
+        names.append(words)
+    return len(names) >= 2
+
+
 def parse(utterance: str, index: StopIndex) -> ParsedQuery:
     text = normalize(utterance)
     if not text:
@@ -219,6 +239,15 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
                 stops, landmark = near[:1], found[0]
         return ParsedQuery("velib", stops=stops, landmark=landmark)
     line, heard, rest = _extract_line(text, index)
+    if (
+        line is None
+        and heard is None
+        and not _DIRECTION.search(text)
+        and _two_places(rest or text, index)
+    ):
+        # "Porte Maillot -> Gare d'Austerlitz, quickest?": two distinct stations and no line
+        # is a trip, not departures at the first one (held-out set 2, 2026-11-08)
+        return ParsedQuery("unsupported_route")
     if line is None and heard is None and FROM_TO.search(text):
         # A trip between two places: rules cannot plan it (the AI can). Found in agent eval
         # run 2: "from Gare du Nord to Bir-Hakeim" was answered with line 6 departures.

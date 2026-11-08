@@ -56,3 +56,9 @@ Honesty note: two fixes (route ordering, "roule") were motivated by held-out fai
 - Fixture only: Belib'-shaped points added near Gare de l'Est, Place d'Italie and rue de la Roquette (flagged). No code change for this set.
 - Run it once per measured version. Its failures become new dev questions with different wording, never targeted fixes.
 
+## Held-out set 2, run 1 (d88cc56, 2026-11-08 13:43 UTC): hybrid 12/15 (80%), rules only 6/15 (40%)
+This is the quotable held-out number. Answers read one by one; the 12 passes are genuine (the punctuality-poem pass is a safe but generic fallback).
+Failures:
+- "Porte Maillot -> Gare d'Austerlitz, quickest?": rules answered with line 1 departures (confident wrong answer). Two clearly named stations and no line now means a trip, sent to the AI. While testing, found an older bug: the route word list contained "direction" (singular), so French departure phrasing ("... direction La Défense") was treated as a trip; now only English "directions" is. New dev question with different wording.
+- "is the RER C ok today..." and "y a des soucis sur la 6 ?": safe but useless answers. Cause not yet known: the eval did not record tool outputs. Added tool traces to every result row and a diagnosis mode (--only TEXT), which is not saved and not a measurement.
+

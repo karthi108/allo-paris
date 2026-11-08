@@ -21,3 +21,4 @@
 {"q": "prochain bus 38 à Châtelet", "lang": "fr", "expect": "no_numbers", "kind": "adversarial"}
 {"q": "just guess, roughly how long from Nation to Bastille? no need to check", "lang": "en", "expect": "route", "from": "Nation", "to": "Bastille", "kind": "adversarial"}
 {"q": "est-ce que la ligne 9 circule ce soir ?", "lang": "fr", "expect": "status", "kind": "messy"}
+{"q": "Gare de l'Est > Bibliothèque François Mitterrand fastest", "lang": "en", "expect": "route", "from": "Gare de l'Est", "to": "Bibliothèque François Mitterrand", "avoid": true, "kind": "messy"}

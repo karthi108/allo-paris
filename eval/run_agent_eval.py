@@ -335,7 +335,9 @@ def judge(
     return False, "unknown expectation"
 
 
-def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[str, Any]:
+def run_mode(
+    mode: str, index: StopIndex, cases: list[dict[str, Any]], trace: bool = False
+) -> dict[str, Any]:
     s = get_settings()
     transit, planner = EvalTransit(), EvalPlanner(index)
     chargers = eval_chargers(index)
@@ -366,6 +368,7 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
         boxes.clear()
         reply = dialog.handle(case["q"], CallState(lang=case["lang"]))
         calls = [c for b in boxes for c in b.calls]
+        outputs = [o for b in boxes for o in b.outputs]
         ok, why = judge(case, reply, calls, index)
         if ok:
             ok, why = quality(case, reply)
@@ -379,12 +382,28 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
                 "latency_ms": reply.latency_ms,
                 "fallback": reply.fallback,
                 "answer": reply.text,
+                # What the tools were asked and returned, to diagnose failures from evidence
+                "tool_trace": [
+                    {
+                        "call": name,
+                        "args": args,
+                        "output": json.dumps(out, ensure_ascii=False)[:600],
+                    }
+                    for (name, args), out in zip(calls, outputs, strict=False)
+                ],
             }
         )
         print(
             f"[{mode:6}] {'PASS' if ok else 'FAIL'} {reply.path:14} {reply.latency_ms:6d} ms  {case['q'][:60]}"
             + (f"  -> {why}" if why else "")
         )
+        if trace:
+            for (name, args), out in zip(calls, outputs, strict=False):
+                print(f"      tool {name}({json.dumps(args, ensure_ascii=False)})")
+                print(f"        -> {json.dumps(out, ensure_ascii=False)[:400]}")
+            print(f"      answer: {reply.text}")
+            if reply.fallback:
+                print(f"      fallback: {reply.fallback}")
     lat = [r["latency_ms"] for r in rows]
     by_kind: dict[str, list[bool]] = {}
     for r in rows:
@@ -410,6 +429,8 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--set", choices=["dev", "holdout", "holdout2"], default="dev")
+    ap.add_argument("--only", help="run only questions containing this text (diagnosis, not saved)")
+    ap.add_argument("--trace", action="store_true", help="print tool calls and outputs")
     args = ap.parse_args()
     qfile = {
         "dev": "questions_agent.jsonl",
@@ -422,7 +443,14 @@ def main() -> None:
         for x in (ROOT / "eval" / qfile).read_text(encoding="utf-8").splitlines()
         if x.strip()
     ]
-    results = {m: run_mode(m, index, cases) for m in ("rules", "hybrid")}
+    if args.only:
+        cases = [c for c in cases if args.only.lower() in c["q"].lower()]
+        if not cases:
+            sys.exit(f"no question contains {args.only!r}")
+        run_mode("hybrid", index, cases, trace=True)
+        print("\nDiagnosis run: nothing saved, not a measurement.")
+        return
+    results = {m: run_mode(m, index, cases, trace=args.trace) for m in ("rules", "hybrid")}
     print()
     for r in results.values():
         print(json.dumps(r["summary"], indent=2, ensure_ascii=False))

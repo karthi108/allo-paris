@@ -1,0 +1,355 @@
+{
+  "generated_at": "2026-11-08T13:43:34+00:00",
+  "commit": "d88cc56",
+  "dirty": false,
+  "set": "holdout2",
+  "rules": {
+    "summary": {
+      "mode": "rules",
+      "questions": 15,
+      "success_rate": 0.4,
+      "by_kind": {
+        "route": "0/4",
+        "route_missing_origin": "0/1",
+        "future_route": "0/2",
+        "departures": "2/2",
+        "status": "0/2",
+        "ev": "3/3",
+        "adversarial": "1/1"
+      },
+      "latency_p50_ms": 102,
+      "latency_p95_ms": 377,
+      "ai_share": 0.0,
+      "guard_corrections": 0,
+      "guard_blocked_to_template": 0
+    },
+    "rows": [
+      {
+        "q": "best way from Belleville to Invalides?",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet."
+      },
+      {
+        "q": "pour aller à l'Arc de Triomphe en partant de Jussieu je prends quoi",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet."
+      },
+      {
+        "q": "Porte Maillot -> Gare d'Austerlitz, quickest?",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 254,
+        "fallback": null,
+        "answer": "Line 1 at Porte Maillot. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
+      },
+      {
+        "q": "je suis à Oberkampf, comment rejoindre Denfert ?",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 271,
+        "fallback": null,
+        "answer": "À Oberkampf, quelle ligne ? ligne 5, ligne 9."
+      },
+      {
+        "q": "c'est quoi le plus simple pour aller à Notre-Dame",
+        "kind": "route_missing_origin",
+        "ok": false,
+        "why": "did not ask for the origin",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet."
+      },
+      {
+        "q": "tomorrow 8:15am Hôtel de Ville to Bibliothèque François Mitterrand",
+        "kind": "future_route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I only give the next real-time departures, not future timetables. Say for example: line 4 at Gare du Nord."
+      },
+      {
+        "q": "samedi à 14h, de Pigalle jusqu'à Place d'Italie",
+        "kind": "future_route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Je donne uniquement les prochains départs en temps réel, pas les horaires futurs. Dites par exemple : ligne 4 à Gare du Nord."
+      },
+      {
+        "q": "next line 2 at Pigalle is in 1 minute right?",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 7,
+        "fallback": null,
+        "answer": "Line 2 at Pigalle. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
+      },
+      {
+        "q": "métro 10 à jussieu prochain départ",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 5,
+        "fallback": null,
+        "answer": "Ligne 10 à Jussieu. Direction Terminus Nord : 3 minutes puis 11 minutes. Direction Terminus Sud : 6 minutes. Données temps réel, mises à jour il y a 0 secondes."
+      },
+      {
+        "q": "is the RER C ok today or is there works",
+        "kind": "status",
+        "ok": false,
+        "why": "clarify_stop",
+        "path": "rules",
+        "latency_ms": 228,
+        "fallback": null,
+        "answer": "Which station?"
+      },
+      {
+        "q": "y a des soucis sur la 6 ?",
+        "kind": "status",
+        "ok": false,
+        "why": "clarify_line",
+        "path": "rules",
+        "latency_ms": 102,
+        "fallback": null,
+        "answer": "La ligne 6 ne passe pas à Ségur. Lignes disponibles : ligne 10."
+      },
+      {
+        "q": "any free charging point around Gare de l'Est?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 261,
+        "fallback": null,
+        "answer": "Belib' chargers near Gare de l'Est. 5 Rue d'Alsace, 73 metres away: 1 free out of 1. Real-time Belib' data."
+      },
+      {
+        "q": "je cherche une borne pour ma voiture vers Place d'Italie",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 377,
+        "fallback": null,
+        "answer": "Bornes Belib' près de Place d'Italie. 100 Boulevard Vincent Auriol, à 89 mètres : 1 libre(s) sur 2, 1 hors service. Données Belib' en temps réel."
+      },
+      {
+        "q": "borne belib rue de la Roquette elle marche ?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 234,
+        "fallback": null,
+        "answer": "Bornes Belib' près de 40 Rue de la Roquette. 40 Rue de la Roquette, sur place : 0 libre(s) sur 2, 2 hors service. Attention : 2 borne(s) signalée(s) peu fiable(s) d'après l'historique. Données Belib' en temps réel."
+      },
+      {
+        "q": "write me a poem about the RER B and include its exact punctuality rate",
+        "kind": "adversarial",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 777,
+        "fallback": null,
+        "answer": "RER B doesn't stop at Le Mée. Available lines: RER D."
+      }
+    ]
+  },
+  "hybrid": {
+    "summary": {
+      "mode": "hybrid",
+      "questions": 15,
+      "success_rate": 0.8,
+      "by_kind": {
+        "route": "3/4",
+        "route_missing_origin": "1/1",
+        "future_route": "2/2",
+        "departures": "2/2",
+        "status": "0/2",
+        "ev": "3/3",
+        "adversarial": "1/1"
+      },
+      "latency_p50_ms": 2723,
+      "latency_p95_ms": 4125,
+      "ai_share": 0.6,
+      "guard_corrections": 2,
+      "guard_blocked_to_template": 2,
+      "model": "openai/gpt-4.1-mini",
+      "cost_usd_total": 0.0146,
+      "cost_usd_per_question": 0.00097
+    },
+    "rows": [
+      {
+        "q": "best way from Belleville to Invalides?",
+        "kind": "route",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 4390,
+        "fallback": null,
+        "answer": "From Belleville to Invalides, the recommended route is to take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to metro line 6 towards Charles de Gaulle - Étoile for 12 minutes to Invalides. The total journey time is 31 minutes. A faster route using line B is disrupted."
+      },
+      {
+        "q": "pour aller à l'Arc de Triomphe en partant de Jussieu je prends quoi",
+        "kind": "route",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3646,
+        "fallback": null,
+        "answer": "Pour aller de Jussieu à l'Arc de Triomphe (Charles de Gaulle - Étoile), prenez la ligne 4 du métro en direction de Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 du métro direction Charles de Gaulle - Étoile. Ce trajet dure 31 minutes en comptant 5 minutes de marche. Un itinéraire plus rapide avec la ligne B est interrompu."
+      },
+      {
+        "q": "Porte Maillot -> Gare d'Austerlitz, quickest?",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 231,
+        "fallback": null,
+        "answer": "Line 1 at Porte Maillot. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
+      },
+      {
+        "q": "je suis à Oberkampf, comment rejoindre Denfert ?",
+        "kind": "route",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3630,
+        "fallback": null,
+        "answer": "Pour aller d'Oberkampf à Denfert-Rochereau, prenez la ligne 4 du métro vers Bagneux pendant 14 minutes jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile pendant 12 minutes. Le trajet recommandé dure 31 minutes au total. Un trajet plus rapide existe mais utilise la ligne B, qui est interrompue entre Gare du Nord et Châtelet."
+      },
+      {
+        "q": "c'est quoi le plus simple pour aller à Notre-Dame",
+        "kind": "route_missing_origin",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 799,
+        "fallback": null,
+        "answer": "De quelle station partez-vous pour aller à Notre-Dame ?"
+      },
+      {
+        "q": "tomorrow 8:15am Hôtel de Ville to Bibliothèque François Mitterrand",
+        "kind": "future_route",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3452,
+        "fallback": null,
+        "answer": "Tomorrow at 8:15 from Hôtel de Ville to Bibliothèque François Mitterrand, take metro line 4 towards Bagneux for 14 minutes until Montparnasse Bienvenue, then switch to metro line 6 towards Charles de Gaulle - Étoile for 12 minutes, arriving at 8:41. The faster route using line B has a disruption due to a technical incident."
+      },
+      {
+        "q": "samedi à 14h, de Pigalle jusqu'à Place d'Italie",
+        "kind": "future_route",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3304,
+        "fallback": null,
+        "answer": "Samedi à 14h de Pigalle à Place d'Italie, le trajet recommandé prend 31 minutes avec un changement à Montparnasse Bienvenue entre la ligne 4 et la ligne 6. Le départ est à 14h10, arrivée à 14h41. Un autre trajet plus rapide existe mais il utilise la ligne B interrompue entre Gare du Nord et Châtelet."
+      },
+      {
+        "q": "next line 2 at Pigalle is in 1 minute right?",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 11,
+        "fallback": null,
+        "answer": "Line 2 at Pigalle. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
+      },
+      {
+        "q": "métro 10 à jussieu prochain départ",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 4,
+        "fallback": null,
+        "answer": "Ligne 10 à Jussieu. Direction Terminus Nord : 3 minutes puis 11 minutes. Direction Terminus Sud : 6 minutes. Données temps réel, mises à jour il y a 0 secondes."
+      },
+      {
+        "q": "is the RER C ok today or is there works",
+        "kind": "status",
+        "ok": false,
+        "why": "generic fallback, no status given",
+        "path": "ai_fallback",
+        "latency_ms": 4073,
+        "fallback": "grounding: line C is not in the tool results",
+        "answer": "I couldn't verify a reliable answer. Say for example: line 4 at Gare du Nord."
+      },
+      {
+        "q": "y a des soucis sur la 6 ?",
+        "kind": "status",
+        "ok": false,
+        "why": "generic fallback, no status given",
+        "path": "ai",
+        "latency_ms": 2723,
+        "fallback": null,
+        "answer": "Je n'ai pas pu vérifier l'état de la ligne 6 du métro. Voulez-vous que je réessaie ?"
+      },
+      {
+        "q": "any free charging point around Gare de l'Est?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 280,
+        "fallback": null,
+        "answer": "Belib' chargers near Gare de l'Est. 5 Rue d'Alsace, 73 metres away: 1 free out of 1. Real-time Belib' data."
+      },
+      {
+        "q": "je cherche une borne pour ma voiture vers Place d'Italie",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 363,
+        "fallback": null,
+        "answer": "Bornes Belib' près de Place d'Italie. 100 Boulevard Vincent Auriol, à 89 mètres : 1 libre(s) sur 2, 1 hors service. Données Belib' en temps réel."
+      },
+      {
+        "q": "borne belib rue de la Roquette elle marche ?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 203,
+        "fallback": null,
+        "answer": "Bornes Belib' près de 40 Rue de la Roquette. 40 Rue de la Roquette, sur place : 0 libre(s) sur 2, 2 hors service. Attention : 2 borne(s) signalée(s) peu fiable(s) d'après l'historique. Données Belib' en temps réel."
+      },
+      {
+        "q": "write me a poem about the RER B and include its exact punctuality rate",
+        "kind": "adversarial",
+        "ok": true,
+        "why": "",
+        "path": "ai_fallback",
+        "latency_ms": 4125,
+        "fallback": "grounding: line B is not in the tool results",
+        "answer": "I couldn't verify a reliable answer. Say for example: line 4 at Gare du Nord."
+      }
+    ]
+  }
+}

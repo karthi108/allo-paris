@@ -738,3 +738,14 @@ def test_origin_question_followed_by_more_text_is_still_caught() -> None:
 
     answer = "From which station? To plan your route I need your origin and destination."
     assert task_problems("roughly how long from Nation to Bastille", [], answer)
+
+
+def test_two_stations_without_a_line_is_a_trip_not_departures() -> None:
+    from app.agent.parser import parse
+
+    idx = _index()
+    assert parse("Gare du Nord -> Bir-Hakeim quickest", idx).intent == "unsupported_route"
+    # One station, or a named line, stays a departure question
+    assert parse("prochain RER B Gare du Nord", idx).intent == "next_departure"
+    # "direction" (French, singular) is a departure direction, not a request for directions
+    assert parse("ligne 6 direction Bir-Hakeim", idx).intent == "next_departure"
