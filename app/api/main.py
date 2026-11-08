@@ -82,7 +82,11 @@ calls = CallHandler(
 )
 
 web = WebApi(index, dialog, stale_after=settings.realtime_stale_after_seconds)
+# Questions to the assistant can cost LLM money: tight limit. Data reads (boards, Vélib',
+# chargers, status) are cheap and a map page makes several per click: looser limit, still
+# bounded by the daily PRIM budget. One shared 20/min limit made the page fail on 2-3 clicks.
 limiter = RateLimiter(per_minute=settings.web_requests_per_minute)
+data_limiter = RateLimiter(per_minute=max(settings.web_requests_per_minute * 6, 60))
 WEB_DIR = Path(__file__).resolve().parents[1] / "web"
 CSP = (
     "default-src 'self'; "
@@ -217,9 +221,9 @@ async def voice_gather(request: Request) -> Response:
     return _xml(calls.speech(await _twilio_params(request)))
 
 
-def _limit(request: Request) -> None:
+def _limit(request: Request, which: RateLimiter | None = None) -> None:
     ip = request.client.host if request.client else "unknown"
-    if not limiter.allow(ip):
+    if not (which or data_limiter).allow(ip):
         raise HTTPException(status_code=429, detail="too many requests, slow down")
 
 
@@ -254,6 +258,18 @@ def favicon_ico() -> FileResponse:
     return favicon()
 
 
+@app.get("/api/chargers")
+def api_chargers(request: Request, stop: str) -> dict[str, Any]:
+    _limit(request)
+    return web.chargers(stop)
+
+
+@app.get("/api/chargers/map")
+def api_chargers_map(request: Request) -> dict[str, Any]:
+    _limit(request)
+    return web.chargers_map()
+
+
 @app.get("/api/velib")
 def api_velib(request: Request, stop: str) -> dict[str, Any]:
     _limit(request)
@@ -279,7 +295,7 @@ def api_departures(request: Request, stop: str, line: str, lang: str = "fr") -> 
 
 @app.post("/api/ask")
 async def api_ask(request: Request) -> dict[str, Any]:
-    _limit(request)
+    _limit(request, limiter)
     try:
         body = await request.json()
     except ValueError as exc:

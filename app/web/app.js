@@ -18,8 +18,10 @@ const I18N = {
     tooMany: "Trop de requêtes, réessayez dans une minute.", error: "Erreur réseau.",
     ask: (q) => `Demander : « ${q} »`,
     pathRules: "⚡ Règles", pathAi: "✦ IA vérifiée", pathAiFb: "✦ IA → modèle sûr", pathRulesFb: "⚡ Règles (IA indisponible)", tools: "outils",
-    examples: ["prochain RER A à Châtelet", "comment aller à la tour Eiffel depuis Gare du Nord", "perturbations RER B", "Vélib près de la tour Eiffel"],
+    examples: ["prochain RER A à Châtelet", "comment aller à la tour Eiffel depuis Gare du Nord", "perturbations RER B", "Vélib près de la tour Eiffel", "bornes près du Panthéon"],
     velib: "Vélib à proximité", bikes: "vélos", ebikes: "élec.", docks: "places", closed: "fermée", velibNone: "Aucune station Vélib à moins de 500 m.",
+    ev: "Bornes", chargers: "Bornes Belib' à proximité", free: "libre(s)", charging: "en charge", out: "hors service",
+    evNone: "Aucune borne Belib' à moins de 500 m.", evWarn: "signalée peu fiable (historique)",
     modes: { Metro: "Métro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
     geoNo: "Position indisponible.", nearNone: "Aucune station à moins de 2 km.",
@@ -41,8 +43,10 @@ const I18N = {
     tooMany: "Too many requests, try again in a minute.", error: "Network error.",
     ask: (q) => `Ask: “${q}”`,
     pathRules: "⚡ Rules", pathAi: "✦ AI, verified", pathAiFb: "✦ AI → safe template", pathRulesFb: "⚡ Rules (AI unavailable)", tools: "tools",
-    examples: ["next RER A at Châtelet", "fastest way from Gare du Nord to the Eiffel Tower", "disruptions RER B", "Vélib near the Eiffel Tower"],
+    examples: ["next RER A at Châtelet", "fastest way from Gare du Nord to the Eiffel Tower", "disruptions RER B", "Vélib near the Eiffel Tower", "EV chargers near Bastille"],
     velib: "Vélib nearby", bikes: "bikes", ebikes: "e-bikes", docks: "docks", closed: "closed", velibNone: "No Vélib station within 500 m.",
+    ev: "EV chargers", chargers: "Belib' chargers nearby", free: "free", charging: "charging", out: "out of service",
+    evNone: "No Belib' charger within 500 m.", evWarn: "flagged unreliable (history)",
     modes: { Metro: "Metro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Microphone not available in this browser.", listening: "Listening…",
     geoNo: "Location unavailable.", nearNone: "No station within 2 km.",
@@ -81,6 +85,7 @@ const state = {
   stops: [], byId: new Map(), markers: new Map(), selected: null, timer: null,
   modes: new Set(store.get("allo.modes", ["Metro", "RapidTransit", "Tramway", "LocalTrain"])),
   favs: store.get("allo.favs", []), near: null, suggest: [], active: -1,
+  ev: store.get("allo.ev", false), evLayer: null, evData: null, evAt: 0,
   session: store.get("allo.session", null) || (() => { const s = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); store.set("allo.session", s); return s; })(),
 };
 const tr = () => I18N[state.lang];
@@ -148,6 +153,74 @@ function renderFilters() {
       },
     }));
   }
+  f.append(el("button", {
+    type: "button", class: "chip ev" + (state.ev ? " on" : ""), textContent: "⚡ " + tr().ev,
+    attrs: { "aria-pressed": String(state.ev) }, onclick: () => setEv(!state.ev),
+  }));
+}
+
+// ---------- Belib' chargers (live status + reliability flags from the collector) ----------
+function setEv(on) {
+  state.ev = on; store.set("allo.ev", on); renderFilters(); drawChargers();
+}
+function chargerSummary(a) {
+  const t = tr();
+  let s = `${a.available} ${t.free} / ${a.in_service}`;
+  if (a.charging) s += ` · ${a.charging} ${t.charging}`;
+  if (a.out_of_service) s += ` · ${a.out_of_service} ${t.out}`;
+  return s;
+}
+function chargerCard(a) {
+  const t = tr();
+  const box = el("div", { class: "evcard" }, el("strong", { textContent: a.name }), el("div", { textContent: chargerSummary(a) }));
+  if (a.warnings.length) {
+    box.append(el("div", { class: "evwarn", textContent: "⚠ " + t.evWarn }));
+    for (const w of a.warnings) box.append(el("div", { class: "evdetail", textContent: w }));
+  }
+  return box;
+}
+async function drawChargers() {
+  if (state.evLayer) { state.evLayer.remove(); state.evLayer = null; }
+  if (!state.ev) return;
+  try {
+    if (!state.evData || Date.now() - state.evAt > 60000) {
+      state.evData = await api("/api/chargers/map"); state.evAt = Date.now();
+    }
+  } catch (e) { $("answer").textContent = e.message; return; }
+  if (!state.ev || state.evData.error) return;
+  const layer = L.layerGroup();
+  for (const a of state.evData.addresses) {
+    // green: at least one free · amber: all busy · red: all out of service · dark ring: flagged
+    const color = a.available > 0 ? "#16a34a" : a.out_of_service >= a.in_service ? "#dc2626" : "#f59e0b";
+    const flagged = a.warnings.length > 0;
+    const m = L.circleMarker([a.lat, a.lon], {
+      radius: 6, color: flagged ? "#111827" : "#ffffff", weight: flagged ? 3 : 1.5, fillColor: color, fillOpacity: 0.95,
+    });
+    m.bindTooltip(a.name, { direction: "top", offset: [0, -6] });
+    m.bindPopup(() => chargerCard(a));
+    layer.addLayer(m);
+  }
+  if (state.evLayer) state.evLayer.remove();
+  state.evLayer = layer.addTo(map);
+}
+async function loadChargers() {
+  const sel = state.selected; if (!sel) return;
+  try {
+    const d = await api(`/api/chargers?stop=${encodeURIComponent(sel.stop.id)}`);
+    if (state.selected !== sel) return;
+    const box = $("chargers"); if (!box || d.error) return;
+    const t = tr();
+    box.replaceChildren(el("div", { class: "section-title", textContent: t.chargers }));
+    if (!d.addresses.length) { box.append(el("div", { class: "empty", textContent: t.evNone })); return; }
+    const ul = el("ul", { class: "list" });
+    for (const a of d.addresses) {
+      ul.append(el("li", { onclick: () => { if (!state.ev) setEv(true); map.flyTo([a.lat, a.lon], 17, { duration: 0.5 }); } },
+        el("span", { class: "name", textContent: a.name }),
+        el("span", { class: "meta" + (a.warnings.length ? " warn" : ""),
+          textContent: `${a.distance_m} m · ${chargerSummary(a)}` + (a.warnings.length ? ` · ⚠ ${t.evWarn}` : "") })));
+    }
+    box.append(ul);
+  } catch { /* optional section */ }
 }
 
 // ---------- home ----------
@@ -189,7 +262,7 @@ function openStation(s, lineId) {
   renderStation();
   loadBoard();
   loadTraffic();
-  loadVelib();
+  loadVelib(); loadChargers();
 }
 function closeStation() {
   clearTimeout(state.timer); state.selected = null;
@@ -204,17 +277,18 @@ function renderStation() {
   v.append(el("div", { class: "station-head" },
     el("h2", { textContent: stop.name }),
     el("button", { type: "button", class: "star", textContent: fav ? "★" : "☆", attrs: { "aria-pressed": String(fav), "aria-label": t.favorites },
-      onclick: () => { state.favs = fav ? state.favs.filter((x) => x !== stop.id) : [stop.id, ...state.favs].slice(0, 12); store.set("allo.favs", state.favs); renderStation(); loadBoard(); loadTraffic(); loadVelib(); } })));
+      onclick: () => { state.favs = fav ? state.favs.filter((x) => x !== stop.id) : [stop.id, ...state.favs].slice(0, 12); store.set("allo.favs", state.favs); renderStation(); loadBoard(); loadTraffic(); loadVelib(); loadChargers(); } })));
   const tabs = el("div", { class: "tabs", attrs: { role: "tablist" } });
   for (const l of stop.lines) {
     tabs.append(el("button", { type: "button", class: "tab", attrs: { role: "tab", "aria-selected": String(l.id === line.id), "aria-label": l.label },
-      onclick: () => { state.selected.line = l; renderStation(); loadBoard(); loadTraffic(); loadVelib(); } }, badge(l)));
+      onclick: () => { state.selected.line = l; renderStation(); loadBoard(); loadTraffic(); loadVelib(); loadChargers(); } }, badge(l)));
   }
   v.append(tabs);
   v.append(el("div", { id: "banner" }));
   v.append(el("div", { class: "board", id: "board" }, el("div", { class: "skeleton" }), el("div", { class: "skeleton", style: "border-top:1px solid var(--line)" })));
   v.append(el("div", { class: "fresh", id: "fresh" }));
   v.append(el("div", { id: "velib" }));
+  v.append(el("div", { id: "chargers" }));
 }
 
 async function loadVelib() {
@@ -350,6 +424,10 @@ async function ask(q) {
     $("answer").textContent = r.answer;
     renderMeta(r);
     speak(r.answer);
+    if (r.intent === "ev") {
+      if (!state.ev) setEv(true);
+      if (r.focus) map.flyTo(r.focus, 16, { duration: 0.6 });
+    }
     if (r.stop) { const s = state.byId.get(r.stop.id); if (s) openStation(s, r.line && r.line.id); }
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
@@ -418,7 +496,7 @@ function setLang(lang) {
   $("privacyLink").textContent = lang === "fr" ? "Confidentialité" : "Privacy";
   renderSpeak();
   renderFilters();
-  if (state.selected) { renderStation(); loadBoard(); loadTraffic(); loadVelib(); } else renderHome();
+  if (state.selected) { renderStation(); loadBoard(); loadTraffic(); loadVelib(); loadChargers(); } else renderHome();
 }
 $("langFr").onclick = () => setLang("fr");
 $("langEn").onclick = () => setLang("en");
@@ -458,6 +536,7 @@ async function refreshStatus() {
     state.stops = await api("/api/stops");
     for (const s of state.stops) { s._n = norm(s.name); for (const id of s.ids || [s.id]) state.byId.set(id, s); }
     drawMarkers(); renderHome();
+    if (state.ev) drawChargers();
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
 })();

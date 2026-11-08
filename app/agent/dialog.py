@@ -83,6 +83,9 @@ T = {
         "velib_down": "Les données Vélib ne sont pas disponibles pour le moment.",
         "ev_which": "Bornes Belib' près de quel endroit ? Par exemple : bornes à Bastille.",
         "ev_none": "Aucune borne Belib' à moins de 500 mètres de {place}.",
+        "ev_outside": (
+            "Aucune borne Belib' près de {place} : le réseau Belib' couvre Paris uniquement."
+        ),
         "ev_intro": "Bornes Belib' près de {place}. ",
         "ev_address": "{name}, à {dist} mètres : {available} libre(s) sur {total}",
         "ev_address_here": "{name}, sur place : {available} libre(s) sur {total}",
@@ -144,6 +147,7 @@ T = {
         "velib_down": "Vélib data is unavailable right now.",
         "ev_which": "Belib' chargers near which place? For example: chargers at Bastille.",
         "ev_none": "No Belib' charger within 500 metres of {place}.",
+        "ev_outside": "No Belib' charger near {place}: the Belib' network covers Paris only.",
         "ev_intro": "Belib' chargers near {place}. ",
         "ev_address": "{name}, {dist} metres away: {available} free out of {total}",
         "ev_address_here": "{name}, right here: {available} free out of {total}",
@@ -344,6 +348,7 @@ class Reply:
     latency_ms: int = 0
     tools: list[str] = field(default_factory=list)
     fallback: str | None = None  # why the AI answer was replaced by a template
+    focus: tuple[float, float] | None = None  # map point for answers not tied to a station
 
 
 # Rule outcomes the AI agent may improve on (when an LLM is configured)
@@ -507,9 +512,11 @@ class Dialog:
             if lat is None or lon is None:
                 return Reply(t(lang, "ev_which"), "clarify_stop")
             result = self.chargers.nearby(lat, lon)
+            if not result.addresses and not self.chargers.nearby(lat, lon, 2000, 1).addresses:
+                return Reply(t(lang, "ev_outside", place=place), "ev", focus=(lat, lon))
         except FeedError:
             return Reply(t(lang, "ev_down"), "feed_down")
-        return Reply(render_chargers(result, place, lang), "ev")
+        return Reply(render_chargers(result, place, lang), "ev", focus=(lat, lon))
 
     def _miss(self, state: CallState) -> Reply:
         state.misses += 1

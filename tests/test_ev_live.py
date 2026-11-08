@@ -131,3 +131,49 @@ def test_ev_without_place_asks_where(q: str, source: FakeSource) -> None:
     d = Dialog(idx, source, chargers=client())
     reply = d.handle(q, CallState())
     assert reply.intent == "clarify_stop" and "quel endroit" in reply.text
+
+
+# ---------- web API (map layer and station panel) ----------
+
+
+def test_web_chargers_map_and_near_station(source: FakeSource) -> None:
+    from app.api.web import WebApi
+
+    rows = [
+        {"arrid": "1", "zdaid": "900"},
+    ]
+    line_rows = [
+        {
+            "id": "IDFM:C01384",
+            "shortname": "10",
+            "mode": "Metro",
+            "stop_id": "IDFM:1",
+            "stop_name": "Maubert - Mutualité",
+            "stop_lat": "48.8475",
+            "stop_lon": "2.3460",
+        }
+    ]
+    idx = StopIndex.from_records(build_index_records(line_rows, rows))
+    web = WebApi(idx, Dialog(idx, source, chargers=client()))
+    everything = web.chargers_map()
+    names = {a["name"] for a in everything["addresses"]}
+    assert {"17 Place du Panthéon", "1 Rue Soufflot", "10 Avenue de la Porte"} <= names
+    pantheon = next(a for a in everything["addresses"] if a["name"] == "17 Place du Panthéon")
+    assert pantheon["out_of_service"] == 2 and len(pantheon["warnings"]) == 2
+    assert pantheon["lat"] == pytest.approx(48.8462)
+    near = web.chargers("900")
+    assert [a["name"] for a in near["addresses"]][:2] == ["17 Place du Panthéon", "1 Rue Soufflot"]
+    assert web.chargers("nope") == {"error": "unknown_stop"}
+
+
+def test_ev_answer_outside_paris_says_belib_is_paris_only(source: FakeSource) -> None:
+    idx = StopIndex.from_records(build_index_records([], []))
+
+    class FarAway(ChargerClient):
+        def find_address(self, query: str) -> tuple[float, float, str] | None:
+            return 48.8130, 2.3870, "Ivry-sur-Seine"  # outside Paris, > 2 km from any fixture point
+
+    c = FarAway(fetch=lambda: (parse_export(ROWS), AT), get_flags=lambda _: dict(FLAGS))
+    reply = Dialog(idx, source, chargers=c).handle("bornes à Ivry", CallState())
+    assert reply.intent == "ev" and "couvre Paris uniquement" in reply.text
+    assert reply.focus == (48.8130, 2.3870)

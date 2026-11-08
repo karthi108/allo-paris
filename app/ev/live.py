@@ -83,6 +83,8 @@ class Address:
     charging: int
     out_of_service: int  # maintenance + unknown
     flags: tuple[str, ...]  # reliability explanations from rules R1-R4
+    lat: float = 0.0  # centroid of the points at this address
+    lon: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -189,6 +191,8 @@ class ChargerClient:
                     charging=sum(p.status == "charging" for p in live),
                     out_of_service=sum(p.status in ("maintenance", "unknown") for p in live),
                     flags=tuple(by_station.get(station, [])[:3]),
+                    lat=round(clat, 6),
+                    lon=round(clon, 6),
                 )
             )
         out.sort(key=lambda a: a.distance_m)

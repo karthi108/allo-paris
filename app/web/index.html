@@ -146,6 +146,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .filters .chip { box-shadow: var(--shadow); border: 1px solid var(--line); font-weight: 600; background: var(--card); color: var(--faint); }
 .filters .chip.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 .filters .chip:not(.on) { text-decoration: line-through; text-decoration-color: var(--faint); }
+.filters .chip.ev.on { background: #16a34a; border-color: #16a34a; color: #fff; }
+.filters .chip.ev:not(.on) { text-decoration: none; }
+.evcard { font: 13px/1.4 system-ui, sans-serif; min-width: 190px; color: #111827; }
+.evcard strong { display: block; margin-bottom: 2px; }
+.evwarn { color: #b45309; font-weight: 600; margin-top: 6px; }
+.evdetail { color: #4b5563; font-size: 12px; }
+.meta.warn { color: #b45309; }
 .locate { position: fixed; right: 16px; bottom: 32px; z-index: 900; width: 44px; height: 44px; border-radius: 50%; border: 0;
   background: var(--card); box-shadow: var(--shadow); display: grid; place-items: center; color: var(--ink); }
 .leaflet-top.leaflet-left { top: auto; bottom: 90px; left: auto; right: 16px; }

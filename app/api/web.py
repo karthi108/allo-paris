@@ -168,6 +168,43 @@ class WebApi:
             "fetched_at": result.fetched_at.isoformat(),
         }
 
+    def chargers(self, stop_id: str) -> dict[str, Any]:
+        area = self.index.by_id.get(stop_id)
+        if area is None or area.lat is None or area.lon is None:
+            return {"error": "unknown_stop"}
+        return self._chargers(area.lat, area.lon, 500, 3)
+
+    def chargers_map(self) -> dict[str, Any]:
+        """Every Belib' address (Paris is ~10 km across, so 20 km from the centre covers it)."""
+        return self._chargers(48.8566, 2.3522, 20_000, 10_000)
+
+    def _chargers(self, lat: float, lon: float, radius: int, limit: int) -> dict[str, Any]:
+        chargers = self.dialog.chargers
+        if chargers is None:
+            return {"error": "feed_down"}
+        try:
+            res = chargers.nearby(lat, lon, radius, limit)
+        except FeedError:
+            return {"error": "feed_down"}
+        return {
+            "fetched_at": res.fetched_at.isoformat(),
+            "reliability_as_of": res.flags_as_of.isoformat() if res.flags_as_of else None,
+            "addresses": [
+                {
+                    "name": a.name,
+                    "lat": a.lat,
+                    "lon": a.lon,
+                    "distance_m": a.distance_m,
+                    "in_service": a.in_service,
+                    "available": a.available,
+                    "charging": a.charging,
+                    "out_of_service": a.out_of_service,
+                    "warnings": list(a.flags),
+                }
+                for a in res.addresses
+            ],
+        }
+
     def ask(self, question: str, session_id: str, lang: str = "fr") -> dict[str, Any]:
         question = question.strip()[:300]
         state = self.sessions.get(session_id)
@@ -189,4 +226,5 @@ class WebApi:
             "lang": state.lang,
             "stop": stop_json(reply.stop) if reply.stop else None,
             "line": line_json(reply.line, state.lang) if reply.line else None,
+            "focus": list(reply.focus) if reply.focus else None,
         }
