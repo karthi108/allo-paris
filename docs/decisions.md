@@ -176,3 +176,10 @@ Never delete an entry; mark it superseded and link the replacement.
 - The plain export URL returned copies up to 22 minutes old to the collector. Fixed with a unique URL per request; snapshots whose newest last_updated does not move for 5 minutes are marked stale and ignored by detection.
 - IRVE dynamique (national, per operator) comes after Belib', once coverage in Paris is checked.
 - No ML, no LLM in detection: fixed rules over the status history; the LLM only answers questions through tools.
+
+## D-022 · Collector runs on GitHub Actions, data in an ev-data branch as CSV (2026-11-08)
+- Free and 24/7: the repo is public, so scheduled Actions cost nothing. A home PC would leave gaps at night.
+- Every 10 minutes (cron */10). GitHub may delay or skip scheduled runs; snapshots.csv records real coverage, so reports show measured uptime, not assumed uptime.
+- CSV, not SQLite, in git: text diffs stay small; committing a binary database 144 times a day would bloat the repo.
+- The ev-data branch holds data only. CI runs on main and pull requests only.
+- A failed fetch or a stale feed fails the run (visible in Actions); a stale snapshot is still written so the gap is on record.

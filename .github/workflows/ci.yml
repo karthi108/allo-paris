@@ -1,5 +1,8 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]  # ev-data gets a data commit every 10 min; it has no code
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -28,8 +31,8 @@ jobs:
           fetch-depth: 0
       - name: Install gitleaks
         run: |
-          curl -sSfL -o gl.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          curl -sSfL -o checksums.txt "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          curl -sSfL --retry 5 --retry-all-errors --retry-delay 5 -o gl.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL --retry 5 --retry-all-errors --retry-delay 5 -o checksums.txt "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
           grep "gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" checksums.txt | sed 's/gitleaks_.*/gl.tar.gz/' | sha256sum -c -
           tar xzf gl.tar.gz gitleaks
       - name: Scan full git history

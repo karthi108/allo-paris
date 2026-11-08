@@ -97,3 +97,38 @@ def test_snapshot_url_is_unique_and_keeps_all_rows() -> None:
     a, b = snapshot_url(1), snapshot_url(2)
     assert a != b and "exports/json" in a
     assert "OR%201%20%3D%201" in a  # always true, so rows without last_updated stay
+
+
+def test_csv_store_round_trip_across_runs() -> None:
+    """Each scheduled run starts from the CSV files only, like a fresh CI runner."""
+    import csv
+    import tempfile
+
+    from app.ev import csvstore
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as d:
+        data = Path(d)
+        s1 = csvstore.record(data, parse_export([ROW]), T0)
+        assert s1.new_events == 1
+        # Second run: same data 3 minutes later -> no new event, too soon to be stale
+        s2 = csvstore.record(data, parse_export([ROW]), T0 + timedelta(minutes=3))
+        assert s2.new_events == 0 and not s2.stale
+        # Third run: still frozen 17 minutes after the previous one -> stale, but recorded
+        s3 = csvstore.record(data, parse_export([ROW]), T0 + timedelta(minutes=20))
+        assert s3.stale
+        # Fourth run: status changed -> one event in today's file, state updated
+        changed = parse_export(
+            [row(statut_pdc="Disponible", last_updated="2026-11-08T09:25:00+00:00")]
+        )
+        s4 = csvstore.record(data, changed, T0 + timedelta(minutes=30))
+        assert s4.new_events == 1 and not s4.stale
+        with (data / "events" / "2026-11-08.csv").open(encoding="utf-8") as f:
+            events = list(csv.DictReader(f))
+        assert [e["status"] for e in events] == ["charging", "available"]
+        with (data / "state.csv").open(encoding="utf-8") as f:
+            assert [r["status"] for r in csv.DictReader(f)] == ["available"]
+        with (data / "snapshots.csv").open(encoding="utf-8") as f:
+            assert [r["stale"] for r in csv.DictReader(f)] == ["0", "0", "1", "0"]
+        with (data / "points.csv").open(encoding="utf-8") as f:
+            pts = list(csv.DictReader(f))
+        assert len(pts) == 1 and pts[0]["first_seen"] == T0.isoformat(timespec="seconds")
