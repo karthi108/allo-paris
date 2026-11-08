@@ -23,13 +23,19 @@ def _load_dotenv(path: Path) -> None:
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
+def _env(name: str, default: str) -> str:
+    """Empty means "not set": .env.example ships empty values, and an empty
+    ALLO_VERIFY_TWILIO_SIGNATURE must not switch signature checks off."""
+    return os.environ.get(name, "").strip() or default
+
+
 def _opt_float(name: str) -> float | None:
     raw = os.environ.get(name, "").strip()
     return float(raw) if raw else None
 
 
 def _int(name: str, default: int) -> int:
-    return int(os.environ.get(name, default))
+    return int(_env(name, str(default)))
 
 
 @dataclass(frozen=True)
@@ -67,7 +73,7 @@ class Settings:
 @lru_cache
 def get_settings() -> Settings:
     _load_dotenv(ROOT / ".env")
-    env = os.environ.get("ALLO_ENV", "dev")
+    env = _env("ALLO_ENV", "dev")
     hmac_key = os.environ.get("ALLO_CALLER_HMAC_KEY", "")
     if env != "dev" and len(hmac_key) < 32:
         raise RuntimeError("ALLO_CALLER_HMAC_KEY must be set (32+ chars) outside dev")
@@ -76,7 +82,7 @@ def get_settings() -> Settings:
         public_base_url=os.environ.get("ALLO_PUBLIC_BASE_URL", "").rstrip("/"),
         prim_api_key=os.environ.get("ALLO_PRIM_API_KEY", ""),
         twilio_auth_token=os.environ.get("ALLO_TWILIO_AUTH_TOKEN", ""),
-        verify_twilio_signature=os.environ.get("ALLO_VERIFY_TWILIO_SIGNATURE", "true") == "true",
+        verify_twilio_signature=_env("ALLO_VERIFY_TWILIO_SIGNATURE", "true").lower() != "false",
         caller_hmac_key=(hmac_key or "dev-only-change-me").encode(),
         daily_call_cap=_int("ALLO_DAILY_CALL_CAP", 200),
         per_caller_calls_per_day=_int("ALLO_PER_CALLER_CALLS_PER_DAY", 10),
@@ -94,16 +100,14 @@ def get_settings() -> Settings:
         llm_provider=os.environ.get("ALLO_LLM_PROVIDER", ""),
         llm_api_key=os.environ.get("ALLO_LLM_API_KEY", ""),
         llm_model=os.environ.get("ALLO_LLM_MODEL", ""),
-        llm_daily_budget_usd=float(os.environ.get("ALLO_LLM_DAILY_BUDGET_USD", "1.0")),
+        llm_daily_budget_usd=float(_env("ALLO_LLM_DAILY_BUDGET_USD", "1.0")),
         llm_price_in=_opt_float("ALLO_LLM_PRICE_IN"),
         llm_price_out=_opt_float("ALLO_LLM_PRICE_OUT"),
-        navitia_url=os.environ.get(
+        navitia_url=_env(
             "ALLO_NAVITIA_URL",
             "https://prim.iledefrance-mobilites.fr/marketplace/v2/navitia/journeys",
         ),
         route_daily_budget=_int("ALLO_ROUTE_DAILY_BUDGET", 300),
-        ev_flags_url=os.environ.get(
-            "ALLO_EV_FLAGS_URL",
-            "https://raw.githubusercontent.com/karthi108/allo-paris/ev-data/flags.json",
-        ),
+        ev_flags_url=os.environ.get("ALLO_EV_FLAGS_URL", "").strip()
+        or "https://raw.githubusercontent.com/karthi108/allo-paris/ev-data/flags.json",
     )

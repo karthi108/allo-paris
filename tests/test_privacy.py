@@ -46,3 +46,27 @@ def test_dotenv_with_bom(monkeypatch: pytest.MonkeyPatch) -> None:
     finally:
         env.unlink()
         monkeypatch.delenv("ALLO_BOM_TEST", raising=False)
+
+
+def test_empty_env_values_mean_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Copying .env.example as is must not crash or switch off Twilio signature checks."""
+    from app.core import config
+
+    for name in (
+        "ALLO_ENV",
+        "ALLO_VERIFY_TWILIO_SIGNATURE",
+        "ALLO_DAILY_CALL_CAP",
+        "ALLO_LLM_DAILY_BUDGET_USD",
+        "ALLO_NAVITIA_URL",
+        "ALLO_EV_FLAGS_URL",
+    ):
+        monkeypatch.setenv(name, "")
+    monkeypatch.setattr(config, "_load_dotenv", lambda path: None)
+    config.get_settings.cache_clear()
+    try:
+        s = config.get_settings()
+        assert s.verify_twilio_signature is True
+        assert s.daily_call_cap == 200 and s.llm_daily_budget_usd == 1.0
+        assert s.navitia_url.startswith("https://prim.") and s.ev_flags_url.endswith("flags.json")
+    finally:
+        config.get_settings.cache_clear()
