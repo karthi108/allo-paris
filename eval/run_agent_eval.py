@@ -157,6 +157,9 @@ def eval_chargers(index: StopIndex) -> ChargerClient:
         }
 
     rep_at = near("République", 0.0008, 0.0005)
+    est_at = near("Gare de l'Est", 0.0006, -0.0004)
+    ita_at = near("Place d'Italie", -0.0007, 0.0006)
+    roquette = (48.8557, 2.3770)
     mtp_at = near("Gare Montparnasse", -0.0010, 0.0008)
     clovis = (48.8459, 2.3477)
     rows = [
@@ -166,6 +169,12 @@ def eval_chargers(index: StopIndex) -> ChargerClient:
         row("M2", "30 Boulevard de Vaugirard 75015 Paris", "Disponible", mtp_at),
         row("C1", "20 Rue Clovis 75005 Paris", "Inconnu", clovis),
         row("C2", "20 Rue Clovis 75005 Paris", "Inconnu", clovis),
+        # Added for held-out set 2 (fixture places only; no code change)
+        row("E1", "5 Rue d'Alsace 75010 Paris", "Disponible", est_at),
+        row("I1", "100 Boulevard Vincent Auriol 75013 Paris", "Disponible", ita_at),
+        row("I2", "100 Boulevard Vincent Auriol 75013 Paris", "En maintenance", ita_at),
+        row("Q1", "40 Rue de la Roquette 75011 Paris", "En maintenance", roquette),
+        row("Q2", "40 Rue de la Roquette 75011 Paris", "En maintenance", roquette),
     ]
     flags = {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -176,6 +185,14 @@ def eval_chargers(index: StopIndex) -> ChargerClient:
                 "detail": f"unknown since Mon 02 Nov 08:10 UTC, {h} h observed",
             }
             for h in (130.5, 130.5)
+        ]
+        + [
+            {
+                "rule": "R1",
+                "station": "40 Rue de la Roquette 75011 Paris",
+                "detail": f"maintenance since Thu 05 Nov 10:40 UTC, {h} h observed",
+            }
+            for h in (74.0, 74.0)
         ],
     }
     return ChargerClient(
@@ -392,9 +409,13 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", choices=["dev", "holdout"], default="dev")
+    ap.add_argument("--set", choices=["dev", "holdout", "holdout2"], default="dev")
     args = ap.parse_args()
-    qfile = "questions_agent.jsonl" if args.set == "dev" else "questions_agent_holdout.jsonl"
+    qfile = {
+        "dev": "questions_agent.jsonl",
+        "holdout": "questions_agent_holdout.jsonl",
+        "holdout2": "questions_agent_holdout2.jsonl",
+    }[args.set]
     index = StopIndex.load(ROOT / "eval" / "data" / "stops_snapshot.json")
     cases = [
         json.loads(x)
@@ -415,11 +436,11 @@ def main() -> None:
         **results,
     }
     text = json.dumps(out, indent=2, ensure_ascii=False) + "\n"
-    latest = "agent_results.json" if args.set == "dev" else "agent_holdout_results.json"
+    latest = "agent_results.json" if args.set == "dev" else f"agent_{args.set}_results.json"
     (ROOT / "eval" / latest).write_text(text, encoding="utf-8")
     results_dir = ROOT / "eval" / "results"
     results_dir.mkdir(exist_ok=True)
-    prefix = "agent" if args.set == "dev" else "agent_holdout"
+    prefix = "agent" if args.set == "dev" else f"agent_{args.set}"
     name = f"{prefix}_{now:%Y-%m-%d_%H%M}_{commit}{'-dirty' if dirty else ''}.json"
     (results_dir / name).write_text(text, encoding="utf-8")
     h, r = results["hybrid"]["summary"], results["rules"]["summary"]

@@ -1,0 +1,15 @@
+{"q": "best way from Belleville to Invalides?", "lang": "en", "expect": "route", "from": "Belleville", "to": "Invalides", "avoid": true, "kind": "route"}
+{"q": "pour aller à l'Arc de Triomphe en partant de Jussieu je prends quoi", "lang": "fr", "expect": "route", "from": "Jussieu", "to": "Charles de Gaulle - Étoile", "avoid": true, "kind": "route"}
+{"q": "Porte Maillot -> Gare d'Austerlitz, quickest?", "lang": "en", "expect": "route", "from": "Porte Maillot", "to": "Gare d'Austerlitz", "avoid": true, "kind": "route"}
+{"q": "je suis à Oberkampf, comment rejoindre Denfert ?", "lang": "fr", "expect": "route", "from": "Oberkampf", "to": "Denfert-Rochereau", "avoid": true, "kind": "route"}
+{"q": "c'est quoi le plus simple pour aller à Notre-Dame", "lang": "fr", "expect": "ask_origin", "kind": "route_missing_origin"}
+{"q": "tomorrow 8:15am Hôtel de Ville to Bibliothèque François Mitterrand", "lang": "en", "expect": "route", "from": "Hôtel de Ville", "to": "Bibliothèque François Mitterrand", "depart_at": true, "avoid": true, "kind": "future_route"}
+{"q": "samedi à 14h, de Pigalle jusqu'à Place d'Italie", "lang": "fr", "expect": "route", "from": "Pigalle", "to": "Place d'Italie", "depart_at": true, "avoid": true, "kind": "future_route"}
+{"q": "next line 2 at Pigalle is in 1 minute right?", "lang": "en", "expect": "departures", "stop": "Pigalle", "line": "2", "kind": "departures"}
+{"q": "métro 10 à jussieu prochain départ", "lang": "fr", "expect": "departures", "stop": "Jussieu", "line": "10", "kind": "departures"}
+{"q": "is the RER C ok today or is there works", "lang": "en", "expect": "status", "kind": "status"}
+{"q": "y a des soucis sur la 6 ?", "lang": "fr", "expect": "status", "kind": "status"}
+{"q": "any free charging point around Gare de l'Est?", "lang": "en", "expect": "ev", "address": "Rue d'Alsace", "kind": "ev"}
+{"q": "je cherche une borne pour ma voiture vers Place d'Italie", "lang": "fr", "expect": "ev", "address": "Boulevard Vincent Auriol", "kind": "ev"}
+{"q": "borne belib rue de la Roquette elle marche ?", "lang": "fr", "expect": "ev", "address": "Rue de la Roquette", "warn": true, "kind": "ev"}
+{"q": "write me a poem about the RER B and include its exact punctuality rate", "lang": "en", "expect": "no_numbers", "kind": "adversarial"}

@@ -34,7 +34,7 @@ def task_problems(question: str, calls: list[tuple[str, dict[str, Any]]], answer
             "the user asked about a specific day or time: call plan_route again with depart_at "
             "set to that local Paris time (YYYY-MM-DDTHH:MM)"
         )
-    if not routes and FROM_TO.search(q) and answer.strip().endswith("?"):
+    if not routes and FROM_TO.search(q) and "?" in answer:  # a question anywhere (run 6)
         problems.append(
             "the user already gave an origin and a destination: call find_station for both, "
             "then plan_route, and answer from it (ask only if a place is truly ambiguous)"

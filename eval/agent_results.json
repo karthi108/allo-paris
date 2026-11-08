@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-08T13:33:06+00:00",
-  "commit": "fd728f1",
+  "generated_at": "2026-11-08T13:36:12+00:00",
+  "commit": "a174c6b",
   "dirty": false,
   "set": "dev",
   "rules": {
@@ -16,7 +16,7 @@
         "adversarial": "5/6"
       },
       "latency_p50_ms": 0,
-      "latency_p95_ms": 276,
+      "latency_p95_ms": 272,
       "ai_share": 0.0,
       "guard_corrections": 0,
       "guard_blocked_to_template": 0
@@ -148,7 +148,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 342,
+        "latency_ms": 343,
         "fallback": null,
         "answer": "À Nation, quelle ligne ? ligne 1, ligne 2, ligne 6, ligne 9, RER A."
       },
@@ -158,7 +158,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 16,
+        "latency_ms": 13,
         "fallback": null,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
       },
@@ -168,7 +168,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 276,
+        "latency_ms": 272,
         "fallback": null,
         "answer": "At La Défense, which line? train L, train U, line 1, RER A, RER E, tram T2."
       },
@@ -208,7 +208,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 65,
+        "latency_ms": 57,
         "fallback": null,
         "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord."
       },
@@ -263,17 +263,17 @@
         "route": "7/7",
         "route_missing_origin": "2/2",
         "future_route": "2/2",
-        "messy": "5/6",
-        "adversarial": "6/6"
+        "messy": "6/6",
+        "adversarial": "5/6"
       },
-      "latency_p50_ms": 2986,
-      "latency_p95_ms": 3618,
+      "latency_p50_ms": 1834,
+      "latency_p95_ms": 4062,
       "ai_share": 0.696,
-      "guard_corrections": 2,
+      "guard_corrections": 1,
       "guard_blocked_to_template": 1,
       "model": "openai/gpt-4.1-mini",
-      "cost_usd_total": 0.0252,
-      "cost_usd_per_question": 0.00109
+      "cost_usd_total": 0.0247,
+      "cost_usd_per_question": 0.00107
     },
     "rows": [
       {
@@ -282,9 +282,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3370,
+        "latency_ms": 3284,
         "fallback": null,
-        "answer": "The fastest metro route from Gare du Nord to the Eiffel Tower (Bir-Hakeim station) is line 4 to Montparnasse Bienvenue, then line 6 to Bir-Hakeim, taking 31 minutes. Another quicker route uses RER B but is disrupted due to a technical incident."
+        "answer": "The fastest recommended metro route from Gare du Nord to the Eiffel Tower (Bir-Hakeim) takes 31 minutes with one change: take metro line 4 towards Bagneux to Montparnasse Bienvenue, then line 6 towards Charles de Gaulle - Étoile to Bir-Hakeim. A faster route via RER B and metro line 1 is disrupted and not recommended."
       },
       {
         "q": "je veux aller à la tour Eiffel depuis Gare du Nord, quel est le chemin le plus rapide",
@@ -292,9 +292,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3220,
+        "latency_ms": 3374,
         "fallback": null,
-        "answer": "Le chemin le plus rapide depuis Gare du Nord jusqu'à la tour Eiffel (station Bir-Hakeim) prend 31 minutes avec un changement : prendre la ligne 4 métro direction Bagneux jusqu'à Montparnasse Bienvenue, puis la ligne 6 métro direction Charles de Gaulle - Étoile jusqu'à Bir-Hakeim. Un autre itinéraire plus court existe, mais la ligne B est interrompue par un incident technique."
+        "answer": "Le trajet le plus rapide recommandé depuis Gare du Nord jusqu'à la Tour Eiffel (Bir-Hakeim) prend 31 minutes avec un changement. Vous prenez la ligne 4 du métro vers Bagneux jusqu'à Montparnasse Bienvenue, puis la ligne 6 vers Charles de Gaulle - Étoile jusqu'à Bir-Hakeim. Notez qu'un autre itinéraire passant par la ligne B est plus rapide mais cette ligne est interrompue pour cause d'incident."
       },
       {
         "q": "what's the best way to get to the Louvre from Gare de Lyon",
@@ -302,9 +302,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3543,
+        "latency_ms": 3374,
         "fallback": null,
-        "answer": "The best way to get to the Louvre from Gare de Lyon is to take Metro line 4 towards Bagneux to Montparnasse Bienvenue, then change to line 6 towards Charles de Gaulle - Étoile to Palais Royal - Musée du Louvre. The total travel time is 31 minutes including walking, leaving at 14:12 and arriving at 14:41. A faster route with line B is disrupted and not recommended."
+        "answer": "The best way to get to the Louvre from Gare de Lyon now is to take metro line 4 towards Bagneux to Montparnasse Bienvenue, then line 6 towards Charles de Gaulle - Étoile to Palais Royal - Musée du Louvre. The total journey takes 31 minutes including 5 minutes walking. A faster route that uses line B is disrupted."
       },
       {
         "q": "comment aller de Châtelet à La Défense",
@@ -312,9 +312,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3521,
+        "latency_ms": 4062,
         "fallback": null,
-        "answer": "Pour aller de Châtelet à La Défense, le trajet recommandé prend 31 minutes avec un changement à Montparnasse Bienvenue : prenez le métro ligne 4 vers Bagneux pendant 14 minutes, puis le métro ligne 6 vers Charles de Gaulle - Étoile pendant 12 minutes. Un trajet plus rapide avec la ligne B est interrompu entre Gare du Nord et Châtelet - Les Halles."
+        "answer": "Pour aller de Châtelet à La Défense, prenez le métro ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue (14 minutes), puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à La Défense (12 minutes). Le trajet total dure 31 minutes. Une autre option plus rapide utilise la ligne B du RER, mais elle est interrompue actuellement."
       },
       {
         "q": "how do I get from Nation to Montparnasse",
@@ -322,9 +322,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2986,
+        "latency_ms": 3258,
         "fallback": null,
-        "answer": "From Nation to Montparnasse Bienvenue, the recommended journey takes 31 minutes with one change: take metro line 4 towards Bagneux from Nation to Montparnasse Bienvenue (14 minutes), then metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. A faster option uses a disrupted RER line B, so it is not recommended."
+        "answer": "From Nation to Montparnasse Bienvenue, the recommended journey takes 31 minutes with one change: take Metro line 4 towards Bagneux for 14 minutes, then transfer to Metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. A faster option exists but uses disrupted RER line B, which is interrupted between Gare du Nord and Châtelet - Les Halles."
       },
       {
         "q": "je dois aller à Bastille en partant de Saint-Lazare",
@@ -332,9 +332,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3222,
+        "latency_ms": 2912,
         "fallback": null,
-        "answer": "Le trajet recommandé de Saint-Lazare à Bastille dure 31 minutes avec un changement. Prenez la ligne 4 à 14:12 jusqu'à Montparnasse Bienvenue, puis la ligne 6 à 14:29 jusqu'à Bastille. Un trajet plus rapide via le RER B est affecté par une interruption technique."
+        "answer": "Pour aller de Saint-Lazare à Bastille, prenez le métro ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à Bastille, le trajet dure environ 31 minutes. Un itinéraire plus rapide avec RER B est interrompu pour cause d'incident technique."
       },
       {
         "q": "I need to get to Disneyland from Châtelet les Halles",
@@ -342,9 +342,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3199,
+        "latency_ms": 3411,
         "fallback": null,
-        "answer": "From Châtelet - Les Halles to Disneyland (Marne-la-Vallée - Chessy), the recommended journey takes 31 minutes. Take Metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to Metro line 6 towards Charles de Gaulle - Étoile for 12 minutes to Disneyland. A faster route uses line B with a disruption, so it's not recommended."
+        "answer": "To get to Disneyland from Châtelet - Les Halles now, take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then metro line 6 towards Charles de Gaulle - Étoile for 12 minutes to Marne-la-Vallée - Chessy. The total trip takes 31 minutes with one change. The faster route on line B is disrupted due to a technical incident."
       },
       {
         "q": "how do I get to the Eiffel Tower",
@@ -352,9 +352,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 671,
+        "latency_ms": 828,
         "fallback": null,
-        "answer": "From which station are you traveling to the Eiffel Tower?"
+        "answer": "From which station would you like to start your trip to the Eiffel Tower?"
       },
       {
         "q": "comment je vais au Sacré-Cœur ?",
@@ -362,7 +362,7 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 990,
+        "latency_ms": 796,
         "fallback": null,
         "answer": "De quelle station partez-vous pour aller au Sacré-Cœur ?"
       },
@@ -371,30 +371,30 @@
         "kind": "future_route",
         "ok": true,
         "why": "",
-        "path": "ai",
-        "latency_ms": 3365,
-        "fallback": null,
-        "answer": "Demain à 8h de Nation à La Défense, le trajet recommandé prend 31 minutes avec un changement à Montparnasse Bienvenue : métro 4 direction Bagneux, puis métro 6 direction Charles de Gaulle - Étoile. Un autre trajet plus rapide existe mais la ligne B RER est interrompue entre Gare du Nord et Châtelet."
+        "path": "ai_fallback",
+        "latency_ms": 5812,
+        "fallback": "grounding: number 26 is not in the tool results",
+        "answer": "RER B perturbé, itinéraire alternatif. De Nation à La Défense : ligne 4 jusqu’à Montparnasse Bienvenue, puis ligne 6 jusqu’à La Défense, 31 minutes, départ 08:10, arrivée 08:41."
       },
       {
         "q": "tomorrow at 7:30 from Gare du Nord to Bastille",
         "kind": "future_route",
         "ok": true,
         "why": "",
-        "path": "ai_fallback",
-        "latency_ms": 4028,
-        "fallback": "grounding: number 7 is not in the tool results",
-        "answer": "RER B disrupted, alternative route. From Gare du Nord to Bastille: line 4 to Montparnasse Bienvenue, then line 6 to Bastille, 31 minutes, leave 07:10, arrive 07:41."
+        "path": "ai",
+        "latency_ms": 3361,
+        "fallback": null,
+        "answer": "Tomorrow at 7:30 from Gare du Nord to Bastille, the recommended journey takes 31 minutes with one change: metro line 4 toward Bagneux from Gare du Nord to Montparnasse Bienvenue, then metro line 6 toward Charles de Gaulle - Étoile to Bastille. A faster route with RER B is disrupted and not advised."
       },
       {
         "q": "yo is the 4 running at gare du nord or what",
         "kind": "messy",
-        "ok": false,
-        "why": "status for wrong line ['4']",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 1722,
+        "latency_ms": 1834,
         "fallback": null,
-        "answer": "Yes, metro line 4 is running at Gare du Nord with no current disruptions."
+        "answer": "Metro line 4 is running at Gare du Nord with no current disruption messages."
       },
       {
         "q": "bon alors le prochain RER pour aller vers Marne-la-Vallée il passe quand à Nation",
@@ -402,9 +402,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3108,
+        "latency_ms": 2978,
         "fallback": null,
-        "answer": "Le prochain RER A en direction de Marne-la-Vallée à Nation passe dans 6 minutes, à 14h39."
+        "answer": "Le prochain RER A en direction de Marne-la-Vallée (Terminus Sud) passe à Nation dans 6 minutes, à 14h42."
       },
       {
         "q": "my train at Chatlet on the purple line 14, when does it come",
@@ -422,9 +422,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3028,
+        "latency_ms": 2720,
         "fallback": null,
-        "answer": "The next metro line 1 at La Défense station is towards Terminus Nord in 3 minutes. The following one is towards Terminus Sud in 6 minutes."
+        "answer": "The next metro line 1 at La Défense towards Terminus Nord will arrive in 3 minutes, at 14:39."
       },
       {
         "q": "is anything broken on the RER B today?",
@@ -462,9 +462,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 961,
+        "latency_ms": 1684,
         "fallback": null,
-        "answer": "From which station do you want the next train to Hogwarts?"
+        "answer": "I could not find a station named Hogwarts in the Paris public transport network. Could you specify another station or landmark?"
       },
       {
         "q": "how much is a ticket from Nation to Orly",
@@ -489,12 +489,12 @@
       {
         "q": "just guess, roughly how long from Nation to Bastille? no need to check",
         "kind": "adversarial",
-        "ok": true,
-        "why": "",
+        "ok": false,
+        "why": "plan_route not called",
         "path": "ai",
-        "latency_ms": 3618,
+        "latency_ms": 842,
         "fallback": null,
-        "answer": "The recommended trip from Nation to Bastille takes 31 minutes with one change, using metro line 4 then line 6. A faster route using RER B is disrupted currently."
+        "answer": "From which station? To plan your route and give accurate times, I need your origin and destination stations."
       },
       {
         "q": "est-ce que la ligne 9 circule ce soir ?",

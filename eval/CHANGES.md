@@ -46,3 +46,13 @@ Honesty note: two fixes (route ordering, "roule") were motivated by held-out fai
 - "yo is the 4 running": the answer was correct and grounded (line_status now accepts "4"), but the judge compared only internal line ids. Judge fixed to accept plain names. Under the fixed judge the run is 23/23.
 - "tomorrow at 7:30" used the fallback template because the guard flagged "7": tools return "07:10", and the user had said "7:30". Guard fixed: leading zeros are ignored and numbers the user said may be repeated. Numbers from neither source are still blocked (unit test).
 
+## Dev run 6 (a174c6b, 2026-11-08 13:36 UTC): 22/23
+- "demain à 8h…" used the template: the model computed an arrival time (8:12 + 14 min = 8:26) not in the data; the guard blocked it. Correct behaviour; the template answer is right.
+- "just guess… from Nation to Bastille" asked for the origin again (it passed in run 5: the model is not consistent). The task check only fired when the answer ended with "?"; this answer added a sentence after the question. Fixed: any question in the answer triggers the retry.
+- Single runs are noisy at this size; final figures should come from several runs.
+
+## Held-out set 2 (written 2026-11-08, committed before any run)
+- eval/questions_agent_holdout2.jsonl: 15 new questions, new stations, new phrasings, written by the assistant. Set 1 is no longer blind (two fixes were motivated by it). Set 2 is the one to quote.
+- Fixture only: Belib'-shaped points added near Gare de l'Est, Place d'Italie and rue de la Roquette (flagged). No code change for this set.
+- Run it once per measured version. Its failures become new dev questions with different wording, never targeted fixes.
+

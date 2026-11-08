@@ -731,3 +731,10 @@ def test_guard_does_not_confirm_durations_the_user_suggests() -> None:
         "Yes, in 2 minutes.", outputs, "the next train is in 2 minutes right?"
     )
     assert problems == ["number 2 is not in the tool results"]
+
+
+def test_origin_question_followed_by_more_text_is_still_caught() -> None:
+    from app.agent.agent import task_problems
+
+    answer = "From which station? To plan your route I need your origin and destination."
+    assert task_problems("roughly how long from Nation to Bastille", [], answer)
