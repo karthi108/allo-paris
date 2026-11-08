@@ -24,3 +24,9 @@ Code fixes (no expectation changes):
 - Rules parser: a question naming two places and no line ("how long from X to Y") is a route question and goes to the AI. Before, rules answered it with departures at the destination when that station has one line (found while testing the fix above).
 - Agent loop: a retry now adds 3 model calls to the budget, so a re-plan (tools, then answer) fits. Found by the new unit test: the retry ran out of rounds and fell back to the template.
 
+
+## After run 3 (22799de, 2026-11-07 23:56 UTC): hybrid 22/22 on the dev set
+- Reading the answers showed what 22/22 hid: AI answers were too long to be read aloud, and route answers often described the disrupted RER B journey before the alternative.
+- New checks on every AI answer, both sets: at most 3 sentences; a route answer must not describe the disrupted journey (its 24-minute total). Dev-set runs from now on are stricter than runs 1 to 3, so the history table is not a like-for-like series across this line.
+- New expectation type "ev" (Belib' chargers): the answer must give the expected address, and pass on the reliability warning when the fixture has one. Charger data in the eval is a fixture placed next to real stations, not real chargers.
+- Held-out set: eval/questions_agent_holdout.jsonl, 15 questions written by the assistant (not by the owner) and committed before any run. Never tuned against: a held-out failure becomes a new dev-set question, never a targeted fix. Results go to eval/HOLDOUT.md.

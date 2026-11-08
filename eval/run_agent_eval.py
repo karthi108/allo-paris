@@ -6,12 +6,14 @@ scripted on RER B so the eval checks the agent recommends a journey that avoids 
 
 Cost: about 22 questions x a few LLM calls (cents with small models). Not run in CI.
 
-Usage:  python eval/run_agent_eval.py
+Usage:  python eval/run_agent_eval.py                 (dev set: questions_agent.jsonl)
+        python eval/run_agent_eval.py --set holdout   (held-out set, never tuned against)
 Writes: eval/agent_results.json, eval/results/agent_<date>_<commit>.json, a row in eval/HISTORY.md
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import statistics
@@ -30,7 +32,9 @@ from app.agent.tools import Toolbox  # noqa: E402
 from app.core.config import get_settings  # noqa: E402
 from app.data.prim import Departure, DeparturesResult, TrafficResult  # noqa: E402
 from app.data.routes import Journey, Leg  # noqa: E402
-from app.data.stops import StopArea, StopIndex  # noqa: E402
+from app.data.stops import StopArea, StopIndex, normalize  # noqa: E402
+from app.ev.belib import parse_export  # noqa: E402
+from app.ev.live import ChargerClient  # noqa: E402
 
 DISRUPTION_B = "Trafic interrompu entre Gare du Nord et Châtelet - Les Halles (incident technique)."
 
@@ -134,6 +138,71 @@ class EvalPlanner:
         ]
 
 
+def eval_chargers(index: StopIndex) -> ChargerClient:
+    """Fixed Belib'-shaped data placed next to real stations (fixture, not real chargers).
+    The Rue Clovis points are out of service and flagged, to check warnings are passed on."""
+
+    def near(name: str, dlat: float, dlon: float) -> tuple[float, float]:
+        area = index.match(name, limit=1)[0].area
+        return (area.lat or 0) + dlat, (area.lon or 0) + dlon
+
+    def row(pid: str, address: str, status: str, at: tuple[float, float]) -> dict[str, Any]:
+        return {
+            "id_pdc": pid,
+            "statut_pdc": status,
+            "last_updated": datetime.now(UTC).isoformat(),
+            "adresse_station": address,
+            "arrondissement": "",
+            "coordonneesxy": {"lat": at[0], "lon": at[1]},
+        }
+
+    rep_at = near("République", 0.0008, 0.0005)
+    mtp_at = near("Gare Montparnasse", -0.0010, 0.0008)
+    clovis = (48.8459, 2.3477)
+    rows = [
+        row("R1", "8 Rue du Faubourg du Temple 75011 Paris", "Disponible", rep_at),
+        row("R2", "8 Rue du Faubourg du Temple 75011 Paris", "Occupé (en charge)", rep_at),
+        row("M1", "30 Boulevard de Vaugirard 75015 Paris", "Disponible", mtp_at),
+        row("M2", "30 Boulevard de Vaugirard 75015 Paris", "Disponible", mtp_at),
+        row("C1", "20 Rue Clovis 75005 Paris", "Inconnu", clovis),
+        row("C2", "20 Rue Clovis 75005 Paris", "Inconnu", clovis),
+    ]
+    flags = {
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "flags": [
+            {
+                "rule": "R1",
+                "station": "20 Rue Clovis 75005 Paris",
+                "detail": f"unknown since Mon 02 Nov 08:10 UTC, {h} h observed",
+            }
+            for h in (130.5, 130.5)
+        ],
+    }
+    return ChargerClient(
+        fetch=lambda: (parse_export(rows), datetime.now(UTC)), get_flags=lambda _: dict(flags)
+    )
+
+
+_SENTENCE_END = re.compile(r"[.!?](?:\s|$)")
+_WARNING = re.compile(
+    r"fiab|unreliab|warning|attention|signal|flag|hors service|out of service", re.I
+)
+
+
+def quality(case: dict[str, Any], reply: Any) -> tuple[bool, str]:
+    """Checks added after run 3 (2026-11-08) on every AI answer, both sets:
+    - at most 3 sentences (answers are read aloud)
+    - a route answer must not describe the disrupted journey (its 24-minute total)."""
+    if not reply.path.startswith("ai"):
+        return True, ""
+    n = len(_SENTENCE_END.findall(reply.text.strip()))
+    if n > 3:
+        return False, f"{n} sentences (max 3 for voice)"
+    if case.get("avoid") and re.search(r"\b24\s*min", reply.text):
+        return False, "described the disrupted RER B journey"
+    return True, ""
+
+
 def git_state() -> tuple[str, bool]:
     import subprocess
 
@@ -229,6 +298,13 @@ def judge(
             return reply.intent == "line_status", reply.intent
         ok = any(name == "line_status" for name, _ in calls)
         return ok, "" if ok else "line_status not called"
+    if exp == "ev":
+        text_n = normalize(text)
+        if normalize(case["address"]) not in text_n:
+            return False, f"did not give the charger address {case['address']!r}"
+        if case.get("warn") and not _WARNING.search(text):
+            return False, "did not pass on the reliability warning"
+        return True, ""
     if exp == "no_numbers":
         # Must not claim a time, a duration, a price or "free": examples like "ligne 4" are fine
         claim = re.search(r"\d+\s*(min|minute|€|eur|euro|h\b)|\b(free|gratuit)\b", text, re.I)
@@ -239,10 +315,11 @@ def judge(
 def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[str, Any]:
     s = get_settings()
     transit, planner = EvalTransit(), EvalPlanner(index)
+    chargers = eval_chargers(index)
     boxes: list[Toolbox] = []
 
     def make_box() -> Toolbox:
-        box = Toolbox(index, transit, None, planner)
+        box = Toolbox(index, transit, None, planner, chargers=chargers)
         boxes.append(box)
         return box
 
@@ -260,13 +337,15 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
         if llm is None:
             sys.exit("Hybrid mode needs ALLO_LLM_PROVIDER and ALLO_LLM_API_KEY in .env")
         agent = Agent(llm, make_box)
-    dialog = Dialog(index, transit, agent=agent)
+    dialog = Dialog(index, transit, agent=agent, chargers=chargers)
     rows = []
     for case in cases:
         boxes.clear()
         reply = dialog.handle(case["q"], CallState(lang=case["lang"]))
         calls = [c for b in boxes for c in b.calls]
         ok, why = judge(case, reply, calls, index)
+        if ok:
+            ok, why = quality(case, reply)
         rows.append(
             {
                 "q": case["q"],
@@ -305,10 +384,14 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--set", choices=["dev", "holdout"], default="dev")
+    args = ap.parse_args()
+    qfile = "questions_agent.jsonl" if args.set == "dev" else "questions_agent_holdout.jsonl"
     index = StopIndex.load(ROOT / "eval" / "data" / "stops_snapshot.json")
     cases = [
         json.loads(x)
-        for x in (ROOT / "eval" / "questions_agent.jsonl").read_text(encoding="utf-8").splitlines()
+        for x in (ROOT / "eval" / qfile).read_text(encoding="utf-8").splitlines()
         if x.strip()
     ]
     results = {m: run_mode(m, index, cases) for m in ("rules", "hybrid")}
@@ -321,13 +404,16 @@ def main() -> None:
         "generated_at": now.isoformat(timespec="seconds"),
         "commit": commit,
         "dirty": dirty,
+        "set": args.set,
         **results,
     }
     text = json.dumps(out, indent=2, ensure_ascii=False) + "\n"
-    (ROOT / "eval" / "agent_results.json").write_text(text, encoding="utf-8")
+    latest = "agent_results.json" if args.set == "dev" else "agent_holdout_results.json"
+    (ROOT / "eval" / latest).write_text(text, encoding="utf-8")
     results_dir = ROOT / "eval" / "results"
     results_dir.mkdir(exist_ok=True)
-    name = f"agent_{now:%Y-%m-%d_%H%M}_{commit}{'-dirty' if dirty else ''}.json"
+    prefix = "agent" if args.set == "dev" else "agent_holdout"
+    name = f"{prefix}_{now:%Y-%m-%d_%H%M}_{commit}{'-dirty' if dirty else ''}.json"
     (results_dir / name).write_text(text, encoding="utf-8")
     h, r = results["hybrid"]["summary"], results["rules"]["summary"]
     row = (
@@ -338,9 +424,19 @@ def main() -> None:
         f"| {h['guard_corrections']} / {h['guard_blocked_to_template']} "
         f"| [{name}](results/{name}) |\n"
     )
-    with (ROOT / "eval" / "HISTORY.md").open("a", encoding="utf-8") as f:
+    hist = ROOT / "eval" / ("HISTORY.md" if args.set == "dev" else "HOLDOUT.md")
+    if not hist.exists():
+        hist.write_text(
+            "# Held-out agent eval\n\nQuestions in questions_agent_holdout.jsonl were written and "
+            "committed before the first run. The code is never tuned against them: a failure "
+            "here becomes a new dev-set question, never a fix aimed at this set.\n\n"
+            "| Date (UTC) | Commit | Model | Rules | Hybrid | Routes (hybrid) | p50 / p95 (hybrid) "
+            "| Cost / question | Guard | Results |\n|---|---|---|---|---|---|---|---|---|---|\n",
+            encoding="utf-8",
+        )
+    with hist.open("a", encoding="utf-8") as f:
         f.write(row)
-    print(f"\nSaved eval/results/{name} and appended a row to eval/HISTORY.md")
+    print(f"\nSaved eval/results/{name} and appended a row to eval/{hist.name}")
 
 
 _ = StopArea  # re-exported type used in annotations above

@@ -1,0 +1,15 @@
+{"q": "comment je vais à Montmartre depuis Gare de Lyon ?", "lang": "fr", "expect": "route", "from": "Gare de Lyon", "to": "Abbesses", "to_any": ["Abbesses", "Anvers"], "avoid": true, "kind": "route"}
+{"q": "fastest way from saint lazare to gare de lyon pls", "lang": "en", "expect": "route", "from": "Saint-Lazare", "to": "Gare de Lyon", "avoid": true, "kind": "route"}
+{"q": "je pars de République, je veux aller à Odéon", "lang": "fr", "expect": "route", "from": "République", "to": "Odéon", "avoid": true, "kind": "route"}
+{"q": "how do i get to Trocadéro", "lang": "en", "expect": "ask_origin", "kind": "route_missing_origin"}
+{"q": "demain 9h de Saint-Lazare à Bercy, quel trajet", "lang": "fr", "expect": "route", "from": "Saint-Lazare", "to": "Bercy", "depart_at": true, "avoid": true, "kind": "future_route"}
+{"q": "tonight at 22:00 from Opéra to Gare du Nord", "lang": "en", "expect": "route", "from": "Opéra", "to": "Gare du Nord", "depart_at": true, "avoid": true, "kind": "future_route"}
+{"q": "prochain métro ligne 1 à Concorde", "lang": "fr", "expect": "departures", "stop": "Concorde", "line": "1", "kind": "departures"}
+{"q": "when's the next RER A at chatelet les halles", "lang": "en", "expect": "departures", "stop": "Châtelet - Les Halles", "line": "A", "kind": "departures"}
+{"q": "le 14 à st lazare il passe quand", "lang": "fr", "expect": "departures", "stop": "Saint-Lazare", "line": "14", "kind": "departures"}
+{"q": "le RER A ça roule aujourd'hui ?", "lang": "fr", "expect": "status", "kind": "status"}
+{"q": "any problems on line 13 right now?", "lang": "en", "expect": "status", "kind": "status"}
+{"q": "y a une borne libre près de République ?", "lang": "fr", "expect": "ev", "address": "Faubourg du Temple", "kind": "ev"}
+{"q": "where can I charge my electric car near Montparnasse", "lang": "en", "expect": "ev", "address": "Boulevard de Vaugirard", "kind": "ev"}
+{"q": "borne qui marche vers la rue Clovis ?", "lang": "fr", "expect": "ev", "address": "Rue Clovis", "warn": true, "kind": "ev"}
+{"q": "c'est combien le pass Navigo par mois ?", "lang": "fr", "expect": "no_numbers", "kind": "adversarial"}
