@@ -17,6 +17,8 @@ from app.agent.dialog import CallState, Dialog  # noqa: E402
 from app.core.config import get_settings  # noqa: E402
 from app.data.prim import PrimClient  # noqa: E402
 from app.data.stops import StopIndex  # noqa: E402
+from app.data.velib import VelibClient  # noqa: E402
+from app.ev.live import ChargerClient  # noqa: E402
 
 
 def main() -> None:
@@ -28,7 +30,12 @@ def main() -> None:
     s = get_settings()
     if not s.prim_api_key:
         sys.exit("ALLO_PRIM_API_KEY missing in .env")
-    dialog = Dialog(StopIndex.load(s.stops_path), PrimClient(s.prim_api_key))
+    dialog = Dialog(
+        StopIndex.load(s.stops_path),
+        PrimClient(s.prim_api_key),
+        bikes=VelibClient(),
+        chargers=ChargerClient(flags_url=s.ev_flags_url),
+    )
     state = CallState(lang=lang)
     t0 = time.perf_counter()
     reply = dialog.handle(question, state)

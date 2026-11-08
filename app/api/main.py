@@ -27,6 +27,7 @@ from app.data.prim import PrimClient
 from app.data.routes import RouteClient
 from app.data.stops import StopIndex
 from app.data.velib import VelibClient
+from app.ev.live import ChargerClient
 from app.voice import twiml
 from app.voice.calls import CallConfig, CallHandler
 
@@ -43,6 +44,7 @@ prim = PrimClient(
     daily_budget=settings.prim_daily_budget,
 )
 velib = VelibClient()
+chargers = ChargerClient(flags_url=settings.ev_flags_url)
 routes = RouteClient(
     settings.prim_api_key, url=settings.navitia_url, daily_budget=settings.route_daily_budget
 )
@@ -54,7 +56,7 @@ llm = make_client(
     price_in=settings.llm_price_in,
     price_out=settings.llm_price_out,
 )
-agent = Agent(llm, lambda: Toolbox(index, prim, velib, routes)) if llm else None
+agent = Agent(llm, lambda: Toolbox(index, prim, velib, routes, chargers=chargers)) if llm else None
 metrics = Metrics()
 dialog = Dialog(
     index,
@@ -63,6 +65,7 @@ dialog = Dialog(
     bikes=velib,
     agent=agent,
     metrics=metrics,
+    chargers=chargers,
 )
 store = Store(settings.db_path, settings.transcript_retention_days)
 calls = CallHandler(
@@ -137,6 +140,7 @@ def health() -> JSONResponse:
         "stops": len(index.areas),
         "prim": p,
         "velib": velib.status(),
+        "belib": chargers.status(),
     }
     return JSONResponse(body, status_code=503 if failing else 200)
 
@@ -163,6 +167,7 @@ def api_metrics() -> dict[str, Any]:
         "prim": prim.status(),
         "routes": routes.status(),
         "velib": velib.status(),
+        "belib": chargers.status(),
     }
 
 
@@ -289,6 +294,7 @@ def api_status() -> dict[str, Any]:
     return {
         "prim": prim.status(),
         "velib": velib.status(),
+        "belib": chargers.status(),
         "routes": routes.status(),
         "ai": _ai_status(),
         "stops": len(index.areas),

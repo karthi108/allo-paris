@@ -61,6 +61,7 @@ class Settings:
     llm_price_out: float | None
     navitia_url: str
     route_daily_budget: int
+    ev_flags_url: str
 
 
 @lru_cache
@@ -101,4 +102,8 @@ def get_settings() -> Settings:
             "https://prim.iledefrance-mobilites.fr/marketplace/v2/navitia/journeys",
         ),
         route_daily_budget=_int("ALLO_ROUTE_DAILY_BUDGET", 300),
+        ev_flags_url=os.environ.get(
+            "ALLO_EV_FLAGS_URL",
+            "https://raw.githubusercontent.com/karthi108/allo-paris/ev-data/flags.json",
+        ),
     )

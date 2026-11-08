@@ -19,7 +19,7 @@ because the feed's last_updated is not a reliable change time (D-021).
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -249,3 +249,35 @@ def load_csv(data: Path) -> tuple[list[Point], Coverage]:
             if t is not None:
                 snaps.append((t, r["stale"] == "1"))
     return list(points.values()), Coverage(snaps)
+
+
+def flags_json(
+    points: list[Point], cov: Coverage, th: Thresholds | None = None
+) -> dict[str, object]:
+    """What the collector publishes as flags.json for the web app and the AI tool."""
+    th = th or Thresholds()
+    flags = evaluate(points, cov, th)
+    covered = cov.covered(cov.first, cov.last) if cov.first and cov.last else timedelta()
+    return {
+        "generated_at": cov.last.isoformat(timespec="seconds") if cov.last else None,
+        "coverage": {
+            "first": cov.first.isoformat(timespec="seconds") if cov.first else None,
+            "covered_hours": _hours(covered),
+            "gaps": cov.gaps,
+            "stale_snapshots": cov.stale,
+        },
+        "thresholds": asdict(th),
+        "thresholds_provisional": True,
+        "flags": [
+            {
+                "rule": f.rule,
+                "point_id": f.point_id,
+                "station": f.station,
+                "since": f.since.isoformat(timespec="seconds"),
+                "covered_hours": f.covered_hours,
+                "lower_bound": f.lower_bound,
+                "detail": f.detail,
+            }
+            for f in flags
+        ],
+    }

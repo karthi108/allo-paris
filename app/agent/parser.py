@@ -116,6 +116,11 @@ _FUTURE = re.compile(
     r"samedi|dimanche|monday|tuesday|wednesday|thursday|friday|saturday|sunday|"
     r"\d{1,2} ?h(?: ?\d\d)?|\d{1,2} ?(?:am|pm)|\d{1,2} \d\d)\b"
 )
+# EV charging (Belib'), checked before routes and status words ("une borne qui marche")
+_EV = re.compile(
+    r"\b(borne|bornes|recharge|recharger|belib|chargeur|chargeurs|charger|chargers|charging|"
+    r"voiture electrique|electric car)\b"
+)
 _VELIB = re.compile(r"\b(velib|velibs|velo|velos|bike|bikes|bicycle|bicycles|cycle)\b")
 # Prompt-injection phrasing: refused deterministically, never sent to the LLM or data APIs
 _INJECTION = re.compile(
@@ -182,6 +187,16 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         return ParsedQuery("unknown", wants_english=True)
     if _INJECTION.search(text):
         return ParsedQuery("refused")
+    if _EV.search(text) and not _PRICE.search(text):
+        place = _EV.sub(" ", text)
+        stops = index.match(place)
+        landmark = None
+        found = _landmark(place)
+        if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+            near = index.match(found[1])
+            if near and near[0].score >= 0.95:
+                stops, landmark = near[:1], found[0]
+        return ParsedQuery("ev", stops=stops, landmark=landmark)
     if _ROUTE.search(text):
         return ParsedQuery("unsupported_route")
     if _PRICE.search(text):

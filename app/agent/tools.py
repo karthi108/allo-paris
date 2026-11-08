@@ -16,6 +16,7 @@ from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.routes import PARIS, Journey
 from app.data.stops import Line, StopArea, StopIndex
 from app.data.velib import VelibResult
+from app.ev.live import ChargerResult
 
 
 class Transit(Protocol):
@@ -27,6 +28,13 @@ class Bikes(Protocol):
     def nearby(
         self, lat: float, lon: float, radius_m: int = 500, limit: int = 3
     ) -> VelibResult: ...
+
+
+class Chargers(Protocol):
+    def nearby(
+        self, lat: float, lon: float, radius_m: int = 500, limit: int = 3
+    ) -> ChargerResult: ...
+    def find_address(self, query: str) -> tuple[float, float, str] | None: ...
 
 
 class Planner(Protocol):
@@ -82,6 +90,20 @@ TOOLS = [
         },
     ),
     ToolSpec(
+        "chargers_nearby",
+        "Belib' public EV chargers (City of Paris network) within 500 m: live status per "
+        "address (free, charging, out of service) and reliability warnings computed from "
+        "their observed history. Give station_id (from find_station) OR place (a street or "
+        "landmark name, e.g. 'Panthéon').",
+        {
+            "type": "object",
+            "properties": {
+                "station_id": {"type": "string"},
+                "place": {"type": "string"},
+            },
+        },
+    ),
+    ToolSpec(
         "plan_route",
         "Journey from one station to another with IDFM's official planner. Returns up to 3 "
         "journeys with legs, total minutes and current disruption messages on the lines used. "
@@ -115,8 +137,10 @@ class Toolbox:
         transit: Transit,
         bikes: Bikes | None = None,
         planner: Planner | None = None,
+        chargers: Chargers | None = None,
     ) -> None:
         self.index = index
+        self.chargers = chargers
         self.transit = transit
         self.bikes = bikes
         self.planner = planner
@@ -225,6 +249,44 @@ class Toolbox:
                     "open": s.renting,
                 }
                 for s in res.stations
+            ],
+        }
+
+    def _t_chargers_nearby(
+        self, station_id: str | None = None, place: str | None = None
+    ) -> dict[str, Any]:
+        if self.chargers is None:
+            raise ToolError("charger data not available")
+        if station_id:
+            area = self._area(station_id)
+            if area.lat is None or area.lon is None:
+                raise ToolError("missing coordinates")
+            lat, lon, near = area.lat, area.lon, area.name
+        elif place:
+            found = self.chargers.find_address(str(place)[:120])
+            if found is None:
+                raise ToolError(f"no Belib' address matches {place!r}; try find_station")
+            lat, lon, near = found
+        else:
+            raise ToolError("give station_id or place")
+        res = self.chargers.nearby(lat, lon)
+        return {
+            "near": near,
+            "source": "Belib' (City of Paris), real-time",
+            "reliability_as_of": res.flags_as_of.isoformat(timespec="minutes")
+            if res.flags_as_of
+            else "not available",
+            "addresses": [
+                {
+                    "address": a.name,
+                    "distance_m": a.distance_m,
+                    "points_in_service": a.in_service,
+                    "free": a.available,
+                    "charging": a.charging,
+                    "out_of_service": a.out_of_service,
+                    "reliability_warnings": list(a.flags),
+                }
+                for a in res.addresses
             ],
         }
 

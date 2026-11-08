@@ -97,3 +97,15 @@ def test_r4_silent_and_planned_points_are_never_flagged() -> None:
 def test_no_good_snapshots_means_no_flags() -> None:
     p = Point("p1", "A", [ev("unknown", 0)])
     assert evaluate([p], Coverage([(T0, True)]), TH) == []
+
+
+def test_flags_json_is_what_the_app_reads() -> None:
+    from app.ev.rules import flags_json
+
+    p = Point("p1", "17 Place du Panthéon 75005 Paris", [ev("unknown", 0, changed_days_ago=143)])
+    out = flags_json([p], snaps(30), TH)
+    rules_hit = {f["rule"] for f in out["flags"]}  # type: ignore[union-attr]
+    assert rules_hit == {"R1", "R4"}
+    assert out["thresholds_provisional"] is True
+    assert out["coverage"]["covered_hours"] == 30.0  # type: ignore[index]
+    assert out["generated_at"] == "2026-11-09T06:00:00+00:00"

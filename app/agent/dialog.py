@@ -19,6 +19,14 @@ from app.core.metrics import Metrics
 from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.stops import Line, StopArea, StopIndex, StopMatch, normalize
 from app.data.velib import VelibResult
+from app.ev.live import ChargerResult
+
+
+class ChargerSource(Protocol):
+    def nearby(
+        self, lat: float, lon: float, radius_m: int = 500, limit: int = 3
+    ) -> ChargerResult: ...
+    def find_address(self, query: str) -> tuple[float, float, str] | None: ...
 
 
 class BikeSource(Protocol):
@@ -73,6 +81,14 @@ T = {
         "velib_fresh": "Données Vélib en temps réel.",
         "velib_old": "Attention, certaines stations n'ont pas mis à jour depuis {mins} minutes.",
         "velib_down": "Les données Vélib ne sont pas disponibles pour le moment.",
+        "ev_which": "Bornes Belib' près de quel endroit ? Par exemple : bornes à Bastille.",
+        "ev_none": "Aucune borne Belib' à moins de 500 mètres de {place}.",
+        "ev_intro": "Bornes Belib' près de {place}. ",
+        "ev_address": "{name}, à {dist} mètres : {available} libre(s) sur {total}",
+        "ev_out": ", {out} hors service",
+        "ev_flagged": ". Attention : {n} borne(s) signalée(s) peu fiable(s) d'après l'historique",
+        "ev_fresh": "Données Belib' en temps réel.",
+        "ev_down": "Les données Belib' ne sont pas disponibles pour le moment.",
         "not_understood": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
         "which_stop": "À quelle station ?",
         "which_stop_choice": "Vous voulez dire {a} ou {b} ?",
@@ -125,6 +141,14 @@ T = {
         "velib_fresh": "Real-time Vélib data.",
         "velib_old": "Note: some stations haven't reported for {mins} minutes.",
         "velib_down": "Vélib data is unavailable right now.",
+        "ev_which": "Belib' chargers near which place? For example: chargers at Bastille.",
+        "ev_none": "No Belib' charger within 500 metres of {place}.",
+        "ev_intro": "Belib' chargers near {place}. ",
+        "ev_address": "{name}, {dist} metres away: {available} free out of {total}",
+        "ev_out": ", {out} out of service",
+        "ev_flagged": ". Note: {n} point(s) here flagged as unreliable from their history",
+        "ev_fresh": "Real-time Belib' data.",
+        "ev_down": "Belib' data is unavailable right now.",
         "not_understood": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
         "which_stop": "Which station?",
         "which_stop_choice": "Do you mean {a} or {b}?",
@@ -274,6 +298,28 @@ def render_velib(result: VelibResult, stop: StopArea, lang: str) -> str:
     return "".join(parts).strip()
 
 
+def render_chargers(result: ChargerResult, place: str, lang: str) -> str:
+    if not result.addresses:
+        return t(lang, "ev_none", place=place)
+    parts = [t(lang, "ev_intro", place=place)]
+    for a in result.addresses[:3]:
+        text = t(
+            lang,
+            "ev_address",
+            name=a.name,
+            dist=a.distance_m,
+            available=a.available,
+            total=a.in_service,
+        )
+        if a.out_of_service:
+            text += t(lang, "ev_out", out=a.out_of_service)
+        if a.flags:
+            text += t(lang, "ev_flagged", n=len(a.flags))
+        parts.append(text + ". ")
+    parts.append(t(lang, "ev_fresh"))
+    return "".join(parts).strip()
+
+
 def render_traffic(result: TrafficResult, line: Line, lang: str) -> str:
     if not result.messages:
         return t(lang, "status_ok", line=line.with_article(lang))
@@ -324,6 +370,7 @@ class Dialog:
         bikes: BikeSource | None = None,
         agent: Agent | None = None,
         metrics: Metrics | None = None,
+        chargers: ChargerSource | None = None,
     ) -> None:
         self.index = index
         self.source = source
@@ -331,6 +378,7 @@ class Dialog:
         self.bikes = bikes
         self.agent = agent
         self.metrics = metrics or Metrics()
+        self.chargers = chargers
 
     def handle(self, utterance: str, state: CallState) -> Reply:
         """Hybrid: rules first (free, fast, deterministic); the AI agent only for what
@@ -417,6 +465,8 @@ class Dialog:
                 place = _place(q.landmark, lang)
                 reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
             return reply
+        if q.intent == "ev":
+            return self._ev(q, utterance, lang)
         if q.intent == "unknown":
             return self._miss(state)
         reply = self._departures(q, state)
@@ -436,6 +486,26 @@ class Dialog:
         except FeedError:
             return Reply(t(lang, "velib_down"), "feed_down", stop=stop)
         return Reply(render_velib(result, stop, lang), "velib", stop=stop)
+
+    def _ev(self, q: ParsedQuery, utterance: str, lang: str) -> Reply:
+        if self.chargers is None:
+            return Reply(t(lang, "ev_down"), "feed_down")
+        try:
+            if q.stops and q.stops[0].score >= 0.9 and q.stops[0].area.lat is not None:
+                stop = q.stops[0].area
+                place = _place(q.landmark, lang) if q.landmark else stop.name
+                lat, lon = stop.lat, stop.lon
+            else:
+                found = self.chargers.find_address(utterance)
+                if found is None:
+                    return Reply(t(lang, "ev_which"), "clarify_stop")
+                lat, lon, place = found
+            if lat is None or lon is None:
+                return Reply(t(lang, "ev_which"), "clarify_stop")
+            result = self.chargers.nearby(lat, lon)
+        except FeedError:
+            return Reply(t(lang, "ev_down"), "feed_down")
+        return Reply(render_chargers(result, place, lang), "ev")
 
     def _miss(self, state: CallState) -> Reply:
         state.misses += 1
