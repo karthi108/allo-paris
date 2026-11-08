@@ -13,3 +13,4 @@ __pycache__/
 eval/audio/private/
 data/allo.db
 data/stops.json
+data/ev.db

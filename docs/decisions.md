@@ -168,3 +168,11 @@ Never delete an entry; mark it superseded and link the replacement.
 | Bibliothèque François Mitterrand | | |
 | Charles de Gaulle - Étoile | | |
 | Gare du Nord | | |
+
+## D-021 · EV charger layer: Belib' first, public data only (2026-11-08)
+- Public open data only: no private, employer or internal data, rules or knowledge. Operators are anonymised in any ranking.
+- First source: Belib' real-time status (City of Paris open data). Verified 2026-11-08: one export call returns all 2,036 charge points at 398 addresses, five status values, no API key.
+- The meaning of last_updated is not assumed: every snapshot measures it. Result on 2026-11-08 (two snapshots 3 min apart, 34 changes): 3 points had a new last_updated with the same status, 2 changed status with the same last_updated. So last_updated is not a reliable change time; durations come from the collector's own observed history.
+- The plain export URL returned copies up to 22 minutes old to the collector. Fixed with a unique URL per request; snapshots whose newest last_updated does not move for 5 minutes are marked stale and ignored by detection.
+- IRVE dynamique (national, per operator) comes after Belib', once coverage in Paris is checked.
+- No ML, no LLM in detection: fixed rules over the status history; the LLM only answers questions through tools.
