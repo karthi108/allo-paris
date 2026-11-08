@@ -85,6 +85,7 @@ T = {
         "ev_none": "Aucune borne Belib' à moins de 500 mètres de {place}.",
         "ev_intro": "Bornes Belib' près de {place}. ",
         "ev_address": "{name}, à {dist} mètres : {available} libre(s) sur {total}",
+        "ev_address_here": "{name}, sur place : {available} libre(s) sur {total}",
         "ev_out": ", {out} hors service",
         "ev_flagged": ". Attention : {n} borne(s) signalée(s) peu fiable(s) d'après l'historique",
         "ev_fresh": "Données Belib' en temps réel.",
@@ -145,6 +146,7 @@ T = {
         "ev_none": "No Belib' charger within 500 metres of {place}.",
         "ev_intro": "Belib' chargers near {place}. ",
         "ev_address": "{name}, {dist} metres away: {available} free out of {total}",
+        "ev_address_here": "{name}, right here: {available} free out of {total}",
         "ev_out": ", {out} out of service",
         "ev_flagged": ". Note: {n} point(s) here flagged as unreliable from their history",
         "ev_fresh": "Real-time Belib' data.",
@@ -305,7 +307,7 @@ def render_chargers(result: ChargerResult, place: str, lang: str) -> str:
     for a in result.addresses[:3]:
         text = t(
             lang,
-            "ev_address",
+            "ev_address_here" if a.distance_m < 30 else "ev_address",
             name=a.name,
             dist=a.distance_m,
             available=a.available,

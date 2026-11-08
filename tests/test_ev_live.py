@@ -98,6 +98,7 @@ def test_rules_answer_by_address_with_reliability_warning(source: FakeSource) ->
     reply = d.handle("bornes près du Panthéon", CallState())
     assert reply.intent == "ev" and reply.path == "rules"
     assert reply.text.startswith("Bornes Belib' près de 17 Place du Panthéon.")
+    assert "17 Place du Panthéon, sur place : " in reply.text
     assert "1 libre(s) sur 3, 2 hors service" in reply.text
     assert "2 borne(s) signalée(s) peu fiable(s)" in reply.text
     assert "1 Rue Soufflot" in reply.text and "Porte" not in reply.text
