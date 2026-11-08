@@ -30,3 +30,15 @@ Code fixes (no expectation changes):
 - New checks on every AI answer, both sets: at most 3 sentences; a route answer must not describe the disrupted journey (its 24-minute total). Dev-set runs from now on are stricter than runs 1 to 3, so the history table is not a like-for-like series across this line.
 - New expectation type "ev" (Belib' chargers): the answer must give the expected address, and pass on the reliability warning when the fixture has one. Charger data in the eval is a fixture placed next to real stations, not real chargers.
 - Held-out set: eval/questions_agent_holdout.jsonl, 15 questions written by the assistant (not by the owner) and committed before any run. Never tuned against: a held-out failure becomes a new dev-set question, never a targeted fix. Results go to eval/HOLDOUT.md.
+
+## Held-out run 1 (3b6cf57, 2026-11-08 13:27 UTC) and dev run 4 (same commit)
+- Held-out: judge said 11/15; reading the answers, the RER A status answer was the generic "could not verify" template, which the judge wrongly passed. Real held-out score: 10/15 (67%). Failures: 4 route answers led with the disrupted journey.
+- Dev run 4 under the stricter checks: 18/22. Three answers had 4 sentences (one was the fallback template itself). Safety bug: after a line_status error, the model answered "Yes, Metro line 4 is running"; the guard let it through (no numbers).
+Fixes (generic, tested on the dev set and unit tests):
+- plan_route lists the journey avoiding disrupted lines first, marked "recommended"; the prompt says to describe only that one.
+- Fallback template: one sentence for the route, so it fits the 3-sentence limit.
+- line_status accepts plain line names ("4", "RER A"); the guard rejects any "running / roule / no disruption" claim unless a data tool returned a result.
+- Parser: "roule", "circule" are status words. New dev question with different wording ("est-ce que la ligne 9 circule ce soir ?").
+- Judge: a status answer that is the generic fallback fails; each row records the fallback reason.
+Honesty note: two fixes (route ordering, "roule") were motivated by held-out failures. The current held-out set is therefore no longer fully blind for those cases; a fresh held-out set is needed before quoting a final number.
+

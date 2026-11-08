@@ -228,7 +228,7 @@ def test_repeated_invention_falls_back_to_template(source: FakeSource) -> None:
     assert reply.path == "ai_fallback"
     assert reply.text == (
         "De Gare du Nord à Bir-Hakeim : RER B jusqu’à Châtelet - Les Halles, puis ligne 6 "
-        "jusqu’à Bir-Hakeim. Durée 24 minutes. Départ 18:30, arrivée 18:54."
+        "jusqu’à Bir-Hakeim, 24 minutes, départ 18:30, arrivée 18:54."
     )
     assert d.metrics.guard_fallbacks == 1
 
@@ -533,8 +533,8 @@ def test_fallback_avoids_disrupted_line_and_says_why() -> None:
         "disruptions_on_lines_used": {"B": ["Trafic interrompu"]},
     }
     assert fallback_text([out], "en") == (
-        "RER B disrupted, alternative route. From Gare du Nord to Bastille: line 5 to Bastille. "
-        "31 minutes. Leave 07:31, arrive 08:02."
+        "RER B disrupted, alternative route. From Gare du Nord to Bastille: line 5 to Bastille, "
+        "31 minutes, leave 07:31, arrive 08:02."
     )
     out["disruptions_on_lines_used"] = {}
     assert fallback_text([out], "fr").startswith("De Gare du Nord à Bastille : RER B")
@@ -602,3 +602,111 @@ def test_trip_between_two_places_is_not_answered_with_departures() -> None:
     assert parse("de Gare du Nord à Bir-Hakeim", idx).intent == "unsupported_route"
     # A named line keeps it a departure question
     assert parse("RER B vers Robinson depuis Gare du Nord", idx).intent == "next_departure"
+
+
+# ---------- agent eval 2026-11-08 (held-out + dev run 4 findings) ----------
+
+
+def test_fallback_still_names_disruption_when_clean_journey_listed_first() -> None:
+    out = {
+        "_tool": "plan_route",
+        "from": "Gare du Nord",
+        "to": "Bastille",
+        "journeys": [
+            {
+                "total_minutes": 31,
+                "depart": "07:31",
+                "arrive": "08:02",
+                "legs": [{"line": "5", "mode": "Metro", "to": "Bastille"}],
+            },
+            {
+                "total_minutes": 24,
+                "depart": "07:30",
+                "arrive": "07:54",
+                "legs": [{"line": "B", "mode": "RapidTransit", "to": "Châtelet - Les Halles"}],
+            },
+        ],
+        "disruptions_on_lines_used": {"B": ["Trafic interrompu"]},
+    }
+    text = fallback_text([out], "en")
+    assert text.startswith(
+        "RER B disrupted, alternative route. From Gare du Nord to Bastille: line 5"
+    )
+    assert text.count(". ") + 1 <= 3
+
+
+def test_plan_route_puts_journey_avoiding_disruption_first(source: FakeSource) -> None:
+    from app.data.prim import TrafficResult
+
+    class TwoJourneys:
+        def plan(self, *args: Any, **kwargs: Any) -> list[Journey]:
+            b = Leg(
+                "transit",
+                9,
+                "RapidTransit",
+                "B",
+                "Robinson",
+                "Gare du Nord",
+                "Châtelet",
+                "18:31",
+                "18:40",
+            )
+            m4 = Leg(
+                "transit",
+                14,
+                "Metro",
+                "4",
+                "Bagneux",
+                "Gare du Nord",
+                "Montparnasse",
+                "18:32",
+                "18:46",
+            )
+            return [
+                Journey(24, "18:30", "18:54", 1, 3, [b]),
+                Journey(31, "18:30", "19:01", 1, 4, [m4]),
+            ]
+
+    def traffic(line_id: str) -> TrafficResult:
+        return TrafficResult(
+            ["Trafic interrompu"] if "C01743" in line_id else [], datetime.now(UTC)
+        )
+
+    source.traffic = traffic  # type: ignore[method-assign]
+    box = Toolbox(_index(), source, None, TwoJourneys())
+    out = json.loads(box.run("plan_route", {"from_station_id": GDN, "to_station_id": BIR}))
+    first, second = out["journeys"]
+    assert (first["recommended"], first["uses_disrupted_line"], first["total_minutes"]) == (
+        True,
+        False,
+        31,
+    )
+    assert (second["recommended"], second["uses_disrupted_line"]) == (False, True)
+
+
+def test_line_status_accepts_plain_line_names(source: FakeSource) -> None:
+    box = Toolbox(_index(), source)
+    for name in ("4", "line 4", "RER B"):
+        out = json.loads(box.run("line_status", {"line_id": name}))
+        assert "error" not in out, (name, out)
+    assert "error" in json.loads(box.run("line_status", {"line_id": "99"}))
+
+
+def test_guard_blocks_status_claim_after_tool_error() -> None:
+    outputs = [
+        {
+            "_tool": "find_station",
+            "stations": [{"name": "Gare du Nord", "lines": [{"label": "Metro 4"}]}],
+        },
+        {"_tool": "line_status", "error": "unknown line 4"},
+    ]
+    problems = grounding.check("Yes, Metro line 4 is running at Gare du Nord.", outputs)
+    assert any("status" in p for p in problems)
+    ok = outputs[:1] + [{"_tool": "line_status", "line": "Metro 4", "messages": []}]
+    assert grounding.check("Yes, Metro line 4 is running.", ok) == []
+
+
+def test_ca_roule_is_a_status_question() -> None:
+    from app.agent.parser import parse
+
+    assert parse("est-ce que le RER B roule ce soir", _index()).intent == "line_status"

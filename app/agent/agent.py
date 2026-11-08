@@ -52,7 +52,8 @@ Rules:
 - If the user names a day or time for a trip ("demain à 8h", "tomorrow at 7:30", "lundi", "ce soir"), pass depart_at to plan_route as local Paris time YYYY-MM-DDTHH:MM, worked out from the current time below. Never present a real-time journey as if it were for a later time.
 - "Metro" / "métro" means metro lines (1 to 14), not RER or tram. When the user asks for the metro at a station, query a metro line.
 - Only name a line next to times or durations if those times came from that line's tool result.
-- If plan_route lists disruptions on a line of the fastest journey and another journey avoids that line, recommend the other one and say why.
+- For routes, describe only the journey marked "recommended": its lines, total minutes, and leave/arrive times if useful. If a faster journey was skipped because it uses a disrupted line, say so in one short clause. Never describe the other journeys.
+- Never say a line is running, normal or undisrupted unless line_status or next_departures returned data for it. If a tool returned an error, say you could not check.
 - For EV charging questions use chargers_nearby (Belib' network only; other operators are not covered). Mention reliability warnings when present; never call a charger reliable just because it has no warning.
 - Buses are not covered. Prices and tickets are not covered: say so.
 - Answer in the user's language ({lang}), in at most 3 short sentences, suitable to be read aloud. No lists, no markdown.
@@ -110,8 +111,11 @@ def fallback_text(outputs: list[dict[str, Any]], lang: str) -> str:
             j = clean[0] if clean else journeys[0]
             steps = (", puis " if fr else ", then ").join(_leg(leg, fr) for leg in j["legs"])
             note = ""
-            hit = sorted(disrupted & _journey_lines(journeys[0]))
-            if hit and clean and j is not journeys[0]:
+            skipped = [k for k in journeys if k is not j and _journey_lines(k) & disrupted]
+            hit = sorted(disrupted & set().union(*(_journey_lines(k) for k in skipped)))
+            if not clean:
+                hit = sorted(disrupted & _journey_lines(j))
+            if hit and clean:
                 names = ", ".join(_line_name(c, journeys, fr) for c in hit)
                 note = (
                     f"{names} perturbé, itinéraire alternatif. "
@@ -121,19 +125,23 @@ def fallback_text(outputs: list[dict[str, Any]], lang: str) -> str:
             elif hit and not clean:
                 names = ", ".join(_line_name(c, journeys, fr) for c in hit)
                 note = f"Attention, {names} perturbé. " if fr else f"Warning: {names} disrupted. "
+            # One sentence for the route (plus the disruption note): read aloud, max 3 sentences
             times = ""
             if j.get("depart") and j.get("arrive"):
                 times = (
-                    f" Départ {j['depart']}, arrivée {j['arrive']}."
+                    f", départ {j['depart']}, arrivée {j['arrive']}"
                     if fr
-                    else f" Leave {j['depart']}, arrive {j['arrive']}."
+                    else f", leave {j['depart']}, arrive {j['arrive']}"
                 )
             if fr:
                 return (
-                    f"{note}De {out['from']} à {out['to']} : {steps}. "
-                    f"Durée {j['total_minutes']} minutes.{times}"
+                    f"{note}De {out['from']} à {out['to']} : {steps}, "
+                    f"{j['total_minutes']} minutes{times}."
                 )
-            return f"{note}From {out['from']} to {out['to']}: {steps}. {j['total_minutes']} minutes.{times}"
+            return (
+                f"{note}From {out['from']} to {out['to']}: {steps}, "
+                f"{j['total_minutes']} minutes{times}."
+            )
         if out.get("departures"):
             d = out["departures"][0]
             if fr:

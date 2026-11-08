@@ -1,0 +1,325 @@
+{
+  "generated_at": "2026-11-08T13:27:48+00:00",
+  "commit": "3b6cf57",
+  "dirty": false,
+  "set": "holdout",
+  "rules": {
+    "summary": {
+      "mode": "rules",
+      "questions": 15,
+      "success_rate": 0.533,
+      "by_kind": {
+        "route": "0/3",
+        "route_missing_origin": "0/1",
+        "future_route": "0/2",
+        "departures": "3/3",
+        "status": "1/2",
+        "ev": "3/3",
+        "adversarial": "1/1"
+      },
+      "latency_p50_ms": 0,
+      "latency_p95_ms": 248,
+      "ai_share": 0.0,
+      "guard_corrections": 0,
+      "guard_blocked_to_template": 0
+    },
+    "rows": [
+      {
+        "q": "comment je vais à Montmartre depuis Gare de Lyon ?",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet."
+      },
+      {
+        "q": "fastest way from saint lazare to gare de lyon pls",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet."
+      },
+      {
+        "q": "je pars de République, je veux aller à Odéon",
+        "kind": "route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet."
+      },
+      {
+        "q": "how do i get to Trocadéro",
+        "kind": "route_missing_origin",
+        "ok": false,
+        "why": "did not ask for the origin",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet."
+      },
+      {
+        "q": "demain 9h de Saint-Lazare à Bercy, quel trajet",
+        "kind": "future_route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet."
+      },
+      {
+        "q": "tonight at 22:00 from Opéra to Gare du Nord",
+        "kind": "future_route",
+        "ok": false,
+        "why": "no route computed",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "I only give the next real-time departures, not future timetables. Say for example: line 4 at Gare du Nord."
+      },
+      {
+        "q": "prochain métro ligne 1 à Concorde",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 2,
+        "answer": "Ligne 1 à Concorde. Direction Terminus Nord : 3 minutes puis 11 minutes. Direction Terminus Sud : 6 minutes. Données temps réel, mises à jour il y a 0 secondes."
+      },
+      {
+        "q": "when's the next RER A at chatelet les halles",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 6,
+        "answer": "RER A at Châtelet - Les Halles. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
+      },
+      {
+        "q": "le 14 à st lazare il passe quand",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 4,
+        "answer": "Ligne 14 à Saint-Lazare. Direction Terminus Nord : 3 minutes puis 11 minutes. Direction Terminus Sud : 6 minutes. Données temps réel, mises à jour il y a 0 secondes."
+      },
+      {
+        "q": "le RER A ça roule aujourd'hui ?",
+        "kind": "status",
+        "ok": false,
+        "why": "clarify_stop",
+        "path": "rules",
+        "latency_ms": 207,
+        "answer": "À quelle station ?"
+      },
+      {
+        "q": "any problems on line 13 right now?",
+        "kind": "status",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "No disruption messages for line 13 right now."
+      },
+      {
+        "q": "y a une borne libre près de République ?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 248,
+        "answer": "Bornes Belib' près de République. 8 Rue du Faubourg du Temple, à 96 mètres : 1 libre(s) sur 2. Données Belib' en temps réel."
+      },
+      {
+        "q": "where can I charge my electric car near Montparnasse",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 345,
+        "answer": "Belib' chargers near Gare Montparnasse. 30 Boulevard de Vaugirard, 126 metres away: 2 free out of 2. Real-time Belib' data."
+      },
+      {
+        "q": "borne qui marche vers la rue Clovis ?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 175,
+        "answer": "Bornes Belib' près de 20 Rue Clovis. 20 Rue Clovis, sur place : 0 libre(s) sur 2, 2 hors service. Attention : 2 borne(s) signalée(s) peu fiable(s) d'après l'historique. Données Belib' en temps réel."
+      },
+      {
+        "q": "c'est combien le pass Navigo par mois ?",
+        "kind": "adversarial",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "Je ne donne pas les tarifs ni les titres de transport. Je réponds sur les horaires, les perturbations, les trajets et les Vélib."
+      }
+    ]
+  },
+  "hybrid": {
+    "summary": {
+      "mode": "hybrid",
+      "questions": 15,
+      "success_rate": 0.733,
+      "by_kind": {
+        "route": "0/3",
+        "route_missing_origin": "1/1",
+        "future_route": "1/2",
+        "departures": "3/3",
+        "status": "2/2",
+        "ev": "3/3",
+        "adversarial": "1/1"
+      },
+      "latency_p50_ms": 352,
+      "latency_p95_ms": 4389,
+      "ai_share": 0.467,
+      "guard_corrections": 1,
+      "guard_blocked_to_template": 1,
+      "model": "openai/gpt-4.1-mini",
+      "cost_usd_total": 0.012,
+      "cost_usd_per_question": 0.0008
+    },
+    "rows": [
+      {
+        "q": "comment je vais à Montmartre depuis Gare de Lyon ?",
+        "kind": "route",
+        "ok": false,
+        "why": "described the disrupted RER B journey",
+        "path": "ai",
+        "latency_ms": 4856,
+        "answer": "Le trajet le plus rapide depuis Gare de Lyon jusqu'à Montmartre (station Abbesses) dure 24 minutes, avec un changement. Partez maintenant à 14:10, prenez le RER B jusqu'à Châtelet - Les Halles, puis le métro ligne 1 jusqu'à Abbesses. Le RER B a un trafic interrompu entre Gare du Nord et Châtelet, vous pouvez plutôt prendre le métro ligne 4 puis le 6, cela prend un peu plus de temps mais évite la perturbation."
+      },
+      {
+        "q": "fastest way from saint lazare to gare de lyon pls",
+        "kind": "route",
+        "ok": false,
+        "why": "described the disrupted RER B journey",
+        "path": "ai",
+        "latency_ms": 3745,
+        "answer": "The fastest route from Saint-Lazare to Gare de Lyon takes 24 minutes with one change: take line B RER to Châtelet - Les Halles then metro line 1 to Gare de Lyon. However, line B has a disruption causing traffic interruption between Gare du Nord and Châtelet - Les Halles. I recommend using metro line 4 to Montparnasse Bienvenue, then metro line 6 to Gare de Lyon, which takes 31 minutes but avoids the disruption."
+      },
+      {
+        "q": "je pars de République, je veux aller à Odéon",
+        "kind": "route",
+        "ok": false,
+        "why": "described the disrupted RER B journey",
+        "path": "ai",
+        "latency_ms": 4054,
+        "answer": "Le trajet le plus rapide de République à Odéon prend 24 minutes avec un changement à Châtelet - Les Halles, mais la ligne B est interrompue entre Gare du Nord et Châtelet. Je vous conseille de prendre la ligne 4 jusqu'à Montparnasse Bienvenue, puis la ligne 6 jusqu'à Odéon, ce trajet dure 31 minutes."
+      },
+      {
+        "q": "how do i get to Trocadéro",
+        "kind": "route_missing_origin",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 894,
+        "answer": "From which station are you traveling to Trocadéro?"
+      },
+      {
+        "q": "demain 9h de Saint-Lazare à Bercy, quel trajet",
+        "kind": "future_route",
+        "ok": false,
+        "why": "described the disrupted RER B journey",
+        "path": "ai",
+        "latency_ms": 3092,
+        "answer": "Le trajet le plus rapide demain à 9h de Saint-Lazare à Bercy prend 24 minutes avec un changement à Châtelet - Les Halles entre ligne B RER et ligne 1 métro, mais la ligne B est interrompue entre Gare du Nord et Châtelet. Je vous conseille donc de prendre la seconde option, 31 minutes avec un changement à Montparnasse Bienvenue entre ligne 4 et ligne 6 métro, sans interruption."
+      },
+      {
+        "q": "tonight at 22:00 from Opéra to Gare du Nord",
+        "kind": "future_route",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3627,
+        "answer": "At 22:00 from Opéra to Gare du Nord, the best route avoids disruption on line B. Take metro line 4 towards Bagneux from Opéra at 22:12, change at Montparnasse Bienvenue, then take line 6 towards Charles de Gaulle - Étoile to Gare du Nord, arriving at 22:41. The alternative with line B has a traffic interruption."
+      },
+      {
+        "q": "prochain métro ligne 1 à Concorde",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 4,
+        "answer": "Ligne 1 à Concorde. Direction Terminus Nord : 3 minutes puis 11 minutes. Direction Terminus Sud : 6 minutes. Données temps réel, mises à jour il y a 0 secondes."
+      },
+      {
+        "q": "when's the next RER A at chatelet les halles",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 7,
+        "answer": "RER A at Châtelet - Les Halles. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago."
+      },
+      {
+        "q": "le 14 à st lazare il passe quand",
+        "kind": "departures",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 4,
+        "answer": "Ligne 14 à Saint-Lazare. Direction Terminus Nord : 3 minutes puis 11 minutes. Direction Terminus Sud : 6 minutes. Données temps réel, mises à jour il y a 0 secondes."
+      },
+      {
+        "q": "le RER A ça roule aujourd'hui ?",
+        "kind": "status",
+        "ok": true,
+        "why": "",
+        "path": "ai_fallback",
+        "latency_ms": 4389,
+        "answer": "Je n'ai pas pu vérifier une réponse fiable. Dites par exemple : ligne 4 à Gare du Nord."
+      },
+      {
+        "q": "any problems on line 13 right now?",
+        "kind": "status",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "No disruption messages for line 13 right now."
+      },
+      {
+        "q": "y a une borne libre près de République ?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 230,
+        "answer": "Bornes Belib' près de République. 8 Rue du Faubourg du Temple, à 96 mètres : 1 libre(s) sur 2. Données Belib' en temps réel."
+      },
+      {
+        "q": "where can I charge my electric car near Montparnasse",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 352,
+        "answer": "Belib' chargers near Gare Montparnasse. 30 Boulevard de Vaugirard, 126 metres away: 2 free out of 2. Real-time Belib' data."
+      },
+      {
+        "q": "borne qui marche vers la rue Clovis ?",
+        "kind": "ev",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 165,
+        "answer": "Bornes Belib' près de 20 Rue Clovis. 20 Rue Clovis, sur place : 0 libre(s) sur 2, 2 hors service. Attention : 2 borne(s) signalée(s) peu fiable(s) d'après l'historique. Données Belib' en temps réel."
+      },
+      {
+        "q": "c'est combien le pass Navigo par mois ?",
+        "kind": "adversarial",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "answer": "Je ne donne pas les tarifs ni les titres de transport. Je réponds sur les horaires, les perturbations, les trajets et les Vélib."
+      }
+    ]
+  }
+}

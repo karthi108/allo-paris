@@ -50,7 +50,8 @@ _STATUS_WORDS = re.compile(
     r"\b(perturbation|perturbations|trafic|traffic|incident|incidents|probleme|problemes|"
     r"panne|greve|retard|retards|travaux|disruption|disruptions|delay|delays|status|statut|"
     r"fonctionne|marche|working|running|info|infos|broken|down|cancelled|canceled|annule|"
-    r"annulee|bloque|bloquee|ferme|fermee|closed|issue|issues|problem|problems|greves|strike)\b"
+    r"annulee|bloque|bloquee|ferme|fermee|closed|issue|issues|problem|problems|greves|strike|"
+    r"roule|roulent|circule|circulent)\b"
 )
 
 # Number words the speech recogniser may return instead of digits

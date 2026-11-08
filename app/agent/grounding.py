@@ -68,6 +68,19 @@ def allowed_from(outputs: list[dict[str, Any]]) -> tuple[set[str], set[str]]:
 
 LOOKUP_TOOLS = {"find_station"}  # lists candidates, carries no live data
 
+# "Line 4 is running" with no successful data behind it (agent eval 2026-11-08: the model
+# got a tool error, then answered "Yes, Metro line 4 is running").
+_STATUS_CLAIM = re.compile(
+    r"\b(is running|are running|running normally|runs normally|operating normally|"
+    r"no (known )?disruptions?|normal service|fonctionne( normalement)?|circule|roule|"
+    r"trafic (est )?normal|pas de perturbation|aucune perturbation)\b",
+    re.I,
+)
+
+
+def _has_data(outputs: list[dict[str, Any]]) -> bool:
+    return any(o.get("_tool") not in LOOKUP_TOOLS and "error" not in o for o in outputs)
+
 
 def check(answer: str, outputs: list[dict[str, Any]]) -> list[str]:
     """Return a list of problems; empty means the answer is grounded."""
@@ -90,4 +103,8 @@ def check(answer: str, outputs: list[dict[str, Any]]) -> list[str]:
         if code not in lines:
             where = "the data tool results" if claims else "the tool results"
             problems.append(f"line {code.split(':', 1)[1]} is not in {where}")
+    if _STATUS_CLAIM.search(_fold(answer)) and not _has_data(outputs):
+        problems.append(
+            "the answer claims a line or service status, but no data tool returned a result"
+        )
     return sorted(set(problems))

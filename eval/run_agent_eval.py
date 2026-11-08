@@ -296,6 +296,8 @@ def judge(
     if exp == "status":
         if reply.path == "rules":
             return reply.intent == "line_status", reply.intent
+        if re.search(r"pas pu v[ée]rifier|couldn.t verify", text):
+            return False, "generic fallback, no status given"
         ok = any(name == "line_status" for name, _ in calls)
         return ok, "" if ok else "line_status not called"
     if exp == "ev":
@@ -354,6 +356,7 @@ def run_mode(mode: str, index: StopIndex, cases: list[dict[str, Any]]) -> dict[s
                 "why": why,
                 "path": reply.path,
                 "latency_ms": reply.latency_ms,
+                "fallback": reply.fallback,
                 "answer": reply.text,
             }
         )

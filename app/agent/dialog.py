@@ -343,6 +343,7 @@ class Reply:
     grounded: bool = True  # every number/line in the text came from a data source
     latency_ms: int = 0
     tools: list[str] = field(default_factory=list)
+    fallback: str | None = None  # why the AI answer was replaced by a template
 
 
 # Rule outcomes the AI agent may improve on (when an LLM is configured)
@@ -427,6 +428,7 @@ class Dialog:
             path="ai" if r.fallback is None else "ai_fallback",
             grounded=True,  # either passed the guard or replaced by a template
             tools=r.tools,
+            fallback=r.fallback,
         )
 
     def _handle_rules(self, utterance: str, state: CallState) -> Reply:

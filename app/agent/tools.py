@@ -227,8 +227,15 @@ class Toolbox:
 
     def _t_line_status(self, line_id: str) -> dict[str, Any]:
         line = next((ln for a in self.index.areas for ln in a.lines if ln.line_id == line_id), None)
+        if line is None:  # accept plain names too ("4", "RER A", "line 14", "T3a")
+            name = str(line_id).strip()
+            for prefix in ("rer ", "line ", "ligne ", "metro ", "métro ", "m"):
+                if name.lower().startswith(prefix) and len(name) > len(prefix):
+                    name = name[len(prefix) :].strip()
+                    break
+            line = self.index.find_line(None, name)
         if line is None:
-            raise ToolError(f"unknown line_id {line_id}")
+            raise ToolError(f"unknown line {line_id}; use a line_id from find_station")
         res = self.transit.traffic(line.line_id)
         return {"line": line.spoken("en"), "messages": res.messages[:3]}
 
@@ -319,12 +326,21 @@ class Toolbox:
                     msgs = []
                 if msgs:
                     disruptions[leg.line] = msgs
+
+        # The journey that avoids disrupted lines goes first and is marked recommended, so
+        # the answer leads with it (agent eval 2026-11-08: answers led with the disrupted one)
+        def hit(j: Journey) -> bool:
+            return any(leg.line in disruptions for leg in j.legs if leg.kind == "transit")
+
+        ordered = [j for j in journeys if not hit(j)] + [j for j in journeys if hit(j)]
         return {
             "from": a.name,
             "to": b.name,
             "planned_for": depart_at or "now (real-time)",
             "journeys": [
                 {
+                    "recommended": i == 0,
+                    "uses_disrupted_line": hit(j),
                     "total_minutes": j.minutes,
                     "depart": j.depart,
                     "arrive": j.arrive,
@@ -344,7 +360,7 @@ class Toolbox:
                         if leg.kind == "transit"
                     ],
                 }
-                for j in journeys
+                for i, j in enumerate(ordered)
             ],
             "disruptions_on_lines_used": disruptions,
         }
