@@ -41,7 +41,8 @@ def main() -> int:
     for rule, name in NAMES.items():
         fs = [f for f in flags if f.rule == rule]
         print(f"\n{rule} {name}: {len(fs)}")
-        for f in sorted(fs, key=lambda f: -f.covered_hours)[: args.examples]:
+        # Most severe first: longest observed, then oldest start (R4 has no observed time)
+        for f in sorted(fs, key=lambda f: (-f.covered_hours, f.since))[: args.examples]:
             print(f"  {f.point_id}  {f.station}  ·  {f.detail}")
     return 0
 

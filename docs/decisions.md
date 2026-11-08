@@ -189,3 +189,4 @@ Never delete an entry; mark it superseded and link the replacement.
 - Durations count only time the collector observed; gaps and stale snapshots are excluded, never read as "stuck" or "fine".
 - Starting thresholds (24 h, 72 h, 6 changes/h, 7 days) are provisional. After 7 days of collection they are set from the observed distributions and the reasoning is recorded here.
 - Fixed rules, not ML or an LLM: testable, explainable, free per check.
+- 2026-11-08: the "*/10" schedule produced no scheduled run in 1 h 40 min after the push (manual runs worked). Changed to "3-59/10" (off the busy start of the hour) and re-pushed, which also re-registers the schedule. If runs still do not appear, an external trigger is the fallback.

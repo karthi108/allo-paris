@@ -3,7 +3,9 @@ name: EV collector
 # GitHub may delay or skip scheduled runs when busy; snapshots.csv records the real coverage.
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    # Minutes 3, 13, 23... : GitHub advises avoiding the start of the hour, when load is
+    # highest. The first version ("*/10") produced no scheduled run in 1 h 40 min.
+    - cron: "3-59/10 * * * *"
   workflow_dispatch:
 permissions:
   contents: write  # push to the ev-data branch only (main is never written)
