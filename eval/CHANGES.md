@@ -62,3 +62,8 @@ Failures:
 - "Porte Maillot -> Gare d'Austerlitz, quickest?": rules answered with line 1 departures (confident wrong answer). Two clearly named stations and no line now means a trip, sent to the AI. While testing, found an older bug: the route word list contained "direction" (singular), so French departure phrasing ("... direction La Défense") was treated as a trip; now only English "directions" is. New dev question with different wording.
 - "is the RER C ok today..." and "y a des soucis sur la 6 ?": safe but useless answers. Cause not yet known: the eval did not record tool outputs. Added tool traces to every result row and a diagnosis mode (--only TEXT), which is not saved and not a measurement.
 
+## Stability: 3 identical dev runs (95210ef, 2026-11-08 13:57-13:59 UTC): 24/24, 24/24, 23/24
+- 71 of 72 answers correct (98.6%). The one failure ("yo is the 4 running"): the trace shows the model invented the id "metro_4" instead of using C01374 from find_station; the tool rejected it and the model said it could not check (safe, no invented status). Fix: line_status reads "_" and "-" as spaces, so invented forms resolve.
+- Likely the same cause as the two held-out set 2 status failures, which did not reproduce and had no trace at the time.
+- Runs 2 and 3 were labelled "-dirty" only because run 1 had rewritten eval result files; the dirty check now ignores eval/.
+

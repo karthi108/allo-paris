@@ -227,8 +227,9 @@ class Toolbox:
 
     def _t_line_status(self, line_id: str) -> dict[str, Any]:
         line = next((ln for a in self.index.areas for ln in a.lines if ln.line_id == line_id), None)
-        if line is None:  # accept plain names too ("4", "RER A", "line 14", "T3a")
-            name = str(line_id).strip()
+        if line is None:  # accept plain names too ("4", "RER A", "line 14", "T3a", "metro_4")
+            # Models sometimes invent ids like "metro_4" (agent eval 2026-11-08, trace)
+            name = " ".join(str(line_id).replace("_", " ").replace("-", " ").split())
             for prefix in ("rer ", "line ", "ligne ", "metro ", "métro ", "m"):
                 if name.lower().startswith(prefix) and len(name) > len(prefix):
                     name = name[len(prefix) :].strip()

@@ -233,7 +233,8 @@ def git_state() -> tuple[str, bool]:
         ).stdout.strip()
         dirty = bool(
             subprocess.run(  # noqa: S603, S607
-                ["git", "status", "--porcelain", "--untracked-files=no"],
+                # Ignore eval/: earlier runs rewrite its result files, which is not a code change
+                ["git", "status", "--porcelain", "--untracked-files=no", "--", ".", ":!eval"],
                 capture_output=True,
                 text=True,
                 cwd=ROOT,

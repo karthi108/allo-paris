@@ -686,7 +686,7 @@ def test_plan_route_puts_journey_avoiding_disruption_first(source: FakeSource) -
 
 def test_line_status_accepts_plain_line_names(source: FakeSource) -> None:
     box = Toolbox(_index(), source)
-    for name in ("4", "line 4", "RER B"):
+    for name in ("4", "line 4", "RER B", "metro_4", "RER_B", "metro-4"):
         out = json.loads(box.run("line_status", {"line_id": name}))
         assert "error" not in out, (name, out)
     assert "error" in json.loads(box.run("line_status", {"line_id": "99"}))
