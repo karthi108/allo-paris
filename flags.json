@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-09T06:40:35+00:00",
+ "generated_at": "2026-11-09T06:50:33+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
-  "covered_hours": 17.4,
+  "covered_hours": 17.5,
   "gaps": 1,
   "stale_snapshots": 0
  },
@@ -336,7 +336,7 @@
    "since": "2026-08-25T06:45:39+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 25 Aug 2026 (75 days), status unknown"
+   "detail": "no update from the operator since 25 Aug 2026 (76 days), status unknown"
   },
   {
    "rule": "R4",
@@ -345,7 +345,7 @@
    "since": "2026-08-25T06:45:13+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 25 Aug 2026 (75 days), status unknown"
+   "detail": "no update from the operator since 25 Aug 2026 (76 days), status unknown"
   },
   {
    "rule": "R4",
@@ -354,7 +354,7 @@
    "since": "2026-08-25T06:45:35+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 25 Aug 2026 (75 days), status unknown"
+   "detail": "no update from the operator since 25 Aug 2026 (76 days), status unknown"
   },
   {
    "rule": "R4",
