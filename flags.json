@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-09T08:10:35+00:00",
+ "generated_at": "2026-11-09T08:20:35+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
-  "covered_hours": 18.9,
+  "covered_hours": 19.0,
   "gaps": 1,
   "stale_snapshots": 0
  },
