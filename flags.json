@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-09T17:50:04+00:00",
+ "generated_at": "2026-11-09T17:50:36+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 28.5,
@@ -850,6 +850,15 @@
    "covered_hours": 28.5,
    "lower_bound": true,
    "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 28.5 h observed"
+  },
+  {
+   "rule": "R3",
+   "point_id": "FR*V75*EPX20*15*4",
+   "station": "356 Rue des Pyrénées 75020 Paris",
+   "since": "2026-11-09T17:01:06+00:00",
+   "covered_hours": 24.0,
+   "lower_bound": false,
+   "detail": "6 status changes within one hour from Mon 09 Nov 17:01 UTC"
   },
   {
    "rule": "R1",
