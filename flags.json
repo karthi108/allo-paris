@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-09T06:30:46+00:00",
+ "generated_at": "2026-11-09T06:40:35+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
-  "covered_hours": 17.2,
+  "covered_hours": 17.4,
   "gaps": 1,
   "stale_snapshots": 0
  },
@@ -120,7 +120,7 @@
    "since": "2026-09-01T06:31:05+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 01 Sep 2026 (68 days), status available"
+   "detail": "no update from the operator since 01 Sep 2026 (69 days), status available"
   },
   {
    "rule": "R4",
