@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-09T11:10:37+00:00",
+ "generated_at": "2026-11-09T11:20:33+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
-  "covered_hours": 21.9,
+  "covered_hours": 22.0,
   "gaps": 1,
   "stale_snapshots": 0
  },
@@ -174,7 +174,7 @@
    "since": "2026-08-07T11:17:03+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 07 Aug 2026 (93 days), status available"
+   "detail": "no update from the operator since 07 Aug 2026 (94 days), status available"
   },
   {
    "rule": "R4",
@@ -355,15 +355,6 @@
    "covered_hours": 0.0,
    "lower_bound": false,
    "detail": "no update from the operator since 25 Aug 2026 (76 days), status unknown"
-  },
-  {
-   "rule": "R4",
-   "point_id": "FR*V75*EPX19*07*2",
-   "station": "50 Rue Botzaris 75019 Paris",
-   "since": "2026-10-30T03:30:10+00:00",
-   "covered_hours": 0.0,
-   "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (10 days), status maintenance"
   },
   {
    "rule": "R4",
