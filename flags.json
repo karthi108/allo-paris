@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-09T11:20:33+00:00",
+ "generated_at": "2026-11-09T11:30:48+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
-  "covered_hours": 22.0,
+  "covered_hours": 22.2,
   "gaps": 1,
   "stale_snapshots": 0
  },
@@ -201,7 +201,7 @@
    "since": "2026-10-30T11:25:54+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+   "detail": "no update from the operator since 30 Oct 2026 (10 days), status unknown"
   },
   {
    "rule": "R4",
@@ -210,7 +210,7 @@
    "since": "2026-10-30T11:27:14+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+   "detail": "no update from the operator since 30 Oct 2026 (10 days), status unknown"
   },
   {
    "rule": "R4",
@@ -219,7 +219,7 @@
    "since": "2026-10-30T11:25:33+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+   "detail": "no update from the operator since 30 Oct 2026 (10 days), status unknown"
   },
   {
    "rule": "R4",
@@ -228,7 +228,7 @@
    "since": "2026-10-30T11:25:07+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+   "detail": "no update from the operator since 30 Oct 2026 (10 days), status unknown"
   },
   {
    "rule": "R4",
@@ -237,7 +237,7 @@
    "since": "2026-10-30T11:22:26+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+   "detail": "no update from the operator since 30 Oct 2026 (10 days), status unknown"
   },
   {
    "rule": "R4",
@@ -246,7 +246,7 @@
    "since": "2026-10-30T11:25:26+00:00",
    "covered_hours": 0.0,
    "lower_bound": false,
-   "detail": "no update from the operator since 30 Oct 2026 (9 days), status unknown"
+   "detail": "no update from the operator since 30 Oct 2026 (10 days), status unknown"
   },
   {
    "rule": "R4",
