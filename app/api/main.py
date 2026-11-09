@@ -264,6 +264,14 @@ def api_chargers(request: Request, stop: str) -> dict[str, Any]:
     return web.chargers(stop)
 
 
+@app.get("/api/chargers/near")
+def api_chargers_near(request: Request, lat: float, lon: float) -> dict[str, Any]:
+    _limit(request)
+    if not (48.6 <= lat <= 49.1 and 2.0 <= lon <= 2.7):  # Île-de-France box
+        raise HTTPException(status_code=400, detail="outside the covered area")
+    return web.chargers_near(lat, lon)
+
+
 @app.get("/api/chargers/map")
 def api_chargers_map(request: Request) -> dict[str, Any]:
     _limit(request)
@@ -314,5 +322,8 @@ def api_status() -> dict[str, Any]:
         "routes": routes.status(),
         "ai": _ai_status(),
         "stops": len(index.areas),
-        "phone": settings.public_phone,
+        # Only advertise the number when the phone line can actually answer
+        "phone": settings.public_phone
+        if settings.twilio_auth_token and settings.public_base_url
+        else "",
     }

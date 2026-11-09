@@ -65,6 +65,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .icon-btn { border: 0; background: transparent; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); }
 .icon-btn:hover { background: var(--line); color: var(--ink); }
 .icon-btn.rec { background: var(--bad); color: #fff; }
+.icon-btn[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+.evpin { display: grid !important; place-items: center; width: 20px !important; height: 20px !important; border-radius: 5px; font-size: 12px; line-height: 1; color: #fff; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.45); }
+.evpin.ok { background: #16a34a; } .evpin.busy { background: #d97706; } .evpin.down { background: #dc2626; }
+.evpin.flag { border-color: #111827; border-width: 3px; }
+.legend { position: absolute; left: 12px; bottom: 28px; z-index: 900; background: var(--card); color: var(--ink); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow); font-size: 12px; display: grid; gap: 6px; }
+.legend[hidden] { display: none; }
+.legend-title { font-weight: 700; }
+.legend-row { display: flex; align-items: center; gap: 8px; }
+.legend-row .evpin { width: 16px !important; height: 16px !important; font-size: 10px; }
+body.ev-mode path.leaflet-interactive { opacity: .35; }
+.answer-list { margin-top: 8px; }
+.warn { color: #b45309; }
+@media (min-width: 761px) { .legend { left: auto; right: 12px; bottom: 28px; } }
 #speak[aria-pressed=true] { color: var(--brand); }
 #speak[aria-pressed=false] #speakWaves { opacity: .25; }
 .suggest { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--card); border-radius: 14px;
@@ -145,7 +158,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .filters { position: fixed; top: 16px; right: 16px; z-index: 900; display: flex; gap: 6px; }
 .filters .chip { box-shadow: var(--shadow); border: 1px solid var(--line); font-weight: 600; background: var(--card); color: var(--faint); }
 .filters .chip.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
-.filters .chip:not(.on) { text-decoration: line-through; text-decoration-color: var(--faint); }
+.filters .chip:not(.on) { opacity: .75; }
 .filters .chip.ev.on { background: #16a34a; border-color: #16a34a; color: #fff; }
 .filters .chip.ev:not(.on) { text-decoration: none; }
 .evcard { font: 13px/1.4 system-ui, sans-serif; min-width: 190px; color: #111827; }
@@ -177,6 +190,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <div id="map" role="region" aria-label="Carte des stations"></div>
 
 <div class="filters" id="filters" role="group" aria-label="Modes"></div>
+<div class="legend" id="legend" hidden aria-label="Legend"></div>
 <button class="locate" id="locate" type="button" aria-label="Near me" title="Near me">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>
 </button>

@@ -22,6 +22,8 @@ const I18N = {
     velib: "Vélib à proximité", bikes: "vélos", ebikes: "élec.", docks: "places", closed: "fermée", velibNone: "Aucune station Vélib à moins de 500 m.",
     ev: "Bornes", chargers: "Bornes Belib' à proximité", free: "libre(s)", charging: "en charge", out: "hors service",
     evNone: "Aucune borne Belib' à moins de 500 m.", evWarn: "signalée peu fiable (historique)",
+    legend: [["ok", "au moins une libre"], ["busy", "toutes occupées"], ["down", "toutes hors service"], ["flag", "signalée peu fiable"]],
+    speakOn: "Lecture à voix haute activée.", speakNo: "Aucune voix française installée dans ce navigateur : la lecture à voix haute est indisponible.",
     modes: { Metro: "Métro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
     geoNo: "Position indisponible.", nearNone: "Aucune station à moins de 2 km.",
@@ -47,6 +49,8 @@ const I18N = {
     velib: "Vélib nearby", bikes: "bikes", ebikes: "e-bikes", docks: "docks", closed: "closed", velibNone: "No Vélib station within 500 m.",
     ev: "EV chargers", chargers: "Belib' chargers nearby", free: "free", charging: "charging", out: "out of service",
     evNone: "No Belib' charger within 500 m.", evWarn: "flagged unreliable (history)",
+    legend: [["ok", "at least one free"], ["busy", "all in use"], ["down", "all out of service"], ["flag", "flagged unreliable"]],
+    speakOn: "Read aloud is on.", speakNo: "No English voice is installed in this browser, so read aloud is unavailable.",
     modes: { Metro: "Metro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Microphone not available in this browser.", listening: "Listening…",
     geoNo: "Location unavailable.", nearNone: "No station within 2 km.",
@@ -89,6 +93,9 @@ const state = {
   session: store.get("allo.session", null) || (() => { const s = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); store.set("allo.session", s); return s; })(),
 };
 const tr = () => I18N[state.lang];
+// No mode selected (e.g. chargers only): the map shows no stations, but search, Near me and
+// station panels still cover every line.
+const modeOn = (m) => !state.modes.size || state.modes.has(m);
 
 function badge(line) {
   const b = el("span", { class: `badge ${line.mode}`, textContent: line.short, title: line.label });
@@ -98,7 +105,7 @@ function badge(line) {
 }
 function badges(stop, max = 8) {
   const w = el("span", { class: "badges" });
-  stop.lines.filter((l) => state.modes.has(l.mode)).slice(0, max).forEach((l) => w.append(badge(l)));
+  stop.lines.filter((l) => modeOn(l.mode)).slice(0, max).forEach((l) => w.append(badge(l)));
   return w;
 }
 
@@ -117,7 +124,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 let ring = null;
 
 function stopColor(s) {
-  const l = s.lines.find((x) => state.modes.has(x.mode) && HEX.test(x.color));
+  const l = s.lines.find((x) => modeOn(x.mode) && HEX.test(x.color));
   return l ? "#" + l.color : "#777";
 }
 function drawMarkers() {
@@ -147,8 +154,8 @@ function renderFilters() {
     f.append(el("button", {
       type: "button", class: "chip" + (on ? " on" : ""), textContent: label, attrs: { "aria-pressed": String(on) },
       onclick: () => {
+        // Any combination is allowed, including none (e.g. chargers only)
         on ? state.modes.delete(mode) : state.modes.add(mode);
-        if (!state.modes.size) state.modes.add(mode);
         store.set("allo.modes", [...state.modes]); renderFilters(); drawMarkers();
       },
     }));
@@ -161,7 +168,8 @@ function renderFilters() {
 
 // ---------- Belib' chargers (live status + reliability flags from the collector) ----------
 function setEv(on) {
-  state.ev = on; store.set("allo.ev", on); renderFilters(); drawChargers();
+  state.ev = on; store.set("allo.ev", on); renderFilters(); drawChargers(); renderLegend();
+  document.body.classList.toggle("ev-mode", on); // stations fade so chargers stand out
 }
 function chargerSummary(a) {
   const t = tr();
@@ -190,18 +198,27 @@ async function drawChargers() {
   if (!state.ev || state.evData.error) return;
   const layer = L.layerGroup();
   for (const a of state.evData.addresses) {
-    // green: at least one free · amber: all busy · red: all out of service · dark ring: flagged
-    const color = a.available > 0 ? "#16a34a" : a.out_of_service >= a.in_service ? "#dc2626" : "#f59e0b";
-    const flagged = a.warnings.length > 0;
-    const m = L.circleMarker([a.lat, a.lon], {
-      radius: 6, color: flagged ? "#111827" : "#ffffff", weight: flagged ? 3 : 1.5, fillColor: color, fillOpacity: 0.95,
-    });
+    // Square ⚡ pins, so chargers never look like station dots. The icon markup is a fixed
+    // string; no data goes into HTML.
+    const kind = a.available > 0 ? "ok" : a.out_of_service >= a.in_service ? "down" : "busy";
+    const icon = L.divIcon({ className: `evpin ${kind}${a.warnings.length ? " flag" : ""}`, html: "⚡", iconSize: [20, 20] });
+    const m = L.marker([a.lat, a.lon], { icon, keyboard: true, title: a.name, riseOnHover: true });
     m.bindTooltip(a.name, { direction: "top", offset: [0, -6] });
     m.bindPopup(() => chargerCard(a));
     layer.addLayer(m);
   }
   if (state.evLayer) state.evLayer.remove();
   state.evLayer = layer.addTo(map);
+  renderLegend();
+}
+function renderLegend() {
+  const box = $("legend"); box.replaceChildren();
+  box.hidden = !state.ev;
+  if (!state.ev) return;
+  box.append(el("div", { class: "legend-title", textContent: "⚡ Belib'" }));
+  for (const [kind, label] of tr().legend) {
+    box.append(el("div", { class: "legend-row" }, el("span", { class: `evpin ${kind === "flag" ? "ok flag" : kind}`, textContent: "⚡" }), el("span", { textContent: label })));
+  }
 }
 async function loadChargers() {
   const sel = state.selected; if (!sel) return;
@@ -252,7 +269,7 @@ function stationList(stops, metas = []) {
 
 // ---------- station ----------
 function openStation(s, lineId) {
-  const lines = s.lines.filter((l) => state.modes.has(l.mode));
+  const lines = s.lines.filter((l) => modeOn(l.mode));
   const line = lines.find((l) => l.id === lineId) || lines[0] || s.lines[0];
   state.selected = { stop: s, line };
   map.flyTo([s.lat, s.lon], Math.max(map.getZoom(), 15), { duration: 0.6 });
@@ -380,7 +397,7 @@ function updateSuggest() {
   for (const s of state.stops) {
     const n = s._n;
     const i = n.indexOf(q);
-    if (i === -1 || !s.lines.some((l) => state.modes.has(l.mode))) continue;
+    if (i === -1 || !s.lines.some((l) => modeOn(l.mode))) continue;
     scored.push({ s, score: (i === 0 ? 0 : n[i - 1] === " " ? 1 : 2) * 100 + n.length });
   }
   scored.sort((a, b) => a.score - b.score);
@@ -426,11 +443,29 @@ async function ask(q) {
     speak(r.answer);
     if (r.intent === "ev") {
       if (!state.ev) setEv(true);
-      if (r.focus) map.flyTo(r.focus, 16, { duration: 0.6 });
+      if (r.focus) { map.flyTo(r.focus, 16, { duration: 0.6 }); showChargerAnswer(r); }
     }
     if (r.stop) { const s = state.byId.get(r.stop.id); if (s) openStation(s, r.line && r.line.id); }
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
+}
+
+// The spoken answer is one paragraph (good for voice); on screen, show the first sentence and
+// a list of addresses from the same live data.
+async function showChargerAnswer(r) {
+  const first = r.answer.split(/(?<=\.)\s/)[0];
+  try {
+    const d = await api(`/api/chargers/near?lat=${r.focus[0]}&lon=${r.focus[1]}`);
+    if (d.error || !d.addresses.length) return;
+    const t = tr(), ul = el("ul", { class: "list answer-list" });
+    for (const a of d.addresses) {
+      ul.append(el("li", { onclick: () => map.flyTo([a.lat, a.lon], 18, { duration: 0.5 }) },
+        el("span", { class: "name", textContent: a.name }),
+        el("span", { class: "meta" + (a.warnings.length ? " warn" : ""),
+          textContent: `${a.distance_m} m · ${chargerSummary(a)}` + (a.warnings.length ? ` · ⚠ ${t.evWarn}` : "") })));
+    }
+    $("answer").replaceChildren(el("div", { textContent: first }), ul);
+  } catch { /* keep the plain text answer */ }
 }
 
 function renderMeta(r) {
@@ -444,11 +479,19 @@ function renderMeta(r) {
 }
 
 // Read-aloud with the browser's own voices (free, nothing sent to us)
-function speak(text) {
-  if (!store.get("allo.speak", false) || !("speechSynthesis" in window) || !text) return;
+function voiceFor(lang) {
+  const voices = ("speechSynthesis" in window) ? speechSynthesis.getVoices() : [];
+  return voices.find((v) => v.lang && v.lang.toLowerCase().startsWith(lang)) || null;
+}
+function speak(text, force = false) {
+  if ((!force && !store.get("allo.speak", false)) || !("speechSynthesis" in window) || !text) return false;
+  const voice = voiceFor(state.lang);
+  if (!voice && speechSynthesis.getVoices().length) return false; // voices loaded, none in this language
   const u = new SpeechSynthesisUtterance(text);
   u.lang = state.lang === "fr" ? "fr-FR" : "en-GB";
+  if (voice) u.voice = voice;
   speechSynthesis.cancel(); speechSynthesis.speak(u);
+  return true;
 }
 function renderSpeak() {
   const on = store.get("allo.speak", false);
@@ -456,7 +499,15 @@ function renderSpeak() {
   $("speak").title = state.lang === "fr" ? (on ? "Lecture à voix haute : activée" : "Lecture à voix haute : désactivée")
     : (on ? "Read aloud: on" : "Read aloud: off");
 }
-$("speak").onclick = () => { store.set("allo.speak", !store.get("allo.speak", false)); if (!store.get("allo.speak", false) && "speechSynthesis" in window) speechSynthesis.cancel(); renderSpeak(); };
+$("speak").onclick = () => {
+  const on = !store.get("allo.speak", false);
+  store.set("allo.speak", on); renderSpeak();
+  if (!("speechSynthesis" in window)) { $("answerMeta").replaceChildren(el("span", { textContent: tr().speakNo })); return; }
+  if (!on) { speechSynthesis.cancel(); return; }
+  const current = $("answer").textContent.trim();
+  const ok = speak(current || tr().speakOn, true);
+  if (!ok) $("answerMeta").replaceChildren(el("span", { class: "warn", textContent: tr().speakNo }));
+};
 
 // Browser speech recognition (Chrome/Edge): audio goes to the browser vendor, not to us.
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -476,7 +527,7 @@ $("locate").onclick = () => {
   navigator.geolocation.getCurrentPosition((pos) => {
     const me = { lat: pos.coords.latitude, lon: pos.coords.longitude };
     state.near = state.stops.map((s) => ({ stop: s, d: haversine(me, s) }))
-      .filter((x) => x.d <= 2000 && x.stop.lines.some((l) => state.modes.has(l.mode)))
+      .filter((x) => x.d <= 2000 && x.stop.lines.some((l) => modeOn(l.mode)))
       .sort((a, b) => a.d - b.d).slice(0, 5);
     map.flyTo([me.lat, me.lon], 15, { duration: 0.6 });
     if (state.selected) closeStation(); else renderHome();
@@ -536,7 +587,7 @@ async function refreshStatus() {
     state.stops = await api("/api/stops");
     for (const s of state.stops) { s._n = norm(s.name); for (const id of s.ids || [s.id]) state.byId.set(id, s); }
     drawMarkers(); renderHome();
-    if (state.ev) drawChargers();
+    if (state.ev) setEv(true);
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
 })();

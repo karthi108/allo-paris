@@ -174,6 +174,9 @@ class WebApi:
             return {"error": "unknown_stop"}
         return self._chargers(area.lat, area.lon, 500, 3)
 
+    def chargers_near(self, lat: float, lon: float) -> dict[str, Any]:
+        return self._chargers(lat, lon, 500, 3)
+
     def chargers_map(self) -> dict[str, Any]:
         """Every Belib' address (Paris is ~10 km across, so 20 km from the centre covers it)."""
         return self._chargers(48.8566, 2.3522, 20_000, 10_000)
