@@ -270,3 +270,4 @@ observed_at,points,by_status,new_events,restamped,changed_same_time,feed_newest,
 2026-11-10T08:50:37+00:00,2050,"{""available"": 1079, ""charging"": 856, ""maintenance"": 35, ""planned"": 41, ""unknown"": 39}",116,12,0,2026-11-10T08:50:32+00:00,0
 2026-11-10T09:00:58+00:00,2050,"{""available"": 1055, ""charging"": 880, ""maintenance"": 35, ""planned"": 41, ""unknown"": 39}",103,6,0,2026-11-10T09:00:51+00:00,0
 2026-11-10T09:10:36+00:00,2050,"{""available"": 1038, ""charging"": 900, ""maintenance"": 35, ""planned"": 41, ""unknown"": 36}",100,9,0,2026-11-10T09:10:22+00:00,0
+2026-11-10T09:20:33+00:00,2050,"{""available"": 1002, ""charging"": 938, ""maintenance"": 33, ""planned"": 41, ""unknown"": 36}",127,18,1,2026-11-10T09:20:30+00:00,0
