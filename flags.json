@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-10T15:49:28+00:00",
+ "generated_at": "2026-11-10T15:50:36+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 50.5,
@@ -190,27 +190,27 @@
    "point_id": "FR*V75*E9016*08*1",
    "station": "15 Boulevard Murat 75016 Paris",
    "since": "2026-11-08T23:40:34+00:00",
-   "covered_hours": 40.1,
+   "covered_hours": 40.2,
    "lower_bound": false,
-   "detail": "unknown since Sun 08 Nov 23:40 UTC, 40.1 h observed"
+   "detail": "unknown since Sun 08 Nov 23:40 UTC, 40.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*08*2",
    "station": "15 Boulevard Murat 75016 Paris",
    "since": "2026-11-08T23:40:34+00:00",
-   "covered_hours": 40.1,
+   "covered_hours": 40.2,
    "lower_bound": false,
-   "detail": "unknown since Sun 08 Nov 23:40 UTC, 40.1 h observed"
+   "detail": "unknown since Sun 08 Nov 23:40 UTC, 40.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*08*3",
    "station": "15 Boulevard Murat 75016 Paris",
    "since": "2026-11-08T23:40:34+00:00",
-   "covered_hours": 40.1,
+   "covered_hours": 40.2,
    "lower_bound": false,
-   "detail": "unknown since Sun 08 Nov 23:40 UTC, 40.1 h observed"
+   "detail": "unknown since Sun 08 Nov 23:40 UTC, 40.2 h observed"
   },
   {
    "rule": "R1",
