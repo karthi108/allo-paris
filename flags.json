@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-11T20:10:32+00:00",
+ "generated_at": "2026-11-11T20:57:43+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 78.9,
-  "gaps": 1,
+  "gaps": 2,
   "stale_snapshots": 0
  },
  "thresholds": {
@@ -165,7 +165,7 @@
    "since": "2026-11-08T10:02:45+00:00",
    "covered_hours": 78.9,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 78.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 78.9 h observed"
   },
   {
    "rule": "R4",
@@ -334,7 +334,7 @@
    "point_id": "FR*V75*EPX08*06*5",
    "station": "46 Rue de Rome 75008 Paris",
    "since": "2026-11-11T06:20:33+00:00",
-   "covered_hours": 24.0,
+   "covered_hours": 23.2,
    "lower_bound": false,
    "detail": "6 status changes within one hour from Wed 11 Nov 06:20 UTC"
   },
@@ -379,7 +379,7 @@
    "point_id": "FR*V75*EPX11*18*3",
    "station": "105 avenue de la République 75011 Paris",
    "since": "2026-11-11T06:00:56+00:00",
-   "covered_hours": 24.0,
+   "covered_hours": 23.2,
    "lower_bound": false,
    "detail": "7 status changes within one hour from Wed 11 Nov 06:00 UTC"
   },
