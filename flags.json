@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-11T07:50:33+00:00",
+ "generated_at": "2026-11-11T07:50:44+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 66.5,
@@ -292,6 +292,15 @@
    "covered_hours": 66.5,
    "lower_bound": true,
    "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 66.5 h observed"
+  },
+  {
+   "rule": "R1",
+   "point_id": "FR*V75*EPX05*13*3",
+   "station": "25 Rue Henri Barbusse 75005 Paris",
+   "since": "2026-11-10T07:50:34+00:00",
+   "covered_hours": 24.0,
+   "lower_bound": false,
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 24.0 h observed"
   },
   {
    "rule": "R1",
