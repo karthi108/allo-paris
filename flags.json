@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-12T18:40:35+00:00",
+ "generated_at": "2026-11-12T18:40:53+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 100.6,
@@ -298,9 +298,9 @@
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 58.0,
+   "covered_hours": 58.1,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 58.0 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 58.1 h observed"
   },
   {
    "rule": "R1",
@@ -982,9 +982,9 @@
    "point_id": "FR*V75*EPX20*20*4",
    "station": "86 Rue Pelleport 75020 Paris",
    "since": "2026-11-11T17:20:33+00:00",
-   "covered_hours": 24.5,
+   "covered_hours": 24.6,
    "lower_bound": false,
-   "detail": "maintenance since Wed 11 Nov 17:20 UTC, 24.5 h observed"
+   "detail": "maintenance since Wed 11 Nov 17:20 UTC, 24.6 h observed"
   }
  ]
 }
