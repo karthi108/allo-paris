@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-13T11:30:43+00:00",
+ "generated_at": "2026-11-13T11:31:38+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 117.4,
@@ -883,9 +883,9 @@
    "point_id": "FR*V75*EPX17*21*1",
    "station": "42 Rue Brunel 75017 Paris",
    "since": "2026-11-12T11:10:35+00:00",
-   "covered_hours": 24.3,
+   "covered_hours": 24.4,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 11:10 UTC, 24.3 h observed"
+   "detail": "maintenance since Thu 12 Nov 11:10 UTC, 24.4 h observed"
   },
   {
    "rule": "R1",
