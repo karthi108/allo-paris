@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-15T07:15:54+00:00",
+ "generated_at": "2026-11-15T07:20:38+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 161.2,
@@ -19,27 +19,27 @@
    "point_id": "FR*V75*E9002*03*1",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 65.1,
+   "covered_hours": 65.2,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 65.1 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 65.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*03*2",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 65.1,
+   "covered_hours": 65.2,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 65.1 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 65.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*03*3",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 65.1,
+   "covered_hours": 65.2,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 65.1 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 65.2 h observed"
   },
   {
    "rule": "R1",
@@ -172,27 +172,27 @@
    "point_id": "FR*V75*E9009*01*1",
    "station": "31 Boulevard de Clichy 75009 Paris",
    "since": "2026-11-13T01:10:31+00:00",
-   "covered_hours": 54.1,
+   "covered_hours": 54.2,
    "lower_bound": false,
-   "detail": "unknown since Fri 13 Nov 01:10 UTC, 54.1 h observed"
+   "detail": "unknown since Fri 13 Nov 01:10 UTC, 54.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9009*01*2",
    "station": "31 Boulevard de Clichy 75009 Paris",
    "since": "2026-11-13T01:10:31+00:00",
-   "covered_hours": 54.1,
+   "covered_hours": 54.2,
    "lower_bound": false,
-   "detail": "unknown since Fri 13 Nov 01:10 UTC, 54.1 h observed"
+   "detail": "unknown since Fri 13 Nov 01:10 UTC, 54.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9009*01*3",
    "station": "31 Boulevard de Clichy 75009 Paris",
    "since": "2026-11-13T01:10:31+00:00",
-   "covered_hours": 54.1,
+   "covered_hours": 54.2,
    "lower_bound": false,
-   "detail": "unknown since Fri 13 Nov 01:10 UTC, 54.1 h observed"
+   "detail": "unknown since Fri 13 Nov 01:10 UTC, 54.2 h observed"
   },
   {
    "rule": "R4",
@@ -343,9 +343,9 @@
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 118.6,
+   "covered_hours": 118.7,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 118.6 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 118.7 h observed"
   },
   {
    "rule": "R3",
@@ -406,9 +406,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 45.4,
+   "covered_hours": 45.5,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 45.4 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 45.5 h observed"
   },
   {
    "rule": "R1",
@@ -424,9 +424,9 @@
    "point_id": "FR*V75*EPX10*02*2",
    "station": "2 Rue Sibour 75010 Paris",
    "since": "2026-11-14T03:50:36+00:00",
-   "covered_hours": 27.4,
+   "covered_hours": 27.5,
    "lower_bound": false,
-   "detail": "maintenance since Sat 14 Nov 03:50 UTC, 27.4 h observed"
+   "detail": "maintenance since Sat 14 Nov 03:50 UTC, 27.5 h observed"
   },
   {
    "rule": "R4",
@@ -550,9 +550,9 @@
    "point_id": "FR*V75*EPX15*17*3",
    "station": "112 Avenue de Suffren 75015 Paris",
    "since": "2026-11-13T11:10:35+00:00",
-   "covered_hours": 44.1,
+   "covered_hours": 44.2,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 11:10 UTC, 44.1 h observed"
+   "detail": "maintenance since Fri 13 Nov 11:10 UTC, 44.2 h observed"
   },
   {
    "rule": "R2",
@@ -577,9 +577,9 @@
    "point_id": "FR*V75*EPX15*20*7",
    "station": "43 Rue du Docteur Finlay 75015 Paris",
    "since": "2026-11-12T19:20:34+00:00",
-   "covered_hours": 59.9,
+   "covered_hours": 60.0,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 19:20 UTC, 59.9 h observed"
+   "detail": "maintenance since Thu 12 Nov 19:20 UTC, 60.0 h observed"
   },
   {
    "rule": "R1",
@@ -730,9 +730,9 @@
    "point_id": "FR*V75*EPX16*18*2",
    "station": "157 Boulevard Murat 75016 Paris",
    "since": "2026-11-13T20:10:34+00:00",
-   "covered_hours": 35.1,
+   "covered_hours": 35.2,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 20:10 UTC, 35.1 h observed"
+   "detail": "maintenance since Fri 13 Nov 20:10 UTC, 35.2 h observed"
   },
   {
    "rule": "R1",
@@ -883,9 +883,9 @@
    "point_id": "FR*V75*EPX16*28*2",
    "station": "23 Boulevard Delessert 75016 Paris",
    "since": "2026-11-12T23:10:32+00:00",
-   "covered_hours": 56.1,
+   "covered_hours": 56.2,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 23:10 UTC, 56.1 h observed"
+   "detail": "maintenance since Thu 12 Nov 23:10 UTC, 56.2 h observed"
   },
   {
    "rule": "R1",
@@ -946,9 +946,9 @@
    "point_id": "FR*V75*EPX17*21*1",
    "station": "42 Rue Brunel 75017 Paris",
    "since": "2026-11-12T11:10:35+00:00",
-   "covered_hours": 68.1,
+   "covered_hours": 68.2,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 11:10 UTC, 68.1 h observed"
+   "detail": "maintenance since Thu 12 Nov 11:10 UTC, 68.2 h observed"
   },
   {
    "rule": "R1",
@@ -1099,9 +1099,9 @@
    "point_id": "FR*V75*EPX20*20*4",
    "station": "86 Rue Pelleport 75020 Paris",
    "since": "2026-11-11T17:20:33+00:00",
-   "covered_hours": 85.1,
+   "covered_hours": 85.2,
    "lower_bound": false,
-   "detail": "maintenance since Wed 11 Nov 17:20 UTC, 85.1 h observed"
+   "detail": "maintenance since Wed 11 Nov 17:20 UTC, 85.2 h observed"
   }
  ]
 }
