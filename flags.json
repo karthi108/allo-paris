@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-15T00:47:51+00:00",
+ "generated_at": "2026-11-15T00:50:40+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 154.7,
@@ -19,27 +19,27 @@
    "point_id": "FR*V75*E9002*03*1",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 58.6,
+   "covered_hours": 58.7,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 58.6 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 58.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*03*2",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 58.6,
+   "covered_hours": 58.7,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 58.6 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 58.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*03*3",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 58.6,
+   "covered_hours": 58.7,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 58.6 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 58.7 h observed"
   },
   {
    "rule": "R1",
@@ -172,27 +172,27 @@
    "point_id": "FR*V75*E9009*01*1",
    "station": "31 Boulevard de Clichy 75009 Paris",
    "since": "2026-11-13T01:10:31+00:00",
-   "covered_hours": 47.6,
+   "covered_hours": 47.7,
    "lower_bound": false,
-   "detail": "unknown since Fri 13 Nov 01:10 UTC, 47.6 h observed"
+   "detail": "unknown since Fri 13 Nov 01:10 UTC, 47.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9009*01*2",
    "station": "31 Boulevard de Clichy 75009 Paris",
    "since": "2026-11-13T01:10:31+00:00",
-   "covered_hours": 47.6,
+   "covered_hours": 47.7,
    "lower_bound": false,
-   "detail": "unknown since Fri 13 Nov 01:10 UTC, 47.6 h observed"
+   "detail": "unknown since Fri 13 Nov 01:10 UTC, 47.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9009*01*3",
    "station": "31 Boulevard de Clichy 75009 Paris",
    "since": "2026-11-13T01:10:31+00:00",
-   "covered_hours": 47.6,
+   "covered_hours": 47.7,
    "lower_bound": false,
-   "detail": "unknown since Fri 13 Nov 01:10 UTC, 47.6 h observed"
+   "detail": "unknown since Fri 13 Nov 01:10 UTC, 47.7 h observed"
   },
   {
    "rule": "R4",
@@ -541,9 +541,9 @@
    "point_id": "FR*V75*EPX15*17*3",
    "station": "112 Avenue de Suffren 75015 Paris",
    "since": "2026-11-13T11:10:35+00:00",
-   "covered_hours": 37.6,
+   "covered_hours": 37.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 11:10 UTC, 37.6 h observed"
+   "detail": "maintenance since Fri 13 Nov 11:10 UTC, 37.7 h observed"
   },
   {
    "rule": "R2",
@@ -721,9 +721,9 @@
    "point_id": "FR*V75*EPX16*18*2",
    "station": "157 Boulevard Murat 75016 Paris",
    "since": "2026-11-13T20:10:34+00:00",
-   "covered_hours": 28.6,
+   "covered_hours": 28.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 20:10 UTC, 28.6 h observed"
+   "detail": "maintenance since Fri 13 Nov 20:10 UTC, 28.7 h observed"
   },
   {
    "rule": "R1",
@@ -874,9 +874,9 @@
    "point_id": "FR*V75*EPX16*28*2",
    "station": "23 Boulevard Delessert 75016 Paris",
    "since": "2026-11-12T23:10:32+00:00",
-   "covered_hours": 49.6,
+   "covered_hours": 49.7,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 23:10 UTC, 49.6 h observed"
+   "detail": "maintenance since Thu 12 Nov 23:10 UTC, 49.7 h observed"
   },
   {
    "rule": "R1",
@@ -937,9 +937,9 @@
    "point_id": "FR*V75*EPX17*21*1",
    "station": "42 Rue Brunel 75017 Paris",
    "since": "2026-11-12T11:10:35+00:00",
-   "covered_hours": 61.6,
+   "covered_hours": 61.7,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 11:10 UTC, 61.6 h observed"
+   "detail": "maintenance since Thu 12 Nov 11:10 UTC, 61.7 h observed"
   },
   {
    "rule": "R1",
