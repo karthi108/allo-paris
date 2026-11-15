@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-15T19:59:10+00:00",
+ "generated_at": "2026-11-15T20:00:57+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 173.9,
@@ -424,9 +424,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 58.1,
+   "covered_hours": 58.2,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 58.1 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 58.2 h observed"
   },
   {
    "rule": "R1",
@@ -595,9 +595,9 @@
    "point_id": "FR*V75*EPX15*20*7",
    "station": "43 Rue du Docteur Finlay 75015 Paris",
    "since": "2026-11-12T19:20:34+00:00",
-   "covered_hours": 72.6,
+   "covered_hours": 72.7,
    "lower_bound": false,
-   "detail": "maintenance since Thu 12 Nov 19:20 UTC, 72.6 h observed"
+   "detail": "maintenance since Thu 12 Nov 19:20 UTC, 72.7 h observed"
   },
   {
    "rule": "R1",
@@ -964,9 +964,9 @@
    "point_id": "FR*V75*EPX17*13*2",
    "station": "181 quater Avenue de Clichy 75017 Paris",
    "since": "2026-11-14T11:50:34+00:00",
-   "covered_hours": 32.1,
+   "covered_hours": 32.2,
    "lower_bound": false,
-   "detail": "maintenance since Sat 14 Nov 11:50 UTC, 32.1 h observed"
+   "detail": "maintenance since Sat 14 Nov 11:50 UTC, 32.2 h observed"
   },
   {
    "rule": "R1",
