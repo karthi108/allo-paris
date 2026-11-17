@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-17T03:57:57+00:00",
+ "generated_at": "2026-11-17T04:00:53+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 205.9,
@@ -165,7 +165,7 @@
    "since": "2026-11-08T10:02:45+00:00",
    "covered_hours": 205.9,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 205.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 205.9 h observed"
   },
   {
    "rule": "R4",
@@ -361,9 +361,9 @@
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 163.3,
+   "covered_hours": 163.4,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 163.3 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 163.4 h observed"
   },
   {
    "rule": "R3",
@@ -397,9 +397,9 @@
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 37.6,
+   "covered_hours": 37.7,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 37.6 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 37.7 h observed"
   },
   {
    "rule": "R1",
@@ -433,9 +433,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 90.1,
+   "covered_hours": 90.2,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 90.1 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 90.2 h observed"
   },
   {
    "rule": "R1",
@@ -451,9 +451,9 @@
    "point_id": "FR*V75*EPX10*08*3",
    "station": "6 Rue de Metz 75010 Paris",
    "since": "2026-11-14T21:50:32+00:00",
-   "covered_hours": 54.1,
+   "covered_hours": 54.2,
    "lower_bound": false,
-   "detail": "maintenance since Sat 14 Nov 21:50 UTC, 54.1 h observed"
+   "detail": "maintenance since Sat 14 Nov 21:50 UTC, 54.2 h observed"
   },
   {
    "rule": "R4",
@@ -973,9 +973,9 @@
    "point_id": "FR*V75*EPX17*13*2",
    "station": "181 quater Avenue de Clichy 75017 Paris",
    "since": "2026-11-14T11:50:34+00:00",
-   "covered_hours": 64.1,
+   "covered_hours": 64.2,
    "lower_bound": false,
-   "detail": "maintenance since Sat 14 Nov 11:50 UTC, 64.1 h observed"
+   "detail": "maintenance since Sat 14 Nov 11:50 UTC, 64.2 h observed"
   },
   {
    "rule": "R1",
