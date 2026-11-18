@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-18T03:00:57+00:00",
+ "generated_at": "2026-11-18T03:02:12+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 228.9,
@@ -19,27 +19,27 @@
    "point_id": "FR*V75*E9002*03*1",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 132.8,
+   "covered_hours": 132.9,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 132.8 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 132.9 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*03*2",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 132.8,
+   "covered_hours": 132.9,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 132.8 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 132.9 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*03*3",
    "station": "52 Rue Étienne Marcel 75002 Paris",
    "since": "2026-11-12T14:10:34+00:00",
-   "covered_hours": 132.8,
+   "covered_hours": 132.9,
    "lower_bound": false,
-   "detail": "unknown since Thu 12 Nov 14:10 UTC, 132.8 h observed"
+   "detail": "unknown since Thu 12 Nov 14:10 UTC, 132.9 h observed"
   },
   {
    "rule": "R1",
@@ -253,27 +253,27 @@
    "point_id": "FR*V75*E9018*05*1",
    "station": "27 Rue Ordener 75018 Paris",
    "since": "2026-11-16T16:10:38+00:00",
-   "covered_hours": 34.8,
+   "covered_hours": 34.9,
    "lower_bound": false,
-   "detail": "unknown since Mon 16 Nov 16:10 UTC, 34.8 h observed"
+   "detail": "unknown since Mon 16 Nov 16:10 UTC, 34.9 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9018*05*2",
    "station": "27 Rue Ordener 75018 Paris",
    "since": "2026-11-16T16:10:38+00:00",
-   "covered_hours": 34.8,
+   "covered_hours": 34.9,
    "lower_bound": false,
-   "detail": "unknown since Mon 16 Nov 16:10 UTC, 34.8 h observed"
+   "detail": "unknown since Mon 16 Nov 16:10 UTC, 34.9 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9018*05*3",
    "station": "27 Rue Ordener 75018 Paris",
    "since": "2026-11-16T16:10:38+00:00",
-   "covered_hours": 34.8,
+   "covered_hours": 34.9,
    "lower_bound": false,
-   "detail": "unknown since Mon 16 Nov 16:10 UTC, 34.8 h observed"
+   "detail": "unknown since Mon 16 Nov 16:10 UTC, 34.9 h observed"
   },
   {
    "rule": "R1",
@@ -351,10 +351,10 @@
    "rule": "R3",
    "point_id": "FR*V75*EPX06*02*4",
    "station": "8 Rue Danton 75006 Paris",
-   "since": "2026-11-17T03:01:00+00:00",
+   "since": "2026-11-17T03:10:40+00:00",
    "covered_hours": 24.0,
    "lower_bound": false,
-   "detail": "6 status changes within one hour from Tue 17 Nov 03:01 UTC"
+   "detail": "6 status changes within one hour from Tue 17 Nov 03:10 UTC"
   },
   {
    "rule": "R1",
