@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-18T11:27:58+00:00",
+ "generated_at": "2026-11-18T11:30:48+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 237.4,
@@ -199,27 +199,27 @@
    "point_id": "FR*V75*E9016*07*1",
    "station": "12 Boulevard Emile Augier 75016 Paris",
    "since": "2026-11-17T08:20:49+00:00",
-   "covered_hours": 27.1,
+   "covered_hours": 27.2,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 08:20 UTC, 27.1 h observed"
+   "detail": "unknown since Tue 17 Nov 08:20 UTC, 27.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*07*2",
    "station": "12 Boulevard Emile Augier 75016 Paris",
    "since": "2026-11-17T08:20:49+00:00",
-   "covered_hours": 27.1,
+   "covered_hours": 27.2,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 08:20 UTC, 27.1 h observed"
+   "detail": "unknown since Tue 17 Nov 08:20 UTC, 27.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*07*3",
    "station": "12 Boulevard Emile Augier 75016 Paris",
    "since": "2026-11-17T08:20:49+00:00",
-   "covered_hours": 27.1,
+   "covered_hours": 27.2,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 08:20 UTC, 27.1 h observed"
+   "detail": "unknown since Tue 17 Nov 08:20 UTC, 27.2 h observed"
   },
   {
    "rule": "R1",
@@ -361,9 +361,9 @@
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 194.8,
+   "covered_hours": 194.9,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 194.8 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 194.9 h observed"
   },
   {
    "rule": "R4",
@@ -397,9 +397,9 @@
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 69.1,
+   "covered_hours": 69.2,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 69.1 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 69.2 h observed"
   },
   {
    "rule": "R1",
@@ -415,9 +415,9 @@
    "point_id": "FR*V75*EPX07*12*2",
    "station": "6 place du Président Mithouard 75007 Paris",
    "since": "2026-11-16T06:50:37+00:00",
-   "covered_hours": 52.6,
+   "covered_hours": 52.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 16 Nov 06:50 UTC, 52.6 h observed"
+   "detail": "unknown since Mon 16 Nov 06:50 UTC, 52.7 h observed"
   },
   {
    "rule": "R1",
@@ -442,9 +442,9 @@
    "point_id": "FR*V75*EPX07*12*5",
    "station": "6 place du Président Mithouard 75007 Paris",
    "since": "2026-11-16T06:50:37+00:00",
-   "covered_hours": 52.6,
+   "covered_hours": 52.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 16 Nov 06:50 UTC, 52.6 h observed"
+   "detail": "unknown since Mon 16 Nov 06:50 UTC, 52.7 h observed"
   },
   {
    "rule": "R1",
@@ -487,9 +487,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 121.6,
+   "covered_hours": 121.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 121.6 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 121.7 h observed"
   },
   {
    "rule": "R1",
@@ -676,54 +676,54 @@
    "point_id": "FR*V75*EPX15*26*1",
    "station": "143 Avenue Émile Zola 75015 Paris",
    "since": "2026-11-17T05:50:35+00:00",
-   "covered_hours": 29.6,
+   "covered_hours": 29.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.6 h observed"
+   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*26*2",
    "station": "143 Avenue Émile Zola 75015 Paris",
    "since": "2026-11-17T05:50:35+00:00",
-   "covered_hours": 29.6,
+   "covered_hours": 29.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.6 h observed"
+   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*26*3",
    "station": "143 Avenue Émile Zola 75015 Paris",
    "since": "2026-11-17T05:50:35+00:00",
-   "covered_hours": 29.6,
+   "covered_hours": 29.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.6 h observed"
+   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*26*4",
    "station": "143 Avenue Émile Zola 75015 Paris",
    "since": "2026-11-17T05:50:35+00:00",
-   "covered_hours": 29.6,
+   "covered_hours": 29.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.6 h observed"
+   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*26*5",
    "station": "143 Avenue Émile Zola 75015 Paris",
    "since": "2026-11-17T05:50:35+00:00",
-   "covered_hours": 29.6,
+   "covered_hours": 29.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.6 h observed"
+   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*26*6",
    "station": "143 Avenue Émile Zola 75015 Paris",
    "since": "2026-11-17T05:50:35+00:00",
-   "covered_hours": 29.6,
+   "covered_hours": 29.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.6 h observed"
+   "detail": "unknown since Tue 17 Nov 05:50 UTC, 29.7 h observed"
   },
   {
    "rule": "R1",
@@ -946,9 +946,9 @@
    "point_id": "FR*V75*EPX17*04*5",
    "station": "6 Avenue de la Porte Pouchet 75017 Paris",
    "since": "2026-11-17T03:20:38+00:00",
-   "covered_hours": 32.1,
+   "covered_hours": 32.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 32.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 32.2 h observed"
   },
   {
    "rule": "R1",
@@ -973,27 +973,27 @@
    "point_id": "FR*V75*EPX17*13*2",
    "station": "181 quater Avenue de Clichy 75017 Paris",
    "since": "2026-11-14T11:50:34+00:00",
-   "covered_hours": 95.6,
+   "covered_hours": 95.7,
    "lower_bound": false,
-   "detail": "maintenance since Sat 14 Nov 11:50 UTC, 95.6 h observed"
+   "detail": "maintenance since Sat 14 Nov 11:50 UTC, 95.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX17*23*4",
    "station": "28 Avenue de la Porte de Villiers 75017 Paris",
    "since": "2026-11-17T10:20:36+00:00",
-   "covered_hours": 25.1,
+   "covered_hours": 25.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 10:20 UTC, 25.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 10:20 UTC, 25.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX18*06*2",
    "station": "150 Rue Marcadet 75018 Paris",
    "since": "2026-11-16T10:20:45+00:00",
-   "covered_hours": 49.1,
+   "covered_hours": 49.2,
    "lower_bound": false,
-   "detail": "maintenance since Mon 16 Nov 10:20 UTC, 49.1 h observed"
+   "detail": "maintenance since Mon 16 Nov 10:20 UTC, 49.2 h observed"
   },
   {
    "rule": "R1",
