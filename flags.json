@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-19T01:20:35+00:00",
+ "generated_at": "2026-11-19T01:21:15+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 251.2,
@@ -622,9 +622,9 @@
    "point_id": "FR*V75*EPX13*27*2",
    "station": "189 Rue Tolbiac 75013 Paris",
    "since": "2026-11-09T07:00:57+00:00",
-   "covered_hours": 233.5,
+   "covered_hours": 233.6,
    "lower_bound": false,
-   "detail": "maintenance since Mon 09 Nov 07:00 UTC, 233.5 h observed"
+   "detail": "maintenance since Mon 09 Nov 07:00 UTC, 233.6 h observed"
   },
   {
    "rule": "R4",
