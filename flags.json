@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-19T17:57:40+00:00",
+ "generated_at": "2026-11-19T18:00:55+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 267.9,
@@ -190,54 +190,54 @@
    "point_id": "FR*V75*E9016*06*1",
    "station": "45 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-18T17:00:57+00:00",
-   "covered_hours": 24.9,
+   "covered_hours": 25.0,
    "lower_bound": false,
-   "detail": "unknown since Wed 18 Nov 17:00 UTC, 24.9 h observed"
+   "detail": "unknown since Wed 18 Nov 17:00 UTC, 25.0 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*06*2",
    "station": "45 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-18T17:00:57+00:00",
-   "covered_hours": 24.9,
+   "covered_hours": 25.0,
    "lower_bound": false,
-   "detail": "unknown since Wed 18 Nov 17:00 UTC, 24.9 h observed"
+   "detail": "unknown since Wed 18 Nov 17:00 UTC, 25.0 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*06*3",
    "station": "45 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-18T17:00:57+00:00",
-   "covered_hours": 24.9,
+   "covered_hours": 25.0,
    "lower_bound": false,
-   "detail": "unknown since Wed 18 Nov 17:00 UTC, 24.9 h observed"
+   "detail": "unknown since Wed 18 Nov 17:00 UTC, 25.0 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*07*1",
    "station": "12 Boulevard Emile Augier 75016 Paris",
    "since": "2026-11-17T08:20:49+00:00",
-   "covered_hours": 57.6,
+   "covered_hours": 57.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 08:20 UTC, 57.6 h observed"
+   "detail": "unknown since Tue 17 Nov 08:20 UTC, 57.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*07*2",
    "station": "12 Boulevard Emile Augier 75016 Paris",
    "since": "2026-11-17T08:20:49+00:00",
-   "covered_hours": 57.6,
+   "covered_hours": 57.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 08:20 UTC, 57.6 h observed"
+   "detail": "unknown since Tue 17 Nov 08:20 UTC, 57.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*07*3",
    "station": "12 Boulevard Emile Augier 75016 Paris",
    "since": "2026-11-17T08:20:49+00:00",
-   "covered_hours": 57.6,
+   "covered_hours": 57.7,
    "lower_bound": false,
-   "detail": "unknown since Tue 17 Nov 08:20 UTC, 57.6 h observed"
+   "detail": "unknown since Tue 17 Nov 08:20 UTC, 57.7 h observed"
   },
   {
    "rule": "R1",
@@ -352,9 +352,9 @@
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 225.3,
+   "covered_hours": 225.4,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 225.3 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 225.4 h observed"
   },
   {
    "rule": "R4",
@@ -388,9 +388,9 @@
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 99.6,
+   "covered_hours": 99.7,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 99.6 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 99.7 h observed"
   },
   {
    "rule": "R1",
@@ -415,9 +415,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 152.1,
+   "covered_hours": 152.2,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 152.1 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 152.2 h observed"
   },
   {
    "rule": "R1",
@@ -532,9 +532,9 @@
    "point_id": "FR*V75*EPX13*19*4",
    "station": "157 Rue Jeanne D'Arc 75013 Paris",
    "since": "2026-11-17T12:30:52+00:00",
-   "covered_hours": 53.4,
+   "covered_hours": 53.5,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 12:30 UTC, 53.4 h observed"
+   "detail": "maintenance since Tue 17 Nov 12:30 UTC, 53.5 h observed"
   },
   {
    "rule": "R1",
@@ -559,9 +559,9 @@
    "point_id": "FR*V75*EPX15*01*7",
    "station": "1 Rue du Colonel Pierre Avia 75015 Paris",
    "since": "2026-11-18T16:30:48+00:00",
-   "covered_hours": 25.4,
+   "covered_hours": 25.5,
    "lower_bound": false,
-   "detail": "maintenance since Wed 18 Nov 16:30 UTC, 25.4 h observed"
+   "detail": "maintenance since Wed 18 Nov 16:30 UTC, 25.5 h observed"
   },
   {
    "rule": "R2",
@@ -658,9 +658,9 @@
    "point_id": "FR*V75*EPX15*29*1",
    "station": "78 Avenue de Suffren 75015 Paris",
    "since": "2026-11-17T14:50:36+00:00",
-   "covered_hours": 51.1,
+   "covered_hours": 51.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 14:50 UTC, 51.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 14:50 UTC, 51.2 h observed"
   },
   {
    "rule": "R1",
@@ -847,9 +847,9 @@
    "point_id": "FR*V75*EPX17*04*5",
    "station": "6 Avenue de la Porte Pouchet 75017 Paris",
    "since": "2026-11-17T03:20:38+00:00",
-   "covered_hours": 62.6,
+   "covered_hours": 62.7,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 62.6 h observed"
+   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 62.7 h observed"
   },
   {
    "rule": "R1",
