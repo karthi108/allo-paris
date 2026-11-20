@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T22:40:34+00:00",
+ "generated_at": "2026-11-20T22:41:36+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 296.6,
@@ -298,18 +298,18 @@
    "point_id": "FR*V75*EPX05*12*5",
    "station": "18 Rue Linnée 75005 Paris",
    "since": "2026-11-19T12:50:35+00:00",
-   "covered_hours": 33.8,
+   "covered_hours": 33.9,
    "lower_bound": false,
-   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 33.8 h observed"
+   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 33.9 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 254.0,
+   "covered_hours": 254.1,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 254.0 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 254.1 h observed"
   },
   {
    "rule": "R4",
@@ -343,9 +343,9 @@
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 128.3,
+   "covered_hours": 128.4,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 128.3 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 128.4 h observed"
   },
   {
    "rule": "R1",
@@ -370,9 +370,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 180.8,
+   "covered_hours": 180.9,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 180.8 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 180.9 h observed"
   },
   {
    "rule": "R4",
