@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T23:10:35+00:00",
+ "generated_at": "2026-11-21T23:11:41+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 321.1,
@@ -316,18 +316,18 @@
    "point_id": "FR*V75*EPX05*12*5",
    "station": "18 Rue Linnée 75005 Paris",
    "since": "2026-11-19T12:50:35+00:00",
-   "covered_hours": 58.3,
+   "covered_hours": 58.4,
    "lower_bound": false,
-   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 58.3 h observed"
+   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 58.4 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 278.5,
+   "covered_hours": 278.6,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 278.5 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 278.6 h observed"
   },
   {
    "rule": "R4",
@@ -370,9 +370,9 @@
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 152.8,
+   "covered_hours": 152.9,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 152.8 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 152.9 h observed"
   },
   {
    "rule": "R1",
@@ -397,9 +397,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 205.3,
+   "covered_hours": 205.4,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 205.3 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 205.4 h observed"
   },
   {
    "rule": "R4",
@@ -658,9 +658,9 @@
    "point_id": "FR*V75*EPX15*29*1",
    "station": "78 Avenue de Suffren 75015 Paris",
    "since": "2026-11-17T14:50:36+00:00",
-   "covered_hours": 104.3,
+   "covered_hours": 104.4,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 14:50 UTC, 104.3 h observed"
+   "detail": "maintenance since Tue 17 Nov 14:50 UTC, 104.4 h observed"
   },
   {
    "rule": "R1",
@@ -856,9 +856,9 @@
    "point_id": "FR*V75*EPX17*04*5",
    "station": "6 Avenue de la Porte Pouchet 75017 Paris",
    "since": "2026-11-17T03:20:38+00:00",
-   "covered_hours": 115.8,
+   "covered_hours": 115.9,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 115.8 h observed"
+   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 115.9 h observed"
   },
   {
    "rule": "R1",
