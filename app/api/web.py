@@ -168,6 +168,30 @@ class WebApi:
             "fetched_at": result.fetched_at.isoformat(),
         }
 
+    def velib_map(self) -> dict[str, Any]:
+        bikes = self.dialog.bikes
+        if bikes is None or not hasattr(bikes, "all_stations"):
+            return {"error": "feed_down"}
+        try:
+            result = bikes.all_stations()
+        except FeedError:
+            return {"error": "feed_down"}
+        return {
+            "fetched_at": result.fetched_at.isoformat(),
+            "stations": [
+                {
+                    "name": s.name,
+                    "lat": s.lat,
+                    "lon": s.lon,
+                    "bikes": s.bikes,
+                    "ebikes": s.ebikes,
+                    "docks": s.docks,
+                    "renting": s.renting,
+                }
+                for s in result.stations
+            ],
+        }
+
     def chargers(self, stop_id: str) -> dict[str, Any]:
         area = self.index.by_id.get(stop_id)
         if area is None or area.lat is None or area.lon is None:

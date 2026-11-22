@@ -23,6 +23,7 @@ const I18N = {
     ev: "Bornes", chargers: "Bornes Belib' à proximité", free: "libre(s)", charging: "en charge", out: "hors service",
     evNone: "Aucune borne Belib' à moins de 500 m.", evWarn: "signalée peu fiable (historique)",
     legend: [["ok", "au moins une libre"], ["busy", "toutes occupées"], ["down", "toutes hors service"], ["flag", "signalée peu fiable"]],
+    bikesLayer: "Vélib", bikesLegend: [["has", "vélos disponibles (nombre)"], ["empty", "aucun vélo"], ["closed", "station fermée"]],
     speakOn: "Lecture à voix haute activée.", speakNo: "Aucune voix française installée dans ce navigateur : la lecture à voix haute est indisponible.",
     modes: { Metro: "Métro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Micro non disponible dans ce navigateur.", listening: "J'écoute…",
@@ -50,6 +51,7 @@ const I18N = {
     ev: "EV chargers", chargers: "Belib' chargers nearby", free: "free", charging: "charging", out: "out of service",
     evNone: "No Belib' charger within 500 m.", evWarn: "flagged unreliable (history)",
     legend: [["ok", "at least one free"], ["busy", "all in use"], ["down", "all out of service"], ["flag", "flagged unreliable"]],
+    bikesLayer: "Vélib", bikesLegend: [["has", "bikes available (count)"], ["empty", "no bikes"], ["closed", "station closed"]],
     speakOn: "Read aloud is on.", speakNo: "No English voice is installed in this browser, so read aloud is unavailable.",
     modes: { Metro: "Metro", RapidTransit: "RER", Tramway: "Tram", LocalTrain: "Train" },
     micNo: "Microphone not available in this browser.", listening: "Listening…",
@@ -90,6 +92,7 @@ const state = {
   modes: new Set(store.get("allo.modes", ["Metro", "RapidTransit", "Tramway", "LocalTrain"])),
   favs: store.get("allo.favs", []), near: null, suggest: [], active: -1,
   ev: store.get("allo.ev", false), evLayer: null, evData: null, evAt: 0,
+  bikes: store.get("allo.bikes", false), bikesLayer: null, bikesData: null, bikesAt: 0,
   session: store.get("allo.session", null) || (() => { const s = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2); store.set("allo.session", s); return s; })(),
 };
 const tr = () => I18N[state.lang];
@@ -161,15 +164,52 @@ function renderFilters() {
     }));
   }
   f.append(el("button", {
+    type: "button", class: "chip bikes" + (state.bikes ? " on" : ""), textContent: "🚲 " + tr().bikesLayer,
+    attrs: { "aria-pressed": String(state.bikes) }, onclick: () => setBikes(!state.bikes),
+  }));
+  f.append(el("button", {
     type: "button", class: "chip ev" + (state.ev ? " on" : ""), textContent: "⚡ " + tr().ev,
     attrs: { "aria-pressed": String(state.ev) }, onclick: () => setEv(!state.ev),
   }));
 }
 
+// ---------- Vélib' layer (live bikes per station) ----------
+function setBikes(on) {
+  state.bikes = on; store.set("allo.bikes", on); renderFilters(); drawBikes(); renderLegend();
+  document.body.classList.toggle("overlay-mode", state.ev || state.bikes);
+}
+function bikesCard(v) {
+  const t = tr();
+  const line = v.renting ? `${v.bikes} ${t.bikes} (${v.ebikes} ${t.ebikes}) · ${v.docks} ${t.docks}` : t.closed;
+  return el("div", { class: "evcard" }, el("strong", { textContent: v.name }), el("div", { textContent: line }));
+}
+async function drawBikes() {
+  if (state.bikesLayer) { state.bikesLayer.remove(); state.bikesLayer = null; }
+  if (!state.bikes) return;
+  try {
+    if (!state.bikesData || Date.now() - state.bikesAt > 60000) {
+      state.bikesData = await api("/api/velib/map"); state.bikesAt = Date.now();
+    }
+  } catch (e) { $("answer").textContent = e.message; return; }
+  if (!state.bikes || state.bikesData.error) return;
+  const layer = L.layerGroup();
+  for (const v of state.bikesData.stations) {
+    const kind = !v.renting ? "closed" : v.bikes > 0 ? "has" : "empty";
+    // Text content of the pin is a number we format ourselves (never data-built HTML)
+    const label = kind === "has" ? String(Math.min(v.bikes, 99)) : kind === "closed" ? "×" : "0";
+    const icon = L.divIcon({ className: `vbpin ${kind}`, html: label, iconSize: [22, 22] });
+    const m = L.marker([v.lat, v.lon], { icon, title: v.name, riseOnHover: true });
+    m.bindPopup(() => bikesCard(v));
+    layer.addLayer(m);
+  }
+  if (state.bikesLayer) state.bikesLayer.remove();
+  state.bikesLayer = layer.addTo(map);
+}
+
 // ---------- Belib' chargers (live status + reliability flags from the collector) ----------
 function setEv(on) {
   state.ev = on; store.set("allo.ev", on); renderFilters(); drawChargers(); renderLegend();
-  document.body.classList.toggle("ev-mode", on); // stations fade so chargers stand out
+  document.body.classList.toggle("overlay-mode", state.ev || state.bikes); // stations fade
 }
 function chargerSummary(a) {
   const t = tr();
@@ -213,11 +253,19 @@ async function drawChargers() {
 }
 function renderLegend() {
   const box = $("legend"); box.replaceChildren();
-  box.hidden = !state.ev;
-  if (!state.ev) return;
-  box.append(el("div", { class: "legend-title", textContent: "⚡ Belib'" }));
-  for (const [kind, label] of tr().legend) {
-    box.append(el("div", { class: "legend-row" }, el("span", { class: `evpin ${kind === "flag" ? "ok flag" : kind}`, textContent: "⚡" }), el("span", { textContent: label })));
+  box.hidden = !state.ev && !state.bikes;
+  if (state.bikes) {
+    box.append(el("div", { class: "legend-title", textContent: "🚲 Vélib'" }));
+    for (const [kind, label] of tr().bikesLegend) {
+      box.append(el("div", { class: "legend-row" },
+        el("span", { class: `vbpin ${kind}`, textContent: kind === "has" ? "7" : kind === "closed" ? "×" : "0" }), el("span", { textContent: label })));
+    }
+  }
+  if (state.ev) {
+    box.append(el("div", { class: "legend-title", textContent: "⚡ Belib'" }));
+    for (const [kind, label] of tr().legend) {
+      box.append(el("div", { class: "legend-row" }, el("span", { class: `evpin ${kind === "flag" ? "ok flag" : kind}`, textContent: "⚡" }), el("span", { textContent: label })));
+    }
   }
 }
 async function loadChargers() {
@@ -588,6 +636,7 @@ async function refreshStatus() {
     for (const s of state.stops) { s._n = norm(s.name); for (const id of s.ids || [s.id]) state.byId.set(id, s); }
     drawMarkers(); renderHome();
     if (state.ev) setEv(true);
+    if (state.bikes) setBikes(true);
   } catch (e) { $("answer").textContent = e.message; }
   refreshStatus();
 })();

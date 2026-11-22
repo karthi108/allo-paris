@@ -123,3 +123,25 @@ def test_velib_without_place_asks(source: FakeSource) -> None:
         "il reste des vélos ?", CallState()
     )
     assert reply.intent == "clarify_stop"
+
+
+def test_velib_map_lists_every_station_and_handles_missing_feed(
+    index: StopIndex, source: FakeSource
+) -> None:
+    from app.api.web import WebApi
+
+    class AllBikes:
+        def nearby(
+            self, lat: float, lon: float, radius_m: int = 500, limit: int = 3
+        ) -> VelibResult:
+            raise AssertionError("not used")
+
+        def all_stations(self) -> VelibResult:
+            return VelibResult(
+                parse_records({"results": [RECORD]}, 48.8566, 2.3522), datetime.now(UTC)
+            )
+
+    web = WebApi(index, Dialog(index, source, bikes=AllBikes()))
+    out = web.velib_map()
+    assert out["stations"][0]["name"] == "Dunkerque - Maubeuge" and out["stations"][0]["bikes"] == 9
+    assert WebApi(index, Dialog(index, source)).velib_map() == {"error": "feed_down"}

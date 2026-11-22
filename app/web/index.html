@@ -74,7 +74,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .legend-title { font-weight: 700; }
 .legend-row { display: flex; align-items: center; gap: 8px; }
 .legend-row .evpin { width: 16px !important; height: 16px !important; font-size: 10px; }
-body.ev-mode path.leaflet-interactive { opacity: .35; }
+body.overlay-mode path.leaflet-interactive { opacity: .35; }
+.vbpin { display: grid !important; place-items: center; width: 22px !important; height: 22px !important; border-radius: 50%; font: 700 10px/1 system-ui, sans-serif; color: #fff; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.45); }
+.vbpin.has { background: #0369a1; } .vbpin.empty { background: #94a3b8; } .vbpin.closed { background: #475569; }
+.legend-row .vbpin { width: 16px !important; height: 16px !important; font-size: 9px; }
+.filters .chip.bikes.on { background: #0369a1; border-color: #0369a1; color: #fff; }
 .answer-list { margin-top: 8px; }
 .warn { color: #b45309; }
 @media (min-width: 761px) { .legend { left: auto; right: 12px; bottom: 28px; } }

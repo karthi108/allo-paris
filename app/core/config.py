@@ -59,6 +59,7 @@ class Settings:
     tts_voice_fr: str
     tts_voice_en: str
     public_phone: str
+    phone_live: bool
     llm_provider: str
     llm_api_key: str
     llm_model: str
@@ -97,6 +98,8 @@ def get_settings() -> Settings:
         tts_voice_fr=os.environ.get("ALLO_TTS_VOICE_FR", ""),
         tts_voice_en=os.environ.get("ALLO_TTS_VOICE_EN", ""),
         public_phone=os.environ.get("ALLO_PUBLIC_PHONE", ""),
+        # Set to true only after a real test call works: the web page shows "Call" only then
+        phone_live=_env("ALLO_PHONE_LIVE", "false").lower() == "true",
         llm_provider=os.environ.get("ALLO_LLM_PROVIDER", ""),
         llm_api_key=os.environ.get("ALLO_LLM_API_KEY", ""),
         llm_model=os.environ.get("ALLO_LLM_MODEL", ""),

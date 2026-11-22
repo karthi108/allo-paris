@@ -24,6 +24,16 @@ URL = (
 )
 
 
+# All stations in one request (verified 2026-11-09: 1,522 stations, ~450 KB). The where
+# clause is always true and changes every call, so no cache can serve an old copy (the
+# same Opendatasoft server served a 22-minute-old Belib' export, see docs/decisions.md D-021).
+EXPORT_URL = (
+    "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/"
+    "velib-disponibilite-en-temps-reel/exports/json?select=stationcode,name,numbikesavailable,"
+    "ebike,mechanical,numdocksavailable,is_renting,is_returning,duedate,coordonnees_geo"
+)
+
+
 @dataclass(frozen=True)
 class VelibStation:
     code: str
@@ -141,6 +151,33 @@ class VelibClient:
         self._cache[key] = (time.monotonic(), result)
         if len(self._cache) > 500:
             self._cache.clear()
+        return result
+
+    def all_stations(self) -> VelibResult:
+        """Every station, for the map layer. One request, cached like nearby()."""
+        hit = self._cache.get("all")
+        if hit and time.monotonic() - hit[0] < self.cache_ttl:
+            return hit[1]
+        today = datetime.now(UTC).date()
+        if today != self._day:
+            self._day, self.calls_today = today, 0
+        if self.calls_today >= self.daily_budget:
+            raise FeedError("daily Vélib budget reached")
+        self.calls_today += 1
+        nonce = time.time_ns()
+        where = urllib.parse.quote(f"stationcode is not null OR {nonce} = {nonce}")
+        req = urllib.request.Request(  # noqa: S310 (fixed https base)
+            f"{EXPORT_URL}&where={where}", headers={"Accept": "application/json"}
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=max(self.timeout, 15)) as resp:  # noqa: S310
+                rows = json.load(resp)
+        except Exception as exc:
+            self.last_error = f"velib: {type(exc).__name__}"
+            raise FeedError(f"Vélib request failed: {type(exc).__name__}") from exc
+        result = VelibResult(parse_records({"results": rows}, 48.8566, 2.3522), datetime.now(UTC))
+        self.last_ok_at = result.fetched_at
+        self._cache["all"] = (time.monotonic(), result)
         return result
 
     def status(self) -> dict[str, object]:

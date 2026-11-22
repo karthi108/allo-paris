@@ -264,6 +264,12 @@ def api_chargers(request: Request, stop: str) -> dict[str, Any]:
     return web.chargers(stop)
 
 
+@app.get("/api/velib/map")
+def api_velib_map(request: Request) -> dict[str, Any]:
+    _limit(request)
+    return web.velib_map()
+
+
 @app.get("/api/chargers/near")
 def api_chargers_near(request: Request, lat: float, lon: float) -> dict[str, Any]:
     _limit(request)
@@ -323,7 +329,8 @@ def api_status() -> dict[str, Any]:
         "ai": _ai_status(),
         "stops": len(index.areas),
         # Only advertise the number when the phone line can actually answer
+        # Only advertise the number once a real test call has worked (ALLO_PHONE_LIVE=true)
         "phone": settings.public_phone
-        if settings.twilio_auth_token and settings.public_base_url
+        if settings.phone_live and settings.twilio_auth_token and settings.public_base_url
         else "",
     }
