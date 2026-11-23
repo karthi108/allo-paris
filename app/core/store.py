@@ -1,12 +1,14 @@
 """SQLite storage for call limits and short-lived logs (v1; Postgres later).
 
-Stores only: HMAC caller ID, call SID, timestamps, transcript, intent, latency.
+Stores only: HMAC caller ID, call SID, timestamps, transcript, intent, latency; and,
+only when ALLO_LOG_QUESTIONS=true, web question text with its time (no IP, no session).
 Never the raw phone number, never audio. Rows older than the retention period are
 deleted on every write.
 """
 
 from __future__ import annotations
 
+import re
 import sqlite3
 import threading
 from datetime import UTC, datetime, timedelta
@@ -29,7 +31,25 @@ CREATE TABLE IF NOT EXISTS turns (
     latency_ms INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS turns_at ON turns(at);
+-- Web questions (only when ALLO_LOG_QUESTIONS=true): the text and its time, nothing else.
+-- No IP, no session id, no answer. Deleted after the retention period like transcripts.
+CREATE TABLE IF NOT EXISTS web_questions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    at TEXT NOT NULL,
+    question TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS web_questions_at ON web_questions(at);
 """
+
+# People sometimes type contact details into a question: mask them before saving
+_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(\.[\w-]+)+")
+_PHONE = re.compile(r"(?:\+?\d[\s.\-]?){8,}")
+
+
+def redact(text: str) -> str:
+    """Mask e-mail addresses and phone-like digit runs (8+ digits); keep line numbers,
+    times and station names."""
+    return _PHONE.sub("[numéro]", _EMAIL.sub("[e-mail]", text)).strip()
 
 
 class Store:
@@ -45,6 +65,25 @@ class Store:
         cutoff = (now - self.retention).isoformat()
         self._db.execute("DELETE FROM turns WHERE at < ?", (cutoff,))
         self._db.execute("DELETE FROM calls WHERE started_at < ?", (cutoff,))
+        self._db.execute("DELETE FROM web_questions WHERE at < ?", (cutoff,))
+
+    def log_question(self, text: str, now: datetime | None = None) -> None:
+        """Save one web question: masked text (max 300 characters) and time only."""
+        clean = redact(text)[:300]
+        if not clean:
+            return
+        now = now or datetime.now(UTC)
+        with self._lock, self._db:
+            self._purge(now)
+            self._db.execute(
+                "INSERT INTO web_questions (at, question) VALUES (?, ?)",
+                (now.isoformat(), clean),
+            )
+
+    def web_questions(self) -> list[tuple[str, str]]:
+        """(time, question) rows, oldest first (for the owner's review and for tests)."""
+        rows = self._db.execute("SELECT at, question FROM web_questions ORDER BY id").fetchall()
+        return [(str(a), str(q)) for a, q in rows]
 
     def purge(self, now: datetime | None = None) -> int:
         """Delete rows past the retention period. Returns how many rows were removed.

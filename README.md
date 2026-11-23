@@ -100,7 +100,7 @@ Optional AI agent: set `ALLO_LLM_PROVIDER` (`anthropic` or `openai`), `ALLO_LLM_
 Webhooks `/voice` and `/voice/gather` (signature-checked). Set `ALLO_TWILIO_AUTH_TOKEN` and `ALLO_PUBLIC_BASE_URL`, point the Twilio number's "A call comes in" webhook to `https://<host>/voice`. Not yet tested on a real call.
 
 ## Data and privacy
-No web questions are stored. Location for "Near me" never leaves the browser. Phone callers are stored only as HMAC-SHA256; transcripts are deleted after 30 days (background job). Full details: `/privacy` page and [threat model](docs/threat-model.md).
+Web questions are stored only when `ALLO_LOG_QUESTIONS=true` (on in the Render blueprint): the question text and its time only, no IP address, no session id, no answer; e-mails and phone numbers are masked; deleted after 30 days; a notice under the search bar says so, and nothing is shown or saved when it is off. The app writes no access log (uvicorn `--no-access-log`). Location for "Near me" never leaves the browser. Phone callers are stored only as HMAC-SHA256; transcripts are deleted after 30 days (background job). Full details: `/privacy` page and [threat model](docs/threat-model.md).
 
 ## Known limitations
 - Real-time coverage is partial on IDFM's side; scheduled times are labelled as such

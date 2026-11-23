@@ -91,7 +91,13 @@ calls = CallHandler(
     ),
 )
 
-web = WebApi(index, dialog, stale_after=settings.realtime_stale_after_seconds)
+web = WebApi(
+    index,
+    dialog,
+    stale_after=settings.realtime_stale_after_seconds,
+    # Off unless ALLO_LOG_QUESTIONS=true; /privacy and the on-page notice describe it
+    log_question=store.log_question if settings.log_questions else None,
+)
 # Questions to the assistant can cost LLM money: tight limit. Data reads (boards, Vélib',
 # chargers, status) are cheap and a map page makes several per click: looser limit, still
 # bounded by the daily PRIM budget. One shared 20/min limit made the page fail on 2-3 clicks.
@@ -338,6 +344,8 @@ def api_status() -> dict[str, Any]:
         "routes": routes.status(),
         "ai": _ai_status(),
         "stops": len(index.areas),
+        # The page shows the logging notice only when questions are really logged
+        "logging": settings.log_questions,
         # Only advertise the number when the phone line can actually answer
         # Only advertise the number once a real test call has worked (ALLO_PHONE_LIVE=true)
         "phone": settings.public_phone

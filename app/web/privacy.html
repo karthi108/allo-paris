@@ -25,18 +25,18 @@ a { color: var(--brand); }
 <main>
   <a href="/">← Allô Paris</a>
   <h1>Confidentialité · Privacy</h1>
-  <p class="muted">Dernière mise à jour / Last updated: 7 novembre 2026 (IA ajoutée / AI added). Projet indépendant, non affilié à Île-de-France Mobilités ni à la RATP. Les horaires viennent des données temps réel officielles d'IDFM (open data PRIM). / Independent project, not affiliated with IDFM or RATP; times come from official IDFM real-time open data.</p>
+  <p class="muted">Dernière mise à jour / Last updated: 23 novembre 2026 (journal des questions / question log). <b>Prototype</b> : les réponses peuvent être fausses ; vérifiez auprès des sources officielles. / Answers may be wrong; check official sources. Projet indépendant, non affilié à Île-de-France Mobilités ni à la RATP. Les horaires viennent des données temps réel officielles d'IDFM (open data PRIM). / Independent project, not affiliated with IDFM or RATP; times come from official IDFM real-time open data.</p>
 
   <section class="card">
     <h2>Site web · Website</h2>
     <table>
       <thead><tr><th>Donnée / Data</th><th>Traitement / Handling</th><th>Conservation / Kept</th></tr></thead>
       <tbody>
-        <tr><td>Question (texte)</td><td>Traitée en mémoire pour répondre. / Processed in memory to answer.</td><td>Non enregistrée. / Not stored.</td></tr>
+        <tr><td>Question (texte)</td><td>Traitée pour répondre. <b>Si un avis est affiché sous la barre de recherche</b>, le texte seul est enregistré pour améliorer le service (mesurer les questions mal comprises) : avec sa date et heure, sans adresse IP, sans identifiant de session, sans la réponse. Les adresses e-mail et numéros de téléphone tapés dans la question sont masqués avant l'enregistrement. Sans avis affiché, rien n'est enregistré. / Processed to answer. <b>If a notice is shown under the search bar</b>, the text alone is saved to improve the service (measure misunderstood questions): with its date and time, without IP address, session identifier or the answer. E-mail addresses and phone numbers typed in the question are masked before saving. With no notice shown, nothing is saved.</td><td>Supprimé automatiquement après 30 jours. / Deleted automatically after 30 days.</td></tr>
         <tr><td>Micro / Microphone</td><td>La reconnaissance vocale est faite par votre navigateur (Google ou Microsoft selon le navigateur). Nous recevons seulement le texte. / Speech recognition is done by your browser vendor; we only receive the text.</td><td>Aucun audio chez nous. / No audio on our side.</td></tr>
         <tr><td>Position « Près de moi »</td><td>Calculée uniquement dans votre navigateur. / Computed in your browser only.</td><td>Jamais envoyée. / Never sent.</td></tr>
         <tr><td>Favoris, thème, langue</td><td>Stockage local de votre navigateur. / Your browser's local storage.</td><td>Sur votre appareil. / On your device.</td></tr>
-        <tr><td>Adresse IP</td><td>Limitation de débit en mémoire. / In-memory rate limiting.</td><td>Non enregistrée. / Not stored.</td></tr>
+        <tr><td>Adresse IP</td><td>Limitation de débit en mémoire ; pas de journal d'accès dans l'application. / In-memory rate limiting; no access log in the application.</td><td>Non enregistrée par nous. / Not stored by us.</td></tr>
       </tbody>
     </table>
   </section>
@@ -60,6 +60,8 @@ a { color: var(--brand); }
       <li><b>Fournisseur d'IA (OpenAI ou Anthropic, si activé)</b> : reçoit le texte de la question et les données transport utilisées pour y répondre, uniquement quand les règles ne suffisent pas. Jamais votre numéro ni votre position. / <b>AI provider (if enabled)</b>: receives the question text and the transport data used to answer it, only when rules are not enough. Never your number or location.</li>
       <li><b>Ville de Paris open data (Vélib')</b> : reçoit les coordonnées de la station demandée. / Receives the coordinates of the station asked.</li>
       <li><b>OpenStreetMap, cdnjs</b> : votre navigateur charge la carte et sa bibliothèque depuis ces serveurs (ils voient votre adresse IP). / Your browser loads map tiles and the map library from them (they see your IP).</li>
+      <li><b>Hébergeur (Render)</b> : le site tourne chez Render (région Francfort) ; comme tout hébergeur, il traite les requêtes et peut conserver des journaux techniques selon sa propre politique. / <b>Host (Render)</b>: the site runs on Render (Frankfurt region); like any host it handles requests and may keep technical logs under its own policy.</li>
+      <li><b>Documents officiels</b> : les réponses sur l'accessibilité des gares (Île-de-France Mobilités) et sur les amendes, la médiation SNCF et la CMI (Service Public / DILA) viennent d'une copie locale de ces documents, citée avec sa date ; aucune donnée ne leur est envoyée. / Answers on station accessibility and on fines, the SNCF mediator and the CMI come from a local copy of those documents, cited with their date; nothing is sent to them.</li>
     </ul>
     <p class="muted">Pas de publicité, pas de traceur, pas de cookie de suivi. / No ads, no trackers, no tracking cookies.</p>
   </section>

@@ -49,7 +49,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .top { padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
 .brand { display: flex; align-items: center; gap: 10px; }
 .logo { width: 30px; height: 30px; flex: none; }
-.brand h1 { font-size: 18px; margin: 0; letter-spacing: -.01em; }
+.brand h1 { font-size: 18px; margin: 0; letter-spacing: -.01em; white-space: nowrap; }
+.proto { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted, #626775); border: 1px solid currentColor; border-radius: 6px; padding: 1px 6px; }
+.lognote { font-size: 12px; color: var(--muted, #626775); margin: 6px 2px 0; }
+.lognote a { color: inherit; }
 .brand .spacer { flex: 1; }
 .seg { display: inline-flex; background: var(--soft); border-radius: 999px; padding: 3px; }
 .seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
@@ -205,6 +208,7 @@ body.overlay-mode path.leaflet-interactive { opacity: .35; }
     <div class="brand">
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#5b3df5"/><path d="M18 20h28a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H32l-9 7v-7h-5a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z" fill="#fff"/><circle cx="25" cy="32" r="3" fill="#5b3df5"/><circle cx="32" cy="32" r="3" fill="#5b3df5"/><circle cx="39" cy="32" r="3" fill="#5b3df5"/></svg>
       <h1>Allô Paris</h1>
+      <span class="proto" id="proto" title="Prototype: answers may be wrong; check official sources">prototype</span>
       <span class="spacer"></span>
       <a class="call" id="call" hidden href="#">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
@@ -229,6 +233,7 @@ body.overlay-mode path.leaflet-interactive { opacity: .35; }
       </div>
       <ul class="suggest" id="suggest" role="listbox"></ul>
     </form>
+    <p class="lognote" id="logNote" hidden></p>
   </div>
 
   <div class="body" id="body">

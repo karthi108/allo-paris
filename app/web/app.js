@@ -14,6 +14,8 @@ const I18N = {
     updated: (s) => `Mis à jour il y a ${s} s · actualisation auto`,
     disruption: "Info trafic", more: "Lire la suite", less: "Réduire",
     feedOk: (n, b) => `Données IDFM OK · ${n}/${b} requêtes aujourd'hui`,
+    logNote: "Prototype : le texte de vos questions est enregistré pour améliorer le service, sans adresse IP ni identifiant, et supprimé après 30 jours. N'y mettez pas d'informations personnelles.",
+    logMore: "En savoir plus", proto: "Prototype : les réponses peuvent être fausses, vérifiez auprès des sources officielles.",
     feedErr: (e) => `Problème de données : ${e}`, feedUnknown: "Données IDFM prêtes",
     tooMany: "Trop de requêtes, réessayez dans une minute.", error: "Erreur réseau.",
     ask: (q) => `Demander : « ${q} »`,
@@ -42,6 +44,8 @@ const I18N = {
     updated: (s) => `Updated ${s} s ago · auto-refresh`,
     disruption: "Service update", more: "Read more", less: "Show less",
     feedOk: (n, b) => `IDFM data OK · ${n}/${b} requests today`,
+    logNote: "Prototype: the text of your questions is saved to improve the service, without IP address or identifier, and deleted after 30 days. Do not include personal information.",
+    logMore: "Learn more", proto: "Prototype: answers may be wrong; check official sources.",
     feedErr: (e) => `Data problem: ${e}`, feedUnknown: "IDFM data ready",
     tooMany: "Too many requests, try again in a minute.", error: "Network error.",
     ask: (q) => `Ask: “${q}”`,
@@ -589,6 +593,7 @@ function setLang(lang) {
   const t = tr();
   document.documentElement.lang = lang;
   $("q").placeholder = t.search; $("callLabel").textContent = t.call;
+  renderLogNote();
   $("langFr").setAttribute("aria-pressed", String(lang === "fr"));
   $("langEn").setAttribute("aria-pressed", String(lang === "en"));
   $("locate").title = t.nearMe; $("locate").setAttribute("aria-label", t.nearMe);
@@ -625,7 +630,16 @@ async function refreshStatus() {
     else if (!p.last_ok_at) { dot.className = "dot ok"; $("feedText").textContent = t.feedUnknown; }
     else { dot.className = "dot ok"; $("feedText").textContent = t.feedOk(p.calls_today, p.daily_budget); }
     if (s.phone) { $("call").hidden = false; $("call").href = "tel:" + s.phone.replace(/[^+\d]/g, ""); $("call").title = s.phone; }
+    state.logging = Boolean(s.logging); renderLogNote();
   } catch { /* best effort */ }
+}
+// Shown only when the server really logs questions (ALLO_LOG_QUESTIONS=true)
+function renderLogNote() {
+  const box = $("logNote"), t = tr();
+  $("proto").title = t.proto;
+  box.hidden = !state.logging;
+  if (!state.logging) return;
+  box.replaceChildren(document.createTextNode(t.logNote + " "), el("a", { href: "/privacy", textContent: t.logMore }));
 }
 
 (async () => {

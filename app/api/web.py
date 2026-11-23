@@ -6,14 +6,18 @@ from the same templates, and limits protect the PRIM quota.
 
 from __future__ import annotations
 
+import logging
 import time
 from collections import OrderedDict
+from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
 
 from app.agent.dialog import CallState, Dialog, drop_terminating, render_departures
 from app.data.prim import FeedError
 from app.data.stops import Line, StopArea, StopIndex
+
+log = logging.getLogger(__name__)
 
 MAX_SESSIONS = 1000
 
@@ -61,10 +65,19 @@ def stop_json(area: StopArea) -> dict[str, Any]:
 
 
 class WebApi:
-    def __init__(self, index: StopIndex, dialog: Dialog, stale_after: int = 120) -> None:
+    def __init__(
+        self,
+        index: StopIndex,
+        dialog: Dialog,
+        stale_after: int = 120,
+        log_question: Callable[[str], None] | None = None,
+    ) -> None:
         self.index = index
         self.dialog = dialog
         self.stale_after = stale_after
+        # Set only when ALLO_LOG_QUESTIONS=true (privacy page and on-page notice say so).
+        # Receives the question text alone: never the session id, IP or answer.
+        self.log_question = log_question
         self.sessions: OrderedDict[str, CallState] = OrderedDict()
         self._stops_cache = self._group_stations()
 
@@ -243,6 +256,11 @@ class WebApi:
         state.lang = lang if lang in ("fr", "en") else "fr"
         if not question:
             return {"intent": "empty", "answer": ""}
+        if self.log_question is not None:
+            try:
+                self.log_question(question)
+            except Exception:  # noqa: BLE001 (logging must never break an answer)
+                log.exception("question logging failed")
         reply = self.dialog.handle(question, state)
         return {
             "intent": reply.intent,

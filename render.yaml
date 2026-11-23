@@ -7,7 +7,8 @@ services:
     plan: free
     region: frankfurt
     buildCommand: pip install . && python scripts/build_stops.py
-    startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips "*"
+    # --no-access-log: uvicorn's access log prints client IPs; /privacy says IPs are not stored
+    startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips "*" --no-access-log
     healthCheckPath: /healthz
     autoDeploy: true
     envVars:
@@ -31,3 +32,11 @@ services:
         value: "1.0"
       - key: ALLO_ROUTE_DAILY_BUDGET
         value: "300"
+      # Web question logging (text only, no IP or session, 30-day deletion). /privacy and
+      # the notice under the search bar describe it; the notice shows only when this is true.
+      # Note: the free plan's disk is not persistent, so saved questions are also lost on
+      # each restart or deploy.
+      - key: ALLO_LOG_QUESTIONS
+        value: "true"
+      - key: ALLO_PHONE_LIVE
+        value: "false" # true only after a real test call works
