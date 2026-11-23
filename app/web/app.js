@@ -12,6 +12,18 @@ const I18N = {
     feedDown: "Données temps réel indisponibles. Aucun horaire affiché.",
     stale: "Données trop anciennes. Aucun horaire affiché.",
     updated: (s) => `Mis à jour il y a ${s} s · actualisation auto`,
+    ago: (s) => s < 5 ? "à l'instant" : s < 60 ? `il y a ${s} s` : `il y a ${Math.floor(s / 60)} min`,
+    nextIn: (s) => s <= 0 ? "actualisation…" : `prochaine dans ${s} s`,
+    upd: "Mis à jour", srcIdfm: "IDFM temps réel", srcIdfmMix: "IDFM · certains horaires théoriques (en italique)",
+    srcVelib: "Vélib' temps réel", srcBelib: "Belib' temps réel", srcTraffic: "Info trafic IDFM",
+    reliab: (hm) => `fiabilité : historique de ${hm}`,
+    freshTitle: "Données et fréquence de mise à jour",
+    freshRows: [
+      ["Métro, RER, tram, train", "temps réel IDFM, actualisé toutes les 30 s"],
+      ["Info trafic", "messages IDFM, toutes les 5 min"],
+      ["Vélib'", "temps réel Ville de Paris, chaque minute"],
+      ["Bornes Belib'", "état temps réel chaque minute ; fiabilité calculée sur l'historique collecté toutes les 10 min"],
+    ],
     disruption: "Info trafic", more: "Lire la suite", less: "Réduire",
     feedOk: (n, b) => `Données IDFM OK · ${n}/${b} requêtes aujourd'hui`,
     logNote: "Prototype : le texte de vos questions est enregistré pour améliorer le service, sans adresse IP ni identifiant, et supprimé après 30 jours. N'y mettez pas d'informations personnelles.",
@@ -42,6 +54,18 @@ const I18N = {
     feedDown: "Real-time data unavailable. No times shown.",
     stale: "Data too old. No times shown.",
     updated: (s) => `Updated ${s} s ago · auto-refresh`,
+    ago: (s) => s < 5 ? "just now" : s < 60 ? `${s} s ago` : `${Math.floor(s / 60)} min ago`,
+    nextIn: (s) => s <= 0 ? "refreshing…" : `next in ${s} s`,
+    upd: "Updated", srcIdfm: "IDFM real-time", srcIdfmMix: "IDFM · some times scheduled (italic)",
+    srcVelib: "Vélib' real-time", srcBelib: "Belib' real-time", srcTraffic: "IDFM service update",
+    reliab: (hm) => `reliability: history as of ${hm}`,
+    freshTitle: "Data sources and update frequency",
+    freshRows: [
+      ["Metro, RER, tram, train", "IDFM real-time, refreshed every 30 s"],
+      ["Service updates", "IDFM messages, every 5 min"],
+      ["Vélib'", "City of Paris real-time, every minute"],
+      ["Belib' chargers", "live status every minute; reliability from history collected every 10 min"],
+    ],
     disruption: "Service update", more: "Read more", less: "Show less",
     feedOk: (n, b) => `IDFM data OK · ${n}/${b} requests today`,
     logNote: "Prototype: the text of your questions is saved to improve the service, without IP address or identifier, and deleted after 30 days. Do not include personal information.",
@@ -122,6 +146,30 @@ async function api(path, opts) {
   if (!r.ok) throw new Error(tr().error);
   return r.json();
 }
+
+// ---------- data freshness: "updated 12 s ago · next in 18 s", ticking every second ----------
+// at: when the data was fetched by the server (local clock); next: when this page refreshes it.
+function freshLine(source, at, next, extra) {
+  const n = el("div", { class: "fresh-line" }, el("span", { class: "live", attrs: { "aria-hidden": "true" } }),
+    el("span", { class: "src", textContent: source }), el("span", { class: "ago" }));
+  n.dataset.at = String(at);
+  if (next) n.dataset.next = String(next);
+  if (extra) n.dataset.extra = extra;
+  tickOne(n);
+  return n;
+}
+function tickOne(n) {
+  const t = tr(), now = Date.now();
+  const age = Math.max(0, Math.round((now - Number(n.dataset.at)) / 1000));
+  let text = " · " + t.ago(age);
+  if (n.dataset.next) text += " · " + t.nextIn(Math.round((Number(n.dataset.next) - now) / 1000));
+  if (n.dataset.extra) text += " · " + n.dataset.extra;
+  n.querySelector(".ago").textContent = text;
+  n.title = t.upd + " " + new Date(Number(n.dataset.at)).toLocaleTimeString(state.lang, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+setInterval(() => document.querySelectorAll(".fresh-line").forEach(tickOne), 1000);
+const atFrom = (iso) => { const v = Date.parse(iso); return Number.isFinite(v) ? Math.min(v, Date.now()) : Date.now(); };
+const hm = (iso) => new Date(iso).toLocaleTimeString(state.lang, { hour: "2-digit", minute: "2-digit" });
 
 // ---------- map ----------
 const map = L.map("map", { zoomControl: true, attributionControl: true }).setView([48.8566, 2.3522], 12);
@@ -208,7 +256,10 @@ async function drawBikes() {
   }
   if (state.bikesLayer) state.bikesLayer.remove();
   state.bikesLayer = layer.addTo(map);
+  renderLegend();
 }
+// Map layers follow the live data: reload every minute while shown
+setInterval(() => { if (state.bikes) drawBikes(); if (state.ev) drawChargers(); }, 60000);
 
 // ---------- Belib' chargers (live status + reliability flags from the collector) ----------
 function setEv(on) {
@@ -260,6 +311,7 @@ function renderLegend() {
   box.hidden = !state.ev && !state.bikes;
   if (state.bikes) {
     box.append(el("div", { class: "legend-title", textContent: "🚲 Vélib'" }));
+    if (state.bikesData && state.bikesData.fetched_at) box.append(freshLine(tr().srcVelib, atFrom(state.bikesData.fetched_at), state.bikesAt + 60000));
     for (const [kind, label] of tr().bikesLegend) {
       box.append(el("div", { class: "legend-row" },
         el("span", { class: `vbpin ${kind}`, textContent: kind === "has" ? "7" : kind === "closed" ? "×" : "0" }), el("span", { textContent: label })));
@@ -267,6 +319,7 @@ function renderLegend() {
   }
   if (state.ev) {
     box.append(el("div", { class: "legend-title", textContent: "⚡ Belib'" }));
+    if (state.evData && state.evData.fetched_at) box.append(freshLine(tr().srcBelib, atFrom(state.evData.fetched_at), state.evAt + 60000));
     for (const [kind, label] of tr().legend) {
       box.append(el("div", { class: "legend-row" }, el("span", { class: `evpin ${kind === "flag" ? "ok flag" : kind}`, textContent: "⚡" }), el("span", { textContent: label })));
     }
@@ -279,7 +332,8 @@ async function loadChargers() {
     if (state.selected !== sel) return;
     const box = $("chargers"); if (!box || d.error) return;
     const t = tr();
-    box.replaceChildren(el("div", { class: "section-title", textContent: t.chargers }));
+    box.replaceChildren(el("div", { class: "section-title", textContent: t.chargers }),
+      freshLine(t.srcBelib, atFrom(d.fetched_at), 0, d.reliability_as_of ? t.reliab(hm(d.reliability_as_of)) : ""));
     if (!d.addresses.length) { box.append(el("div", { class: "empty", textContent: t.evNone })); return; }
     const ul = el("ul", { class: "list" });
     for (const a of d.addresses) {
@@ -310,6 +364,9 @@ function renderHome() {
   const chips = el("div", { class: "chips" });
   t.examples.forEach((q) => chips.append(el("button", { type: "button", class: "chip", textContent: q, onclick: () => { $("q").value = q; ask(q); } })));
   h.append(chips);
+  const rows = el("dl", { class: "freshness" });
+  for (const [k, v] of t.freshRows) rows.append(el("dt", { textContent: k }), el("dd", { textContent: v }));
+  h.append(el("details", { class: "sources" }, el("summary", { textContent: t.freshTitle }), rows));
   h.append(el("p", { class: "empty", textContent: t.disclaimer, style: "font-size:12px;margin-top:16px" }));
 }
 function stationList(stops, metas = []) {
@@ -354,8 +411,9 @@ function renderStation() {
   }
   v.append(tabs);
   v.append(el("div", { id: "banner" }));
-  v.append(el("div", { class: "board", id: "board" }, el("div", { class: "skeleton" }), el("div", { class: "skeleton", style: "border-top:1px solid var(--line)" })));
+  // Freshness first, so "how old is this?" is answered before reading the times
   v.append(el("div", { class: "fresh", id: "fresh" }));
+  v.append(el("div", { class: "board", id: "board" }, el("div", { class: "skeleton" }), el("div", { class: "skeleton", style: "border-top:1px solid var(--line)" })));
   v.append(el("div", { id: "velib" }));
   v.append(el("div", { id: "chargers" }));
 }
@@ -367,7 +425,7 @@ async function loadVelib() {
     if (state.selected !== sel) return;
     const box = $("velib"); if (!box || d.error) return;
     const t = tr();
-    box.replaceChildren(el("div", { class: "section-title", textContent: t.velib }));
+    box.replaceChildren(el("div", { class: "section-title", textContent: t.velib }), freshLine(t.srcVelib, atFrom(d.fetched_at)));
     if (!d.stations.length) { box.append(el("div", { class: "empty", textContent: t.velibNone })); return; }
     const ul = el("ul", { class: "list" });
     for (const s of d.stations) {
@@ -386,6 +444,7 @@ async function loadBoard() {
   try {
     const d = await api(`/api/departures?stop=${encodeURIComponent(sel.stop.id)}&line=${encodeURIComponent(sel.line.id)}&lang=${state.lang}`);
     if (state.selected !== sel) return;
+    state.nextBoard = Date.now() + 30000;
     renderBoard(d);
   } catch (e) {
     const b = $("board"); if (b) b.replaceChildren(el("div", { class: "dir" }, el("span", { class: "empty", textContent: e.message })));
@@ -414,8 +473,8 @@ function renderBoard(d) {
       el("div", {}, el("div", { class: "to", textContent: t.to }), el("div", { class: "dest", textContent: dest })), times));
   }
   const allLive = d.departures.every((x) => x.realtime);
-  f.append(allLive ? el("span", { class: "live", attrs: { "aria-hidden": "true" } }) : null,
-    document.createTextNode((allLive ? t.live : t.sched) + " · " + t.updated(d.age_seconds)));
+  // Server age (not the client clock) dates the data; the board reloads every 30 s
+  f.append(freshLine(allLive ? t.srcIdfm : t.srcIdfmMix, Date.now() - d.age_seconds * 1000, state.nextBoard));
 }
 
 async function loadTraffic() {
@@ -429,7 +488,9 @@ async function loadTraffic() {
     const t = tr(), full = d.messages.join(" ");
     const short = full.length > 170 ? full.slice(0, 167).trimEnd() + "…" : full;
     const text = el("span", { textContent: short });
-    const banner = el("div", { class: "banner", attrs: { role: "status" } }, el("b", { textContent: t.disruption }), text);
+    const when = d.fetched_at ? ` · ${t.ago(Math.max(0, Math.round((Date.now() - atFrom(d.fetched_at)) / 1000)))}` : "";
+    const banner = el("div", { class: "banner", attrs: { role: "status" } },
+      el("b", { textContent: t.disruption }), el("span", { class: "banner-src", textContent: t.srcTraffic + when }), text);
     if (short !== full) {
       let open = false;
       const tog = el("button", { type: "button", textContent: " " + t.more });
