@@ -284,3 +284,10 @@ Set 5 is no longer blind after these runs.
 ## Phone test kit (2026-11-23, written before any call)
 - eval/phone_tasks.jsonl: 12 call tasks (10 FR, 2 EN after "English please"): departures, status, a clarification turn, two routes (one with the origin asked back), Vélib', EV, accessibility, a document question, a price refusal. Each has the sentences to say, expected words and a turn limit. Written by the assistant.
 - scripts/phone_report.py: pairs calls with tasks in order from the local database; reports auto completion, the owner's verdict (eval/phone_verdicts.csv, the number to quote), word error rate of the transcript against the scripted sentence, turns and server latency. Procedure: docs/phone-test.md (local app + ngrok, because the Render free plan has no shell and no persistent disk). No call made yet.
+
+## Reranker candidates 10 → 20 (c58d0f3, 2026-11-23 16:59 UTC): dev judge 56/57, read 56/57
+- Found on the live site: "who can apply for the CMI priority card?" was answered with what the card does, 3 times out of 3. Trace: the agent searched "carte mobilité inclusion priorité"; the answering passage (F34049-20, "Qui peut demander") was 7th by embeddings but outside the fused top 10 shown to the reranker, crowded out by near-identical CMI sections. Retrieval itself (step 1) was the cause, not the reranker's choice.
+- Fix (generic): the reranker sees 20 candidates. Dev retrieval set unchanged (recall@1 1.0, 8/8 declined); reranker tokens per query ≈ 1,080 → 1,920 (≈ $0.00044 → $0.00078 at the configured prices), latency unchanged (≈ 0.78 s).
+- New dev question, different wording ("conditions to be eligible for the CMI Priorité"): passes. The English administrative-court question that failed in the last two dev runs now passes too.
+- Remaining: La Défense English (judge limit, correct on reading); Roissy-en-Brie answered for Charles de Gaulle airport (rules path, judge false pass, wrong on reading).
+- Cost $0.00132 per question (was $0.00121), hybrid p50 / p95 2823 / 5066 ms.
