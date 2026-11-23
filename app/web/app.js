@@ -14,6 +14,7 @@ const I18N = {
     updated: (s) => `Mis à jour il y a ${s} s · actualisation auto`,
     ago: (s) => s < 5 ? "à l'instant" : s < 60 ? `il y a ${s} s` : `il y a ${Math.floor(s / 60)} min`,
     nextIn: (s) => s <= 0 ? "actualisation…" : `prochaine dans ${s} s`,
+    aging: "données un peu anciennes", old: "données anciennes : vérifiez sur place",
     upd: "Mis à jour", srcIdfm: "IDFM temps réel", srcIdfmMix: "IDFM · certains horaires théoriques (en italique)",
     srcVelib: "Vélib' temps réel", srcBelib: "Belib' temps réel", srcTraffic: "Info trafic IDFM",
     reliab: (hm) => `fiabilité : historique de ${hm}`,
@@ -56,6 +57,7 @@ const I18N = {
     updated: (s) => `Updated ${s} s ago · auto-refresh`,
     ago: (s) => s < 5 ? "just now" : s < 60 ? `${s} s ago` : `${Math.floor(s / 60)} min ago`,
     nextIn: (s) => s <= 0 ? "refreshing…" : `next in ${s} s`,
+    aging: "data getting old", old: "old data: check on site",
     upd: "Updated", srcIdfm: "IDFM real-time", srcIdfmMix: "IDFM · some times scheduled (italic)",
     srcVelib: "Vélib' real-time", srcBelib: "Belib' real-time", srcTraffic: "IDFM service update",
     reliab: (hm) => `reliability: history as of ${hm}`,
@@ -149,20 +151,28 @@ async function api(path, opts) {
 
 // ---------- data freshness: "updated 12 s ago · next in 18 s", ticking every second ----------
 // at: when the data was fetched by the server (local clock); next: when this page refreshes it.
-function freshLine(source, at, next, extra) {
+// The dot turns amber, then red, when the data gets old (feed down, network lost, tab asleep).
+const AGE_LIMITS = { departures: [90, 120], live: [180, 600] }; // seconds: [amber, red]
+function freshLine(source, at, next, extra, kind = "live") {
   const n = el("div", { class: "fresh-line" }, el("span", { class: "live", attrs: { "aria-hidden": "true" } }),
     el("span", { class: "src", textContent: source }), el("span", { class: "ago" }));
   n.dataset.at = String(at);
   if (next) n.dataset.next = String(next);
   if (extra) n.dataset.extra = extra;
+  n.dataset.kind = kind;
   tickOne(n);
   return n;
 }
 function tickOne(n) {
   const t = tr(), now = Date.now();
   const age = Math.max(0, Math.round((now - Number(n.dataset.at)) / 1000));
+  const [amber, red] = AGE_LIMITS[n.dataset.kind] || AGE_LIMITS.live;
+  const level = age >= red ? "old" : age >= amber ? "aging" : "";
+  n.classList.toggle("aging", level === "aging");
+  n.classList.toggle("old", level === "old");
   let text = " · " + t.ago(age);
-  if (n.dataset.next) text += " · " + t.nextIn(Math.round((Number(n.dataset.next) - now) / 1000));
+  if (level) text += " · " + t[level];
+  else if (n.dataset.next) text += " · " + t.nextIn(Math.round((Number(n.dataset.next) - now) / 1000));
   if (n.dataset.extra) text += " · " + n.dataset.extra;
   n.querySelector(".ago").textContent = text;
   n.title = t.upd + " " + new Date(Number(n.dataset.at)).toLocaleTimeString(state.lang, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
@@ -474,7 +484,7 @@ function renderBoard(d) {
   }
   const allLive = d.departures.every((x) => x.realtime);
   // Server age (not the client clock) dates the data; the board reloads every 30 s
-  f.append(freshLine(allLive ? t.srcIdfm : t.srcIdfmMix, Date.now() - d.age_seconds * 1000, state.nextBoard));
+  f.append(freshLine(allLive ? t.srcIdfm : t.srcIdfmMix, Date.now() - d.age_seconds * 1000, state.nextBoard, "", "departures"));
 }
 
 async function loadTraffic() {
