@@ -112,3 +112,18 @@ Baseline before any fix for the set 3 failures. Answers read one by one; the jud
   - "republiqe jusqu'a nation": typo origin dropped, answered "which line at Nation?".
 - Weak pass: "next train from Hogwarts station" got "from which station do you want to go to Hogwarts?" (treats it as real; no invented data).
 - Cost $0.0296 ($0.00092 per question), hybrid p50 / p95 1281 / 3731 ms.
+
+## Fixes A-F and dev run (a042807, 2026-11-23 05:13 UTC): hybrid 30/32 (93.8%), rules only 12/32 (37.5%)
+Generic rules-path fixes for the causes behind the set 3 failures, each with unit tests worded differently from every eval question (tests/test_handover.py, 19 tests):
+- A. A station match below 0.85 gets no departures (parse returns "unknown", which goes to the AI). The weakest correct match in all evals scored 0.875; the two wrong ones 0.75 and 0.8.
+- B. "X to / vers / jusqu'à Y" with no line and no departure word, and a station (>= 0.85) or a landmark on each side, is a trip.
+- C. A landmark after a destination preposition ("au", "to"), with no line, status or departure word, is a trip (the AI asks for the origin). "Effile tower" and "prochain métro tour Eiffel" stay departures.
+- D. Misspelt Vélib' ("vlib", "velibe") is recognised by similarity to "velib".
+- E. Charger questions with a street word (rue, boulevard, avenue, place, quai...) search Belib' addresses first; the station is used only if no address matches.
+- F. English "the 14" is read as a line, only for real metro lines (as "la 13" / "le 4" already were).
+Checks: rules eval 61/61, 179 tests, mypy and ruff clean.
+Dev run, answers read one by one; judge and reading agree:
+- 24 earlier questions: 24/24. 8 new questions: 6/8 (was 2/8). "Metropolis City Hall" now gets "not recognised in Paris public transport" instead of line 4 times.
+- Still failing (AI path): "Bastille to the Louvre?" and "republiqe jusqu'a nation" ask for an origin that was given, with no tool call. Cause: the agent's retry check (task_problems) only recognises from/de ... to wording. Not fixed yet.
+- Found while writing tests, not fixed: "delayed" is not a status word ("delay" and "delays" are).
+- Cost $0.0304 ($0.00095 per question), hybrid p50 / p95 1050 / 4071 ms, AI on 69% of questions (was 59%: more questions now go to the AI instead of a rules guess).
