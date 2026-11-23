@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T14:29:05+00:00",
+ "generated_at": "2026-11-23T14:30:46+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 360.4,
@@ -289,9 +289,9 @@
    "point_id": "FR*V75*EPX05*12*5",
    "station": "18 Rue Linnée 75005 Paris",
    "since": "2026-11-19T12:50:35+00:00",
-   "covered_hours": 97.6,
+   "covered_hours": 97.7,
    "lower_bound": false,
-   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 97.6 h observed"
+   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 97.7 h observed"
   },
   {
    "rule": "R1",
@@ -343,9 +343,9 @@
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 192.1,
+   "covered_hours": 192.2,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 192.1 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 192.2 h observed"
   },
   {
    "rule": "R4",
@@ -379,9 +379,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 244.6,
+   "covered_hours": 244.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 244.6 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 244.7 h observed"
   },
   {
    "rule": "R4",
@@ -604,9 +604,9 @@
    "point_id": "FR*V75*EPX15*24*6",
    "station": "139 Boulevard de Grenelle 75015 Paris",
    "since": "2026-11-22T13:50:35+00:00",
-   "covered_hours": 24.6,
+   "covered_hours": 24.7,
    "lower_bound": false,
-   "detail": "maintenance since Sun 22 Nov 13:50 UTC, 24.6 h observed"
+   "detail": "maintenance since Sun 22 Nov 13:50 UTC, 24.7 h observed"
   },
   {
    "rule": "R1",
@@ -838,9 +838,9 @@
    "point_id": "FR*V75*EPX17*04*5",
    "station": "6 Avenue de la Porte Pouchet 75017 Paris",
    "since": "2026-11-17T03:20:38+00:00",
-   "covered_hours": 155.1,
+   "covered_hours": 155.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 155.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 155.2 h observed"
   },
   {
    "rule": "R1",
