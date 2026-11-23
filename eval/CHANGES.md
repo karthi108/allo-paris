@@ -77,3 +77,19 @@ Eval harness changes, made before the first run of set 3 (none motivated by a re
 - 7 Belib'-shaped points at 4 new fixture addresses (Avenue du Trône, Rue de Rome, Boulevard Barbès with an R4 flag, Rue de Lobau), all more than 1 km from the earlier fixture addresses.
 - New expectation types: "velib" (answer names the expected station; "closed" → says closed; "number" must appear, 0 accepts "aucun / no / none"), "velib_none" (names no fixture station and claims no bike count), "ev_none" (names no fixture charger street).
 - New option: --set holdout3.
+
+## Held-out set 3, run 1 (08a88e8, 2026-11-23 04:55 UTC): hybrid 84/92 (91.3%), rules only 53/92 (57.6%)
+- Judge said 83/92 and 52/92. One judge bug found by reading the answers: "departures_or_status" fails a correct status answer from the rules path (it only looks for a line_status tool call). The Bercy line 6 answer is correct, so +1 in both modes. The judge code is not changed yet; when it is, it goes here.
+- Cost $0.0546 in total ($0.00059 per question, openai/gpt-4.1-mini), hybrid p50 / p95 300 / 3376 ms, AI on 41% of questions, guard: 2 corrections, 2 blocked to template.
+- By kind (hybrid, judge): routes 17/20, future routes 6/6, missing origin 5/6, departures 14/15, status 9/10, Vélib' 9/10, trick 14/15, EV 9/10.
+The 8 real failures, read one by one (7 of 8 are the rules answering when they should hand over to the AI):
+- "next metro at Gotham City station": the rules fuzzy-matched "Cité" and gave line 4 times. Confident wrong answer with numbers, the most serious failure.
+- "gare du nor vers roissy": the typo origin was not recognised, so the rules gave RER B departures at the airport. Confident wrong answer with numbers.
+- "Concorde to Orly airport": the rules saw one place and asked which line at Orly, instead of planning a trip.
+- "take me to the Champs-Élysées": the rules asked which line, not where the trip starts.
+- "is the 14 down": the rules did not read "the 14" as a line and asked which line.
+- "vlib a odeon": "vlib" was not read as Vélib'; the rules asked which line.
+- "borne rue de rome dispo ?": the rules matched the metro station Rome instead of the street and said no charger nearby.
+- "monparnasse a chatelet" (AI): asked for the origin although it was given (typo), with no tool call.
+Weak passes (safe, no invented data, but not useful): "prochain métro ligne 19 à Nation" and "ligne 14 à Bastille prochain métro" got the generic "could not verify" template instead of "no such line" / "line 14 does not stop there"; "prochain TGV pour Marseille à Gare de Lyon" got "which station are you leaving from?" instead of "TGV not covered"; "Vélib à Poudlard" got "near which station?".
+Next (per the eval rules): each failure becomes a new dev question with different wording, never a fix aimed at these questions. Set 3 is no longer blind after this run.
