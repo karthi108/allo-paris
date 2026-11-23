@@ -56,6 +56,7 @@ class Settings:
     web_requests_per_minute: int
     db_path: Path
     stops_path: Path
+    docs_path: Path
     tts_voice_fr: str
     tts_voice_en: str
     public_phone: str
@@ -95,6 +96,8 @@ def get_settings() -> Settings:
         web_requests_per_minute=_int("ALLO_WEB_REQUESTS_PER_MINUTE", 20),
         db_path=Path(os.environ.get("ALLO_DB_PATH", ROOT / "data" / "allo.db")),
         stops_path=Path(os.environ.get("ALLO_STOPS_PATH", ROOT / "data" / "stops.json")),
+        # RAG v1 corpus, committed (built by scripts/build_docs.py, D-025)
+        docs_path=Path(os.environ.get("ALLO_DOCS_PATH", ROOT / "data" / "docs.json")),
         tts_voice_fr=os.environ.get("ALLO_TTS_VOICE_FR", ""),
         tts_voice_en=os.environ.get("ALLO_TTS_VOICE_EN", ""),
         public_phone=os.environ.get("ALLO_PUBLIC_PHONE", ""),

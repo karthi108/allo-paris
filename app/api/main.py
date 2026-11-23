@@ -28,6 +28,7 @@ from app.data.routes import RouteClient
 from app.data.stops import StopIndex
 from app.data.velib import VelibClient
 from app.ev.live import ChargerClient
+from app.rag.corpus import Corpus
 from app.voice import twiml
 from app.voice.calls import CallConfig, CallHandler
 
@@ -38,6 +39,10 @@ if not settings.stops_path.exists():
     raise RuntimeError(f"{settings.stops_path} missing. Run: python scripts/build_stops.py")
 
 index = StopIndex.load(settings.stops_path)
+# Without the corpus, accessibility and fiche questions say documents are unavailable
+docs = Corpus.load(settings.docs_path) if settings.docs_path.exists() else None
+if docs is None:
+    logging.getLogger(__name__).warning("%s missing: document answers disabled", settings.docs_path)
 prim = PrimClient(
     settings.prim_api_key,
     cache_ttl=settings.cache_ttl_seconds,
@@ -56,7 +61,11 @@ llm = make_client(
     price_in=settings.llm_price_in,
     price_out=settings.llm_price_out,
 )
-agent = Agent(llm, lambda: Toolbox(index, prim, velib, routes, chargers=chargers)) if llm else None
+agent = (
+    Agent(llm, lambda: Toolbox(index, prim, velib, routes, chargers=chargers, docs=docs))
+    if llm
+    else None
+)
 metrics = Metrics()
 dialog = Dialog(
     index,
@@ -66,6 +75,7 @@ dialog = Dialog(
     agent=agent,
     metrics=metrics,
     chargers=chargers,
+    docs=docs,
 )
 store = Store(settings.db_path, settings.transcript_retention_days)
 calls = CallHandler(

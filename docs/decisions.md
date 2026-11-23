@@ -198,3 +198,22 @@ Never delete an entry; mark it superseded and link the replacement.
 - A run where the AI was skipped (cap reached, provider error) fails and saves nothing: it would otherwise look like a bad score.
 - No score threshold fails the job: single runs vary (71/72 over 3 identical runs). The job summary lists every hybrid failure to read; results are kept as a 30-day artifact and not committed.
 - GitHub may delay or skip scheduled runs (seen for the EV collector, D-023); a missed night is acceptable here.
+
+## D-025 · RAG v1: BM25 over two licensed sources, every answer cited (2026-11-23)
+- Scope chosen by the owner: station accessibility and three Service Public fiches. Corpus in data/docs.json (committed snapshot, ~340 KB), built by scripts/build_docs.py. Keyword search (BM25, plain Python, in memory). No vector database, no new dependency.
+- Licences, each read on 2026-11-23 from the source's own pages or catalogue API:
+
+| Source | Licence (where stated) | Attribution used | In corpus |
+|---|---|---|---|
+| Île-de-France Mobilités, dataset "accessibilite-en-gare" (updated 2026-07-06, 459 records, train and RER stations only) | Licence Ouverte v2.0 (Etalab): catalogue API field metas.default.license | "Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le JJ/MM/AAAA" | yes, 1 passage per station |
+| Service Public / DILA fiches F31852 (contest a transport fine), F12151 (SNCF Voyageurs mediator), F34049 (disability card CMI), from the data.gouv.fr dataset "Fiches pratiques et ressources de Service-Public.gouv.fr Particuliers" | Licence Ouverte 2.0: site footer and dataset page ("sous réserve de mentionner la source et la date de mise à jour") | "Source : Service Public / DILA, mise à jour le JJ/MM/AAAA" (date of each fiche) | yes, split by chapter, max 1,200 characters |
+| Légifrance | etalab-2.0, site footer ("sauf mention contraire") | n/a | no: the relevant transport texts were not located yet |
+| paris.fr editorial pages (Vélib', Belib' help) | none: reproduction needs the City of Paris's agreement (mentions légales) | n/a | no, not usable |
+| ratp.fr | not readable (HTTP 403 to automated access) | n/a | no, treated as not usable |
+| data.ratp.fr | its terms page says terms are "not yet defined" | n/a | no |
+
+- Also confirmed from the Paris portal's catalogue API: the live Vélib' and Belib' datasets used by the app are under ODbL (share-alike: a published derived database must be offered under ODbL with attribution; see the ev-data note below).
+- Fare fiches (e.g. F34964, reductions for young people) are left out on purpose: the assistant refuses prices, and "how much is the fine" stays a price refusal.
+- Answers: a clearly named station's accessibility is answered by the rules, verbatim from the record, cited. A station with no record (any metro station) gets "not covered, the data covers train and RER stations", never a guess. Fine, mediator and CMI questions go to the AI with a search_docs tool; without AI, the rules give the two best-matching sentences verbatim, cited. The citation (source and date) is appended by code after the guard, so every document answer carries it whatever the model writes.
+- Guard: unchanged rules now apply to passages too (numbers and lines must appear in what search_docs returned; the station's lines are returned as structured data). Known limit: it does not check reworded claims without numbers or lines.
+- Open: the ev-data branch publishes a database derived from Belib' (ODbL) without a licence notice. Needs an ODbL notice and source credit there (owner to approve the push).

@@ -124,6 +124,21 @@ _EV = re.compile(
     r"\b(borne|bornes|recharge|recharger|belib|chargeur|chargeurs|charger|chargers|charging|"
     r"voiture electrique|electric car)\b"
 )
+# RAG v1 (D-025): station accessibility, answered from the IDFM accessibility records
+_ACCESS = re.compile(
+    r"\b(accessible|accessibles|accessibilite|fauteuil|fauteuils|wheelchair|wheelchairs|pmr|"
+    r"mobilite reduite|reduced mobility|ascenseur|ascenseurs|elevator|elevators|lift|lifts|"
+    r"step free)\b"
+)
+# Rights and procedures from the Service Public fiches (fines, mediator, disability card)
+_DOCS = re.compile(
+    r"\b(amende|amendes|proces verbal|pv|contravention|contraventions|contester|contestation|"
+    r"mediateur|mediatrice|mediation|reclamation|litige|cmi|carte mobilite inclusion|"
+    r"carte d invalidite|carte de priorite|carte handicap|place assise|places assises|"
+    r"priority seat|priority seats|penalty notice|ombudsman|mediator|disability card|"
+    r"contest|contesting|appeal|(?:a|my|the) fine)\b"
+)
+_AMOUNT = re.compile(r"\b(combien|how much|prix|tarif|tarifs|cost|montant)\b")
 _VELIB = re.compile(r"\b(velib|velibs|velo|velos|bike|bikes|bicycle|bicycles|cycle)\b")
 # Below this score a station match is a guess ("Gotham City" ~ "Cité" 0.75). The weakest
 # correct match in the evals scores 0.875 (2026-11-23), so departures need at least 0.85.
@@ -256,6 +271,18 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         return ParsedQuery("unknown", wants_english=True)
     if _INJECTION.search(text):
         return ParsedQuery("refused")
+    if _DOCS.search(text) and not _AMOUNT.search(text):
+        return ParsedQuery("docs")  # answered from the fiches (AI with search_docs)
+    if _ACCESS.search(text) and not _ROUTE.search(text) and not FROM_TO.search(text):
+        place = _ACCESS.sub(" ", text)
+        stops = index.match(place)
+        landmark = None
+        found = _landmark(place)
+        if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+            near = index.match(found[1])
+            if near and near[0].score >= 0.95:
+                stops, landmark = near[:1], found[0]
+        return ParsedQuery("accessibility", stops=stops, landmark=landmark)
     if _EV.search(text) and not _PRICE.search(text):
         place = _EV.sub(" ", text)
         stops = index.match(place)

@@ -142,3 +142,9 @@ Dev run, answers read one by one; judge and reading agree:
 - Manual run on the dev set in GitHub Actions, cap $0.20: cost $0.0346 ($0.00108 per question), no AI fallback, guard corrections 3, blocked 0, hybrid p50 / p95 1768 / 3932 ms. Same score as the local run on 1d3f1bc (no app change between them).
 - Answers read one by one from the run's results file; the judge's verdicts hold. Weak passes as before: "Hogwarts" and "Metropolis City Hall" get a safe question that treats the name as real.
 - Workflow fixes after this run: the artifact now holds only this run's result file (it also contained every older committed results file), and actions/upload-artifact moved from v4 (Node 20, deprecated warning) to v7 (Node 24; checked in the action's action.yml and v7.0.0 release notes, same inputs).
+
+## RAG v1 (2026-11-23, D-025): 10 new dev questions and 3 judge types
+- Dev set 32 → 42 questions: 4 fiche questions (FR and EN), 1 fine-amount question (must stay a price refusal), 5 accessibility questions (4 stations in the data, 1 metro-only station that must get "not covered").
+- New expectation types: "docs" (Service Public citation in the answer and one of the expected facts), "access" (Île-de-France Mobilités citation and the expected accessibility level text), "access_none" (no level given; says the data covers train and RER).
+- The eval uses the real committed corpus (data/docs.json): it is static, so no fixture is needed.
+- Rules path alone, before any AI run (local check, no model): 6/10 of the new questions. The misses are inherent to verbatim excerpts (an English question against French text; the useful sentence sharing no word with the question) or route phrasing that goes to the AI by design. Not tuned further against these questions.

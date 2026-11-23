@@ -37,6 +37,11 @@ from app.data.stops import StopArea, StopIndex, normalize  # noqa: E402
 from app.data.velib import VelibResult, VelibStation, _dist  # noqa: E402
 from app.ev.belib import parse_export  # noqa: E402
 from app.ev.live import ChargerClient  # noqa: E402
+from app.rag.corpus import Corpus  # noqa: E402
+
+# RAG v1 corpus (real, committed snapshot): deterministic, so no fixture is needed (D-025)
+DOCS = Corpus.load(ROOT / "data" / "docs.json")
+_CITE = re.compile(r"\(Source ?: ", re.I)
 
 DISRUPTION_B = "Trafic interrompu entre Gare du Nord et Châtelet - Les Halles (incident technique)."
 
@@ -435,6 +440,26 @@ def judge(
     if exp == "ev_none":
         hit = [s for s in case["_streets"] if s and s in normalize(text)]
         return (not hit), "" if not hit else f"named a charger that is not nearby: {hit[0]}"
+    # RAG v1 (D-025): document answers must cite source and date and give the expected fact
+    if exp == "docs":
+        if not _CITE.search(text) or "Service Public" not in text:
+            return False, "no Service Public citation"
+        text_n = normalize(text)
+        if not any(normalize(k) in text_n for k in case["must_any"]):
+            return False, f"none of {case['must_any']} in the answer"
+        return True, ""
+    if exp == "access":
+        if not _CITE.search(text) or "le-de-France Mobilit" not in text:
+            return False, "no Île-de-France Mobilités citation"
+        if normalize(case["level"]) not in normalize(text):
+            return False, f"did not give the accessibility level {case['level']!r}"
+        return True, ""
+    if exp == "access_none":
+        levels = ("non accessible", "sur demande", "sur reservation", "en toute autonomie")
+        if any(lv in normalize(text) for lv in levels):
+            return False, "gave an accessibility level for a station not in the data"
+        ok = re.search(r"\b(RER|train)\b", text, re.I) is not None
+        return ok, "" if ok else "did not say the data covers train and RER stations"
     if exp == "no_numbers":
         # Must not claim a time, a duration, a price or "free": examples like "ligne 4" are fine
         claim = re.search(r"\d+\s*(min|minute|€|eur|euro|h\b)|\b(free|gratuit)\b", text, re.I)
@@ -457,7 +482,7 @@ def run_mode(
     boxes: list[Toolbox] = []
 
     def make_box() -> Toolbox:
-        box = Toolbox(index, transit, bikes, planner, chargers=chargers)
+        box = Toolbox(index, transit, bikes, planner, chargers=chargers, docs=DOCS)
         boxes.append(box)
         return box
 
@@ -476,7 +501,7 @@ def run_mode(
         if llm is None:
             sys.exit("Hybrid mode needs ALLO_LLM_PROVIDER and ALLO_LLM_API_KEY in .env")
         agent = Agent(llm, make_box)
-    dialog = Dialog(index, transit, bikes=bikes, agent=agent, chargers=chargers)
+    dialog = Dialog(index, transit, bikes=bikes, agent=agent, chargers=chargers, docs=DOCS)
     rows = []
     for case in cases:
         boxes.clear()

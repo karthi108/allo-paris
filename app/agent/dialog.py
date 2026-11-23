@@ -21,6 +21,7 @@ from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.stops import Line, StopArea, StopIndex, StopMatch, normalize
 from app.data.velib import VelibResult
 from app.ev.live import ChargerResult
+from app.rag.corpus import Corpus, best_sentences
 
 
 class ChargerSource(Protocol):
@@ -82,6 +83,13 @@ T = {
         "velib_fresh": "Données Vélib en temps réel.",
         "velib_old": "Attention, certaines stations n'ont pas mis à jour depuis {mins} minutes.",
         "velib_down": "Les données Vélib ne sont pas disponibles pour le moment.",
+        "access_which": "Accessibilité de quelle gare ? "
+        "Par exemple : Gare du Nord accessible en fauteuil.",
+        "access_intro": "Accessibilité, données Île-de-France Mobilités. ",
+        "access_none": "Je n'ai pas d'information d'accessibilité pour {stop} : les données "
+        "d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. ",
+        "docs_none": "Je n'ai pas de document officiel sur cette question.",
+        "docs_down": "Les documents ne sont pas disponibles pour le moment.",
         "ev_which": "Bornes Belib' près de quel endroit ? Par exemple : bornes à Bastille.",
         "ev_none": "Aucune borne Belib' à moins de 500 mètres de {place}.",
         "ev_outside": (
@@ -146,6 +154,13 @@ T = {
         "velib_fresh": "Real-time Vélib data.",
         "velib_old": "Note: some stations haven't reported for {mins} minutes.",
         "velib_down": "Vélib data is unavailable right now.",
+        "access_which": "Accessibility of which station? "
+        "For example: is Gare du Nord wheelchair accessible.",
+        "access_intro": "Accessibility, Île-de-France Mobilités data (in French). ",
+        "access_none": "I have no accessibility information for {stop}: the Île-de-France "
+        "Mobilités data covers train and RER stations, not the metro. ",
+        "docs_none": "I have no official document on this question.",
+        "docs_down": "Documents are unavailable right now.",
         "ev_which": "Belib' chargers near which place? For example: chargers at Bastille.",
         "ev_none": "No Belib' charger within 500 metres of {place}.",
         "ev_outside": "No Belib' charger near {place}: the Belib' network covers Paris only.",
@@ -356,7 +371,7 @@ class Reply:
 _STREET = re.compile(r"\b(rue|boulevard|bd|avenue|av|place|quai|allee|impasse|cours)\b")
 
 # Rule outcomes the AI agent may improve on (when an LLM is configured)
-AI_INTENTS = {"unknown", "unsupported_route", "unsupported_time"}
+AI_INTENTS = {"unknown", "unsupported_route", "unsupported_time", "docs"}
 
 
 def _needs_ai(reply: Reply, utterance: str) -> bool:
@@ -383,8 +398,10 @@ class Dialog:
         agent: Agent | None = None,
         metrics: Metrics | None = None,
         chargers: ChargerSource | None = None,
+        docs: Corpus | None = None,
     ) -> None:
         self.index = index
+        self.docs = docs
         self.source = source
         self.stale_after = stale_after
         self.bikes = bikes
@@ -480,6 +497,14 @@ class Dialog:
             return reply
         if q.intent == "ev":
             return self._ev(q, utterance, lang)
+        if q.intent == "accessibility":
+            reply = self._accessibility(q, lang)
+            if q.landmark and reply.stop:
+                place = _place(q.landmark, lang)
+                reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
+            return reply
+        if q.intent == "docs":
+            return self._docs(utterance, lang)
         if q.intent == "unknown":
             return self._miss(state)
         reply = self._departures(q, state)
@@ -487,6 +512,40 @@ class Dialog:
             place = _place(q.landmark, lang)
             reply.text = t(lang, "landmark", place=place, stop=reply.stop.name) + reply.text
         return reply
+
+    def _accessibility(self, q: ParsedQuery, lang: str) -> Reply:
+        """IDFM accessibility record for a clearly named station, cited (D-025)."""
+        if self.docs is None:
+            return Reply(t(lang, "docs_down"), "feed_down")
+        if not q.stops or q.stops[0].score < 0.95:
+            return Reply(t(lang, "access_which"), "clarify_stop")
+        stop = q.stops[0].area
+        doc = next(
+            (
+                self.docs.by_station[s.zda_id]
+                for s in self.index.siblings(stop)
+                if s.zda_id in self.docs.by_station
+            ),
+            None,
+        )
+        if doc is None:
+            ref = next(iter(self.docs.by_station.values()), None)
+            cite = ref.citation(lang) if ref else ""
+            return Reply(t(lang, "access_none", stop=stop.name) + cite, "accessibility", stop=stop)
+        text = t(lang, "access_intro", stop=stop.name) + doc.text + " " + doc.citation(lang)
+        return Reply(text, "accessibility", stop=stop)
+
+    def _docs(self, utterance: str, lang: str) -> Reply:
+        """Rules path for fiche questions: the best passage, first two sentences, cited.
+        The AI (when configured) answers instead; this is the free, verbatim fallback."""
+        if self.docs is None:
+            return Reply(t(lang, "docs_down"), "docs")
+        found = self.docs.search(utterance, kind="fiche", limit=1)
+        if not found:
+            return Reply(t(lang, "docs_none"), "docs")
+        doc = found[0]
+        excerpt = best_sentences(doc.text, utterance, n=2)
+        return Reply(f"{excerpt} {doc.citation(lang)}", "docs")
 
     def _velib(self, q: ParsedQuery, lang: str) -> Reply:
         if not q.stops:

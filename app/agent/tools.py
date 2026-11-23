@@ -17,6 +17,7 @@ from app.data.routes import PARIS, Journey
 from app.data.stops import Line, StopArea, StopIndex
 from app.data.velib import VelibResult
 from app.ev.live import ChargerResult
+from app.rag.corpus import Corpus
 
 
 class Transit(Protocol):
@@ -49,6 +50,23 @@ class Planner(Protocol):
 
 
 TOOLS = [
+    ToolSpec(
+        "search_docs",
+        "Search official documents (keyword search, passages in French): station "
+        "accessibility for wheelchair users (Île-de-France Mobilités, train and RER stations "
+        "only, not metro), contesting a fine received on public transport, the SNCF Voyageurs "
+        "mediator, the disability card CMI (priority seat). Write the query as French "
+        "keywords (e.g. 'contester amende transport', 'carte mobilité inclusion priorité'). "
+        "For a station's accessibility, call find_station first and pass station_id.",
+        {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "French keywords"},
+                "station_id": {"type": "string", "description": "for accessibility only"},
+            },
+            "required": ["query"],
+        },
+    ),
     ToolSpec(
         "find_station",
         "Find metro/RER/tram/train stations by name or landmark (typos allowed). "
@@ -138,8 +156,10 @@ class Toolbox:
         bikes: Bikes | None = None,
         planner: Planner | None = None,
         chargers: Chargers | None = None,
+        docs: Corpus | None = None,
     ) -> None:
         self.index = index
+        self.docs = docs
         self.chargers = chargers
         self.transit = transit
         self.bikes = bikes
@@ -297,6 +317,39 @@ class Toolbox:
                 for a in res.addresses
             ],
         }
+
+    def _t_search_docs(self, query: str, station_id: str | None = None) -> dict[str, Any]:
+        if self.docs is None:
+            raise ToolError("document search not available")
+        if station_id:
+            area = self._area(station_id)
+            doc = next(
+                (
+                    self.docs.by_station[s.zda_id]
+                    for s in self.index.siblings(area)
+                    if s.zda_id in self.docs.by_station
+                ),
+                None,
+            )
+            lines = [{"line": ln.short, "mode": ln.mode} for ln in self.index.station_lines(area)]
+            if doc is None:
+                return {
+                    "station": area.name,
+                    "passages": [],
+                    "note": "no accessibility record for this station: the Île-de-France "
+                    "Mobilités dataset covers train and RER stations only (not metro)",
+                    "lines_at_station": lines,
+                }
+            return {
+                "station": area.name,
+                "passages": [doc.as_tool_output()],
+                "lines_at_station": lines,
+            }
+        found = self.docs.search(str(query)[:200], limit=3)
+        out: dict[str, Any] = {"passages": [d.as_tool_output() for d in found]}
+        if not found:
+            out["note"] = "no passage matches: say you have no document on this"
+        return out
 
     def _t_plan_route(
         self, from_station_id: str, to_station_id: str, depart_at: str | None = None
