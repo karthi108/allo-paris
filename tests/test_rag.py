@@ -394,3 +394,39 @@ def test_full_town_station_name_beats_the_airport_landmark(
 def test_airport_words_alone_still_mean_the_airport(full: StopIndex, q: str) -> None:
     p = parse(q, full)
     assert p.stops and "roport" in p.stops[0].area.name
+
+
+# ---------- after held-out set 6 (2026-11-23); wording differs from the eval ----------
+
+
+@pytest.mark.parametrize(
+    "q",
+    [
+        "is it allowed to vape on the platforms of the train stations",
+        "est-ce qu'on peut fumer sur les quais des stations de RER",
+    ],
+)
+def test_long_sentence_with_only_a_spelling_close_station_goes_to_the_ai(
+    full: StopIndex, q: str
+) -> None:
+    assert parse(q, full).intent in ("unknown", "docs")
+
+
+@pytest.mark.parametrize(
+    ("q", "station"),
+    [
+        ("comment aller aux Catacombes depuis Nation", "Denfert-Rochereau"),
+        ("next train to the Moulin Rouge", "Blanche"),
+    ],
+)
+def test_new_landmarks_map_to_their_nearest_station(full: StopIndex, q: str, station: str) -> None:
+    from app.agent.parser import _landmark
+    from app.data.stops import normalize
+
+    found = _landmark(normalize(q))
+    assert found is not None and found[1] == station
+
+
+def test_short_typo_departure_question_still_answered_by_rules(full: StopIndex) -> None:
+    p = parse("prochain metro 4 garre du nord", full)
+    assert p.intent == "next_departure" and p.stops[0].area.name == "Gare du Nord"

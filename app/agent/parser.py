@@ -33,6 +33,22 @@ LANDMARKS: dict[str, tuple[str, str]] = {
     "beaubourg": ("le Centre Pompidou", "Rambuteau"),
     "pompidou": ("le Centre Pompidou", "Rambuteau"),
     "musee d orsay": ("le musée d'Orsay", "Musée d'Orsay"),
+    # Added 2026-11-23: well-known places with no station of their name (the Panthéon was
+    # missing in held-out set 6; the list is broad, not only that place). Nearest station.
+    "pantheon": ("le Panthéon", "Luxembourg"),
+    "jardin du luxembourg": ("le jardin du Luxembourg", "Luxembourg"),
+    "opera garnier": ("l'Opéra Garnier", "Opéra"),
+    "catacombes": ("les Catacombes", "Denfert-Rochereau"),
+    "catacombs": ("the Catacombs", "Denfert-Rochereau"),
+    "moulin rouge": ("le Moulin Rouge", "Blanche"),
+    "grand palais": ("le Grand Palais", "Champs-Élysées - Clemenceau"),
+    "galeries lafayette": ("les Galeries Lafayette", "Chaussée d'Antin - La Fayette"),
+    "place des vosges": ("la place des Vosges", "Chemin Vert"),
+    "parc des princes": ("le Parc des Princes", "Porte de Saint-Cloud"),
+    "roland garros": ("Roland-Garros", "Porte d'Auteuil"),
+    "canal saint martin": ("le canal Saint-Martin", "Jacques Bonsergent"),
+    "accor arena": ("l'Accor Arena", "Bercy"),
+    "parc de la villette": ("le parc de la Villette", "Porte de Pantin"),
 }
 
 
@@ -389,4 +405,16 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         # A weak guess must not get departure times ("Gotham City" -> "Cité"); the AI or
         # the "not understood" reply handles it instead
         return ParsedQuery("unknown", line=line)
+    if (
+        stops
+        and landmark is None
+        and line is None
+        and heard is None
+        and stops[0].score < 0.95
+        and len(text.split()) >= 6
+    ):
+        # A long sentence with no line and only a spelling-close station is not a departure
+        # question the rules can trust ("rules on smoking e-cigarettes in RER stations" ->
+        # Stains - La Cerisaie, held-out set 6): the AI reads it instead
+        return ParsedQuery("unknown")
     return ParsedQuery(intent, line=line, line_heard=heard, stops=stops, landmark=landmark)
