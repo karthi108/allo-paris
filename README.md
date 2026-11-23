@@ -68,7 +68,18 @@ Checks on every answer: right tools and stations, origin and time respected, the
 | Hybrid (BM25 + embeddings) | 0.758 | 0.939 | 0.838 | 2/8 | same | same |
 | **Hybrid + LLM reranker** | **0.970** | **0.970** | **0.970** | **8/8** | ≈ $0.0004 | ≈ 0.7 s |
 
-Honest reading: the fusion weight chosen on the dev set did not beat embeddings alone on the test set; the gains come from the embeddings (English questions, paraphrases) and the reranker, which is also what makes "no document" work.
+Honest reading: the fusion weight chosen on the dev set did not beat embeddings alone on the test set; the gains come from the embeddings (English questions, paraphrases) and the reranker, which is also what makes "no document" work. After set 5, a support check was added: a document answer is cited only if the chat model finds every claim in the retrieved passages, otherwise it becomes "no document" (not yet measured on a new held-out set).
+
+**Intent classification: rules vs ML vs LLM** ([intents_test.jsonl](eval/intents_test.jsonl), 120 questions, 8 labels, frozen before the classifier existed, written by the assistant; `python eval/run_intent_eval.py`). The ML model is a logistic regression on word and character n-grams in pure Python (no dependency), trained on 557 synthetic rows. See [D-028](docs/decisions.md).
+
+| Intent (test set, first run, 72b8268) | Accuracy | Cost / question | Latency p50 |
+|---|---|---|---|
+| Rules (parser) | 98/120 (81.7%) | 0 | 60 ms (with station matching) |
+| ML classifier | 107/120 (89.2%) | 0 | 0.14 ms |
+| LLM zero-shot (`gpt-4.1-mini`) | **118/120 (98.3%)** | ≈ $0.00007 | 646 ms |
+| Hybrid declared before the run: rules → ML (p ≥ 0.6) → LLM | 103/120 (85.8%) | 0 | 60 ms |
+
+Honest reading: the declared hybrid lost to ML alone, because the rules almost never abstain (their default is "next departure") and answer EV, accessibility or off-topic questions without trigger words with the wrong intent. The LLM is the best classifier for a small cost. In the app, the ML model has one narrow job chosen from training-data cross-validation: when the rules cannot classify a question at all, a confident (p ≥ 0.9) "out of scope" gets the scope message without an LLM call. It never fired on the 56-question dev set, so its saving is not measured.
 
 **Rules path** (no AI):
 
@@ -77,7 +88,7 @@ Honest reading: the fusion weight chosen on the dev set did not beat embeddings 
 | Intent / line / station accuracy | **61/61 (100%)** | `python eval/run_eval.py`, synthetic FR/EN questions on the full IDFM station list |
 | Invented numbers in answers | **0** | same eval checks every number against data source, templates and names |
 | Answer latency p50 / p95 | **76 ms / 311 ms** | `python scripts/measure.py`: 20 live questions, cache off, 2026-11-07 |
-| Tests | **233 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
+| Tests | **245 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
 
 The eval questions are synthetic (written by the author and the assistant), not real user traffic.
 
@@ -113,7 +124,7 @@ Optional AI agent: set `ALLO_LLM_PROVIDER` (`anthropic` or `openai`), `ALLO_LLM_
 `render.yaml` is a Render Blueprint: Render dashboard → **New → Blueprint** → this repo → paste `ALLO_PRIM_API_KEY` when asked. Free instances sleep when idle (first request ~30-60 s).
 
 ## Phone line (optional, Twilio)
-Webhooks `/voice` and `/voice/gather` (signature-checked). Set `ALLO_TWILIO_AUTH_TOKEN` and `ALLO_PUBLIC_BASE_URL`, point the Twilio number's "A call comes in" webhook to `https://<host>/voice`. Not yet tested on a real call.
+Webhooks `/voice` and `/voice/gather` (signature-checked). Set `ALLO_TWILIO_AUTH_TOKEN` and `ALLO_PUBLIC_BASE_URL`, point the Twilio number's "A call comes in" webhook to `https://<host>/voice`. **Not yet tested on a real call.** The test kit is ready: 12 scripted call tasks written before any call, and a report with task completion (owner's verdict), speech-recognition word error rate, turns and latency ([docs/phone-test.md](docs/phone-test.md)).
 
 ## Data and privacy
 Web questions are stored only when `ALLO_LOG_QUESTIONS=true` (on in the Render blueprint): the question text and its time only, no IP address, no session id, no answer; e-mails and phone numbers are masked; deleted after 30 days; a notice under the search bar says so, and nothing is shown or saved when it is off. The app writes no access log (uvicorn `--no-access-log`). Location for "Near me" never leaves the browser. Phone callers are stored only as HMAC-SHA256; transcripts are deleted after 30 days (background job). Full details: `/privacy` page and [threat model](docs/threat-model.md).

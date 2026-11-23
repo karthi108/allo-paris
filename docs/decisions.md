@@ -231,3 +231,9 @@ Never delete an entry; mark it superseded and link the replacement.
 - Fallbacks: no OpenAI key or budget reached → BM25 (RAG v1); reranker error → hybrid order. The rules path stays BM25 (free, no API call).
 - Measured: retrieval test set recall@1 0.515 (BM25) → 0.970 (hybrid + reranker), uncovered queries declined 5/8 → 8/8; held-out set 5 answers 30/38 (RAG v1) → 34/38 judge, 35/38 read (RAG v2); cost per question $0.00091 → $0.00122, p50 1.9 s → 3.0 s.
 - Known limit: the citation is appended when any passage was retrieved, so an answer from general knowledge can carry a citation (held-out set 5). Not fixed yet.
+
+## D-028 · ML intent classifier: measured against rules and LLM, narrow role in the app (2026-11-23)
+- Model: multinomial logistic regression on word unigrams and bigrams plus character 3- to 5-grams, trained offline in pure Python (scripts/train_intent.py, no dependency), saved as data/intent_model.json. Training data: 557 synthetic rows (earlier eval sets, no longer blind, plus templates), all written by the assistant. 8 labels.
+- Measured on a frozen 120-question set (eval/intents_test.jsonl): rules 81.7%, ML 89.2%, LLM zero-shot 98.3% (≈ $0.00007 and 646 ms per question), and the hybrid declared before the run (rules → ML → LLM) 85.8%. The hybrid lost because the rules default to "next departure" instead of abstaining.
+- Role in the app: only when the rules return "unknown", an out_of_scope prediction with p >= 0.9 answers with a scope message without an LLM call. Threshold chosen from training-data cross-validation (63/64 right), not from the test set. It fired on 0 of 56 dev questions: no measurable saving yet.
+- Not done: a revised hybrid (ML first, LLM when unsure) or making the rules abstain; either needs a new frozen set to measure.

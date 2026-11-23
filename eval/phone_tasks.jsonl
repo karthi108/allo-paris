@@ -1,0 +1,12 @@
+{"id": "P01", "lang": "fr", "goal": "Next departures of a metro line at a station", "say": ["prochain métro ligne 4 à Gare du Nord"], "must_any": ["minute", "direction"], "max_turns": 2}
+{"id": "P02", "lang": "fr", "goal": "Line status", "say": ["est-ce qu'il y a des perturbations sur le RER B ?"], "must_any": ["RER B", "trafic", "perturb", "normal"], "max_turns": 2}
+{"id": "P03", "lang": "fr", "goal": "Clarification: station first, then line when asked", "say": ["je suis à Châtelet, prochain train", "RER A"], "must_any": ["minute", "direction"], "max_turns": 3}
+{"id": "P04", "lang": "fr", "goal": "Route between two stations", "say": ["comment aller de Nation à La Défense ?"], "must_any": ["ligne", "RER", "minute"], "max_turns": 2}
+{"id": "P05", "lang": "fr", "goal": "Route with the origin asked back", "say": ["je veux aller à la tour Eiffel", "je pars de Gare de Lyon"], "must_any": ["ligne", "RER", "minute"], "max_turns": 3}
+{"id": "P06", "lang": "fr", "goal": "Vélib' near a landmark", "say": ["des Vélib près de la Bastille ?"], "must_any": ["vélo", "velib", "vélib", "place"], "max_turns": 2}
+{"id": "P07", "lang": "fr", "goal": "EV charger near a place", "say": ["une borne de recharge qui marche près du Panthéon ?"], "must_any": ["borne", "libre", "hors service"], "max_turns": 2}
+{"id": "P08", "lang": "fr", "goal": "Station accessibility", "say": ["la gare de Lyon est accessible en fauteuil roulant ?"], "must_any": ["réservation", "accessible", "agent"], "max_turns": 2}
+{"id": "P09", "lang": "fr", "goal": "Document question (fine)", "say": ["comment contester une amende reçue dans le métro ?"], "must_any": ["3 mois", "réclamation", "médiateur"], "max_turns": 2}
+{"id": "P10", "lang": "fr", "goal": "Out of scope: price refused politely", "say": ["combien coûte un ticket de métro ?"], "must_any": ["prix", "tarif"], "max_turns": 2}
+{"id": "P11", "lang": "en", "goal": "Switch to English, then departures", "say": ["English please", "next RER A at La Défense"], "must_any": ["minute", "towards"], "max_turns": 3}
+{"id": "P12", "lang": "en", "goal": "Route in English with a landmark", "say": ["English please", "how do I get from Gare du Nord to the Louvre"], "must_any": ["line", "RER", "minute"], "max_turns": 3}

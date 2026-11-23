@@ -275,3 +275,12 @@ Set 5 is no longer blind after these runs.
 - What this means for the app: in the dialog, a "next departure" read without a line or station is asked back or handed to the AI for long sentences, so the intent-level accuracy is not the end-to-end accuracy. Still, the result says the rules' default is the weak point, and the LLM is the best classifier at about 0.07 thousandths of a dollar per question.
 - Not done (would need a new frozen set to measure): a revised hybrid such as ML first and the LLM when ML is unsure. Choosing it from this run's results would be tuning on the test set.
 - Wired into the app in a narrow role chosen from training-data cross-validation, not from this run: when the rules cannot classify a question at all ("unknown"), an out_of_scope prediction with p >= 0.9 gets the scope template without an LLM call (63 of 64 such predictions right in cross-validation).
+
+## Dev run with the ML gate (0725347, 2026-11-23 15:35 UTC): judge 54/56, read 54/56
+- La Défense (English) correct on reading, judge limit as before (+1); Roissy-en-Brie still answered for Charles de Gaulle airport and passed by the judge (-1, judge false pass).
+- The ML gate fired on 0 of 56 dev questions (paths: 35 AI, 20 rules, 1 AI fallback): the dev set's out-of-scope questions are all caught by the rules (prices, buses, injections). Its effect is limited to questions the rules cannot classify at all (jokes, weather, chit-chat); cost saving not measurable on this set.
+- Cost $0.00121 per question, hybrid p50 / p95 2344 / 4953 ms.
+
+## Phone test kit (2026-11-23, written before any call)
+- eval/phone_tasks.jsonl: 12 call tasks (10 FR, 2 EN after "English please"): departures, status, a clarification turn, two routes (one with the origin asked back), Vélib', EV, accessibility, a document question, a price refusal. Each has the sentences to say, expected words and a turn limit. Written by the assistant.
+- scripts/phone_report.py: pairs calls with tasks in order from the local database; reports auto completion, the owner's verdict (eval/phone_verdicts.csv, the number to quote), word error rate of the transcript against the scripted sentence, turns and server latency. Procedure: docs/phone-test.md (local app + ngrok, because the Render free plan has no shell and no persistent disk). No call made yet.
