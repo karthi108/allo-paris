@@ -99,3 +99,16 @@ Next (per the eval rules): each failure becomes a new dev question with differen
 - Dev set: 8 new questions, one per set 3 failure, with new wording and different places (24 → 32). Each has a "note" naming the failure it comes from: fake place with a station-like word, typo origin + landmark destination, station to landmark, landmark with no origin, slang line status, misspelt Vélib', a street with the same name as a station (Boulevard de Vaugirard: the street has a fixture charger, the Vaugirard station has none within 500 m), typos in both station names.
 - No code change to the assistant yet. Fixes are made against these dev questions, must be generic, and are tested on the whole dev set.
 - Dev runs from now on have 32 questions, so they are not a like-for-like series with earlier 24-question runs.
+
+## Dev run on 32 questions (fb0a44e, 2026-11-23 05:01 UTC): hybrid 26/32 (81.2%), rules only 8/32 (25%)
+Baseline before any fix for the set 3 failures. Answers read one by one; the judge scores match the reading.
+- The 24 earlier dev questions: 24/24 in hybrid.
+- The 8 new questions: 2/8 in hybrid ("garre de lyon jusqu'à orly" and "c'est mort la 9" reached the AI and were answered correctly). The other 6 fail the same way as in set 3: the rules answer confidently and never hand over to the AI.
+  - "next train from Metropolis City Hall station": fuzzy-matched "Les Halles", gave line 4 times (confident wrong answer with numbers).
+  - "Bastille to the Louvre?": answered "which line at Palais Royal?" instead of planning a trip.
+  - "emmène-moi au Louvre": answered "which line?" instead of asking for the origin.
+  - "velibe pres de opera": misspelt Vélib' not recognised, answered "which line?".
+  - "borne boulevard de vaugirard elle est libre ?": read the street as the Vaugirard station, said no charger nearby.
+  - "republiqe jusqu'a nation": typo origin dropped, answered "which line at Nation?".
+- Weak pass: "next train from Hogwarts station" got "from which station do you want to go to Hogwarts?" (treats it as real; no invented data).
+- Cost $0.0296 ($0.00092 per question), hybrid p50 / p95 1281 / 3731 ms.
