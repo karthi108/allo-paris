@@ -12,12 +12,13 @@ A hybrid AI assistant for getting around Paris: deterministic rules for the comm
 
 | Result | Value |
 |---|---|
+| Latest held-out set 6 (39 mixed questions, after all fixes) | **36/39 hybrid (92.3%)**, 37/39 on reading, vs 15/39 rules only |
 | Transport questions, held-out set 3 (92) | **84/92 hybrid** vs 53/92 rules only |
 | Document questions, held-out set 5 (38) | **34/38 with RAG v2** vs 30/38 with keyword search |
 | Retrieval recall@1, frozen test set (41) | **0.97** with reranker vs 0.52 keyword search; off-topic declined 8/8 |
 | Intent classification, frozen test set (120) | LLM 98.3% · ML classifier 89.2% · rules 81.7% |
 | Cost per AI question | ≈ $0.0012 (gpt-4.1-mini), $1/day hard cap |
-| Engineering | 245 tests, ruff + mypy strict + gitleaks in CI, nightly AI eval in CI with a cost cap |
+| Engineering | 251 tests, ruff + mypy strict + gitleaks in CI, nightly AI eval in CI with a cost cap |
 
 Bad results are kept too: the reasons for every failure are in [eval/CHANGES.md](eval/CHANGES.md).
 
@@ -65,6 +66,7 @@ Checks on every answer: right tools and stations, origin and time respected, the
 
 | Held-out set (first and only blind run) | Rules only | Hybrid (rules + AI) | Cost / question | Hybrid p50 / p95 |
 |---|---|---|---|---|
+| **Set 6**, 39 mixed questions after the support check, 20 reranker candidates and landmark fix (76b44f2, 2026-11-23) | 15/39 (38.5%) | **36/39 (92.3%)**, 37/39 on reading | $0.00126 | 1978 / 4697 ms |
 | **Set 3**, 92 questions FR/EN: routes, departures, status, Vélib', EV, typos, slang, tricks (08a88e8, 2026-11-23) | 53/92 (57.6%) | **84/92 (91.3%)** | $0.00059 | 300 / 3376 ms |
 | **Set 4**, 32 RAG questions: station accessibility, official fiches, topics outside the corpus (81d3050, 2026-11-23) | 19/32 (59.4%) | **23/32 (71.9%)** | $0.00064 | 1688 / 2820 ms |
 | **Set 5**, 38 RAG questions (17 in English, corpus in French), with **RAG v2** (26bdf99, 2026-11-23) | 17/38 (44.7%) | **34/38 (89.5%)**, 35/38 on reading | $0.00122 | 3008 / 4072 ms |
@@ -74,7 +76,8 @@ Checks on every answer: right tools and stations, origin and time respected, the
 - **Set 3:** the judge said 83/92 and 52/92; reading the answers found one judge bug (a correct rules-path line status was rejected), so both scores are +1. 7 of the 8 real failures are the rules answering confidently when they should hand over to the AI; two of those give wrong departure times (a fake station fuzzy-matched to a real one, a typo origin).
 - **Set 4 (RAG v1, BM25):** accessibility 11/14, fiche questions 9/12, tricks 3/6. Failures include two confident wrong rules answers ("vélo dans le RER" read as Vélib', "Cité U" matched to Cité), the AI answering a dog question from general knowledge without a document, wrong passages retrieved from a long fiche, and one citation pointing to the wrong fiche.
 - **Set 5 (RAG v2):** fiche questions 17/19 (RAG v1: 14/19), accessibility 10/11, tricks 7/8. The worst failure: a general-knowledge answer about resident parking carried a Service Public citation, because the code cites any retrieved passage (known limit, not fixed yet). Also: one correct English answer declined ("no document"), and "Orly Ville" taken by the rules as the airport.
-- **After each run** the failures became new dev questions and generic fixes; sets 3 to 5 are no longer blind. Latest dev run (f8e42c9, 52 questions): 51/52 by the judge, 52/52 on reading.
+- **Set 6:** the serious failure is a confident wrong answer: "rules on smoking e-cigarettes in RER stations" matched a station by spelling (Stains - La Cerisaie) and got tram departures. Also the Panthéon not mapped to a station (asked back), and a fare-product question refused as out of scope (fine on reading).
+- **After each run** the failures became new dev questions and generic fixes; sets 3 to 6 are no longer blind. Latest dev run (f8e42c9, 52 questions): 51/52 by the judge, 52/52 on reading.
 
 **RAG v2 retrieval, measured on its own** ([retrieval_test.jsonl](eval/retrieval_test.jsonl), 41 queries frozen before the first run, written by the assistant; `python eval/run_retrieval_eval.py`). Search only, no answer generation. Embeddings: OpenAI `text-embedding-3-small` (512 dims, in memory, no vector database); reranker: `gpt-4.1-mini` choosing among the top 10, or none. See [D-027](docs/decisions.md).
 
@@ -105,7 +108,7 @@ Honest reading: the declared hybrid lost to ML alone, because the rules almost n
 | Intent / line / station accuracy | **61/61 (100%)** | `python eval/run_eval.py`, synthetic FR/EN questions on the full IDFM station list |
 | Invented numbers in answers | **0** | same eval checks every number against data source, templates and names |
 | Answer latency p50 / p95 | **76 ms / 311 ms** | `python scripts/measure.py`: 20 live questions, cache off, 2026-11-07 |
-| Tests | **245 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
+| Tests | **251 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
 
 The eval questions are synthetic (written by the author and the assistant), not real user traffic.
 

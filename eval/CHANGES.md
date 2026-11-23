@@ -300,3 +300,12 @@ Set 5 is no longer blind after these runs.
 - Purpose: the first quotable measure after today's changes (support check before citing, reranker 20 candidates, landmark fix, ML gate).
 - Static checks before freezing (no question run): every station name exists in the index; every departure line serves its station; each document question has an expected fact in the corpus; each accessibility level is in the station's record; the metro-only station has no record; outside topics have no matching word in the corpus; no question repeats an earlier set, the retrieval sets or the intent set.
 - Judge unchanged. New option --set holdout6 (also in the CI workflow).
+
+## Held-out set 6, run 1 (76b44f2, 2026-11-23 17:05 UTC): hybrid 36/39 (92.3%) by the judge, 37/39 (94.9%) on reading; rules only 15/39 (38.5%)
+First and only blind run; quotable result after the 2026-11-23 changes. Every answer read. Cost $0.00126 per question, hybrid p50 / p95 1978 / 4697 ms, AI on 62% of questions, 3 guard corrections, no block.
+By kind (hybrid, judge): routes 7/8, future routes 2/2, missing origin 3/3, departures 6/6, status 4/4, documents 6/6, accessibility 4/4, outside-corpus topics 1/3, tricks 3/3.
+The 3 judge failures:
+- "rules on smoking e-cigarettes in RER stations": **confident wrong answer with numbers**. The rules fuzzy-matched a station (Stains - La Cerisaie, tram T11) from the question and gave departures. The most serious failure.
+- "how to reach the Pantheon from Nation": the AI did not map the Panthéon to a station and asked which one (safe, not useful).
+- "comment obtenir une carte Navigo Solidarité": the rules answered with the fares and tickets refusal instead of "no document". Counted as a pass on reading: a ticket product is out of scope and nothing was invented.
+Set 6 is no longer blind after this run. Patterns for new dev questions: an everyday word close to a station name in a non-transport question; a landmark missing from the landmark table.
