@@ -14,19 +14,27 @@ from typing import Any
 
 from app.agent import grounding
 from app.agent.llm import LLMClient
-from app.agent.parser import _FUTURE, FROM_TO
+from app.agent.parser import _FUTURE, FROM_TO, _connector_trip
 from app.agent.tools import TOOLS, Toolbox
 from app.data.routes import PARIS
-from app.data.stops import normalize
+from app.data.stops import StopIndex, normalize
 
 MAX_ROUNDS = 5  # model calls per question
 RETRY_ROUNDS = 3  # extra calls after a retry, so a re-plan (tools, then answer) fits
 
 
-def task_problems(question: str, calls: list[tuple[str, dict[str, Any]]], answer: str) -> list[str]:
+def task_problems(
+    question: str,
+    calls: list[tuple[str, dict[str, Any]]],
+    answer: str,
+    index: StopIndex | None = None,
+) -> list[str]:
     """Deterministic checks that the model did the job the question asked for.
-    Found in agent eval run 2 (2026-11-08): future times ignored, origin asked again."""
+    Found in agent eval run 2 (2026-11-08): future times ignored, origin asked again.
+    With the station index, "X to Y" trips without from/de also count as an origin given
+    (dev questions from held-out set 3, 2026-11-23)."""
     q = normalize(question)
+    origin_given = bool(FROM_TO.search(q)) or (index is not None and _connector_trip(q, index))
     routes = [args for name, args in calls if name == "plan_route"]
     problems: list[str] = []
     if routes and _FUTURE.search(q) and not any(r.get("depart_at") for r in routes):
@@ -34,7 +42,7 @@ def task_problems(question: str, calls: list[tuple[str, dict[str, Any]]], answer
             "the user asked about a specific day or time: call plan_route again with depart_at "
             "set to that local Paris time (YYYY-MM-DDTHH:MM)"
         )
-    if not routes and FROM_TO.search(q) and "?" in answer:  # a question anywhere (run 6)
+    if not routes and origin_given and "?" in answer:  # a question anywhere (run 6)
         problems.append(
             "the user already gave an origin and a destination: call find_station for both, "
             "then plan_route, and answer from it (ask only if a place is truly ambiguous)"
@@ -190,7 +198,7 @@ class Agent:
             if not resp.tool_calls:
                 answer = resp.text
                 problems = grounding.check(answer, box.outputs, question)
-                tasks = task_problems(question, box.calls, answer)
+                tasks = task_problems(question, box.calls, answer, box.index)
                 if (problems or tasks) and not reply.retried:
                     reply.retried = True
                     rounds_left += RETRY_ROUNDS

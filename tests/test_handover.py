@@ -94,5 +94,22 @@ def test_english_bare_line_number(full: StopIndex, q: str) -> None:
     assert p.line.short in ("9", "13")
 
 
+@pytest.mark.parametrize("q", ["Pigalle to the Sacré-Coeur?", "oberkampff jusqu'à Bercy"])
+def test_agent_retries_when_origin_given_as_x_to_y(full: StopIndex, q: str) -> None:
+    # Cause H: the AI asked for an origin given as "X to Y" (no from/de)
+    from app.agent.agent import task_problems
+
+    assert task_problems(q, [], "From which station?", full)
+
+
+@pytest.mark.parametrize(
+    "q", ["how do I get to the Arc de Triomphe", "je veux aller jusqu'à Bercy", "to the Louvre"]
+)
+def test_agent_does_not_retry_when_no_origin(full: StopIndex, q: str) -> None:
+    from app.agent.agent import task_problems
+
+    assert not task_problems(q, [], "From which station?", full)
+
+
 def test_the_with_a_number_that_is_not_a_line(full: StopIndex) -> None:
     assert parse("is the 21 broken", full).line is None
