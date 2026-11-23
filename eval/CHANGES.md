@@ -164,3 +164,19 @@ Dev run, answers read one by one; judge and reading agree:
 - Static checks only before freezing (no question was run): every expected accessibility level is in the named station's record; places expected "not covered" have no record; at least one expected fact of each fiche question is in the corpus; the three outside topics appear in no fiche as whole words ("velo" matched only inside "enveloppe"); no question repeats an earlier set.
 - Judge change before the first run: new type "docs_none" (no citation, and says it has no document or the topic is not covered). New option --set holdout4 (also in the CI workflow).
 - Run it once per measured version. Failures become new dev questions with different wording, never targeted fixes.
+
+## Held-out set 4, run 1 (81d3050, 2026-11-23 09:24 UTC): hybrid 23/32 (71.9%), rules only 19/32 (59.4%)
+Quotable RAG v1 held-out result. Answers read one by one; the reading agrees with the judge on all 32. Cost $0.0204 ($0.00064 per question), hybrid p50 / p95 1688 / 2820 ms, no guard correction or block.
+By kind (hybrid): accessibility 11/14, fiche questions 9/12, tricks 3/6.
+The 9 failures:
+- "est-ce qu'on peut monter avec un vélo dans le RER ?": the rules read "vélo" as Vélib' and matched "est-ce" to Gare de l'Est; answered Vélib' availability at Gare de l'Est. Confident wrong answer.
+- "est-ce que je peux prendre le RER à Cité U en fauteuil ?": the rules matched the metro station Cité ("Cité U" = Cité Universitaire) and said there is no information for Cité. Confident wrong answer.
+- "can I take my dog on the metro?": the AI answered from general knowledge (bag, leash, muzzle) with no tool call. Not grounded; the guard cannot see it (no number or line).
+- "où faire la demande de carte mobilité inclusion si je n'ai pas l'APA ?": the search ("carte mobilité inclusion") returned the wrong passages; the answer says the department president (who decides, not where to apply: the MDPH) and adds the unrelated 10 € duplicate fee.
+- "qui décide d'attribuer la CMI ?": evasive answer about durations; never names the decider (the department president, in the corpus).
+- "le médiateur SNCF c'est payant ?": "not paying" is right, but cited to the fines fiche (21/07/2026) while "le recours est gratuit" is in the mediator fiche (16/11/2026).
+- "qu'est-ce que dit la loi sur les grèves à la RATP ?": says it has no document, then adds unrelated mediation information with a citation.
+- "accessibilité PMR à la BNF ?": the nickname BNF was not resolved; the AI asked which station (safe, not useful).
+- "Denfert accessible PMR": partial name below the 0.95 match threshold and too short to go to the AI; asked which station (safe, not useful).
+Weak pass: "j'ai perdu ma carte mobilité inclusion" explains the duplicate correctly but states the 10 € fee: grounded, but against the "no prices" policy.
+Patterns (for new dev questions with different wording, not targeted fixes): rules matching a station from a fragment ("est", "Cité"); "vélo" taken as Vélib' in a rule question; the AI answering outside the corpus without a tool; generic search queries retrieving the wrong section of a long fiche; citations picked from the wrong passage; nicknames and partial names on the accessibility path.
