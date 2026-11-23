@@ -232,3 +232,15 @@ Search alone, the user's question as the query; 33 covered and 8 uncovered queri
 - eval/questions_agent_holdout5.jsonl: 38 questions (21 FR, 17 EN), written by the assistant, none from the owner or real users. 19 fiche questions (many in English while the corpus is French), 8 accessibility questions for stations in the data, 3 metro-only stations (one with a near name, Le Plessis-Belleville), 6 topics outside the corpus (three near misses: passport, lost carte Vitale, resident parking card), 2 price questions.
 - Static checks before freezing (no question run): each fiche question has at least one expected fact in the corpus; each accessibility level is in the named station's record; metro-only stations have no record; outside topics have no matching word in the corpus except "passeport" (on purpose); no question repeats an earlier set or the retrieval sets.
 - Judge unchanged. New option --set holdout5 (also in the CI workflow). Run once with RAG v2; the RAG v1 comparison uses --rag v1 on the same commit.
+
+## Held-out set 5, run 1 (26bdf99, 2026-11-23 15:10 UTC): RAG v2 hybrid 34/38 (89.5%) by the judge, 35/38 on reading; rules only 17/38
+Quotable RAG v2 held-out result. Same commit, RAG v1 (--rag v1, 15:11 UTC): hybrid 30/38 (78.9%) by the judge (RAG v1 failures not read one by one). Rules only 17/38 (44.7%) in both runs.
+- RAG v2: cost $0.0463 ($0.00122 per question; RAG v1 $0.00091), hybrid p50 / p95 3008 / 4072 ms (RAG v1 1882 / 3215 ms). The reranker adds about one call per document question.
+- By kind (RAG v2, judge): fiche questions 17/19, accessibility 10/11, tricks 7/8. RAG v1: 14/19, 10/11, 6/8.
+The 4 judge failures, read one by one:
+- "ma batterie de téléphone a lâché ... l'amende est contestable ?": judge artefact. The answer has 3 sentences; "par ex." was counted as a sentence end. Correct and cited: counted as a pass on reading.
+- "how long does the department have to answer my appeal against a CMI refusal": "I have no official document on this", although the corpus says 2 months. Safe but not useful.
+- "Orly Ville accessible en chaise roulante ?": the rules mapped "Orly" to the airport landmark and said there is no record, citing the dataset. Orly Ville is a train station with a record ("non accessible"). Wrong, rules path (not RAG).
+- "carte de stationnement résident à Paris, comment l'obtenir": the worst failure. The AI answered from general knowledge (mairie, proof of address) and the code appended a Service Public citation because a CMI Stationnement passage had been retrieved. A citation on a claim the passage does not support. The guard does not check reworded claims without numbers (known limit, D-025).
+Patterns for new dev questions (different wording, no targeted fix): a near-miss topic sharing a key word with a fiche ("stationnement"); citation added whenever any passage was retrieved; English questions on short sections still declined; a town name equal to a landmark keyword.
+Set 5 is no longer blind after these runs.

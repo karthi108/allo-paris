@@ -20,3 +20,9 @@ Held-out set 4 (questions_agent_holdout4.jsonl, 32 RAG questions, written 2026-1
 | 2026-11-23 09:24 | 81d3050 | openai/gpt-4.1-mini | 59% | 72% |  | 1688 / 2820 ms | $0.00064 | 0 / 0 | [agent_holdout4_2026-11-23_0924_81d3050.json](results/agent_holdout4_2026-11-23_0924_81d3050.json) |
 
 Note on the held-out set 4 row (81d3050): first and only blind run of the RAG set. Read one by one; the reading agrees with the judge: hybrid 23/32 (71.9%), rules only 19/32 (59.4%). Quotable RAG v1 result. Details in CHANGES.md.
+| 2026-11-23 15:10 | 26bdf99 | openai/gpt-4.1-mini | 45% | 90% |  | 3008 / 4072 ms | $0.00122 | 2 / 0 | [agent_holdout5_2026-11-23_1510_26bdf99.json](results/agent_holdout5_2026-11-23_1510_26bdf99.json) |
+| 2026-11-23 15:11 | 26bdf99 | openai/gpt-4.1-mini | 45% | 79% |  | 1882 / 3215 ms | $0.00091 | 0 / 0 | [agent_holdout5_2026-11-23_1511_26bdf99.json](results/agent_holdout5_2026-11-23_1511_26bdf99.json) |
+
+Held-out set 5 (questions_agent_holdout5.jsonl, 38 RAG questions, written 2026-11-23 by the assistant) was committed before its first run (26bdf99). The 15:10 row is RAG v2 (hybrid + reranker), the 15:11 row is RAG v1 (BM25) on the same commit for comparison.
+
+Note on the held-out set 5 rows (26bdf99): RAG v2 34/38 (89.5%) by the judge, 35/38 (92.1%) on reading (one judge artefact: "par ex." counted as a sentence end); RAG v1 30/38 (78.9%) by the judge, not read one by one; rules only 17/38. Quotable RAG v2 result. One serious failure: a general-knowledge answer about resident parking carried a Service Public citation. Details in CHANGES.md.

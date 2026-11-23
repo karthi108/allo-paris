@@ -223,3 +223,11 @@ Never delete an entry; mark it superseded and link the replacement.
 - Unchanged: no vector database (the corpus is small enough to search in memory), no multi-agent setup, no fine-tuning (still parked), no user accounts.
 - Conditions: each model is measured against the current baseline on the same sets (BM25 v1 for retrieval, rules and LLM for intent), with accuracy, cost and latency reported, bad numbers included. It must fit the Render free plan or be computed at build time. Held-out sets stay frozen in git before their first run.
 - Why: the owner wants the project to show retrieval and classification work measured end to end, not only rules and prompting.
+
+## D-027 · RAG v2: OpenAI embeddings, hybrid search, LLM reranker (2026-11-23)
+- Embeddings: text-embedding-3-small, 512 dimensions, passage vectors built once (scripts/build_vectors.py, 25,770 tokens) and committed as data/doc_vectors.json (1.4 MB) with a corpus fingerprint; stale vectors are refused. One embedding call per document question ($0.02 per million tokens, OpenAI pricing page read 2026-11-23). In memory, pure Python, no vector database, no new dependency.
+- Hybrid: BM25 and dense lists fused by reciprocal rank fusion, dense weighted 3:1 (chosen on the dev retrieval set).
+- Reranker: the chat model (gpt-4.1-mini) picks the passages that answer the question among the top 10, or none. A local cross-encoder was not used: the Render free plan has 512 MB RAM and 0.1 CPU (Render compute-plans page, read 2026-11-23).
+- Fallbacks: no OpenAI key or budget reached → BM25 (RAG v1); reranker error → hybrid order. The rules path stays BM25 (free, no API call).
+- Measured: retrieval test set recall@1 0.515 (BM25) → 0.970 (hybrid + reranker), uncovered queries declined 5/8 → 8/8; held-out set 5 answers 30/38 (RAG v1) → 34/38 judge, 35/38 read (RAG v2); cost per question $0.00091 → $0.00122, p50 1.9 s → 3.0 s.
+- Known limit: the citation is appended when any passage was retrieved, so an answer from general knowledge can carry a citation (held-out set 5). Not fixed yet.

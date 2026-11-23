@@ -1,0 +1,1070 @@
+{
+  "generated_at": "2026-11-23T15:10:16+00:00",
+  "commit": "26bdf99",
+  "dirty": false,
+  "set": "holdout5",
+  "rules": {
+    "summary": {
+      "mode": "rules",
+      "questions": 38,
+      "success_rate": 0.447,
+      "by_kind": {
+        "docs": "5/19",
+        "access": "10/11",
+        "trick": "2/8"
+      },
+      "latency_p50_ms": 69,
+      "latency_p95_ms": 650,
+      "ai_share": 0.0,
+      "guard_corrections": 0,
+      "guard_blocked_to_template": 0,
+      "ai_unavailable": 0
+    },
+    "rows": [
+      {
+        "q": "is it free to take a dispute to the SNCF mediator?",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I have no official document on this question.",
+        "tool_trace": []
+      },
+      {
+        "q": "le médiateur SNCF peut-il s'occuper de mon dossier si j'ai déjà lancé une procédure au tribunal ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Si vous refusez de suivre l'avis de la médiatrice et ne réglez pas la contravention, le dossier est transmis à l'officier du ministère public. Si l’avis de la médiatrice ne règle pas le litige, il est possible de faire un recours auprès du tribunal judiciaire de votre lieu de résidence pour régler le litige. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "how long after my written complaint can I still go to the SNCF mediator",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I have no official document on this question.",
+        "tool_trace": []
+      },
+      {
+        "q": "the mediator suggested a lower fine, what happens if I refuse and don't pay",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I have no official document on this question.",
+        "tool_trace": []
+      },
+      {
+        "q": "pièces à joindre pour saisir la médiatrice par courrier à cause d'un PV",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Vous pouvez vous aider d'un modèle de lettre pour rédiger votre courrier : Vous devez joindre à votre courrier les documents suivants : Copie du procès-verbal Copie de la réclamation écrite adressée au centre de recouvrement. Votre courrier doit être envoyé à la médiatrice de la SNCF Voyageurs, par lettre recommandée avec avis de réception. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "combien de jours pour accepter ou refuser l'avis de la médiatrice sncf",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 494,
+        "fallback": null,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
+        "tool_trace": []
+      },
+      {
+        "q": "ma batterie de téléphone a lâché pendant le contrôle et mon ticket était dedans, l'amende est contestable ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Oui, vous pouvez contester un procès-verbal (amende) reçu dans les transports en commun (bus, métro, train, tramway...) si vous estimez qu’il a été établi à tort, notamment lorsque l’absence de présentation du titre de transport était sans intention de frauder. Par exemple, vous disposiez d’un titre de transport valide enregistré sur votre téléphone, mais l’extinction imprévue de celui-ci vous a empêché de le présenter lors du contrôle. (Source : Service Public / DILA, mise à jour le 21/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "I complained about a fine and the operator never replied, what's the next step",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I have no official document on this question.",
+        "tool_trace": []
+      },
+      {
+        "q": "avec la CMI stationnement on se gare sans payer ?",
+        "kind": "docs",
+        "ok": false,
+        "why": "none of ['gratuitement', 'sans limitation', 'gratuit'] in the answer",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Tout dépend si : Vous demandez la CMI en même temps que l’allocation personnalisée d’autonomie (Apa) Vous demandez la CMI et percevez déjà l’Apa Vous demandez la CMI sans être concerné par l’Apa. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "for how long is the mobility inclusion card issued",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 802,
+        "fallback": null,
+        "answer": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "can a foreigner living in France get a CMI",
+        "kind": "docs",
+        "ok": false,
+        "why": "none of ['titre de séjour', 'residence permit', 'EEE', 'EEA', 'European Economic Area'] in the answer",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "La carte vous permet, vous et la personne qui vous accompagne, d'utiliser gratuitement et sans limitation de durée toutes les places de stationnement ouvertes au public en France et dans l'ensemble des pays de l'Union européenne. La CMI Stationnement remplace l'ancienne carte de stationnement. (Source: Service Public / DILA, updated 28/04/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "quel taux d'incapacité il faut pour la carte invalidité",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 569,
+        "fallback": null,
+        "answer": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "faut-il un certificat médical quand on demande la CMI en même temps que l'APA",
+        "kind": "docs",
+        "ok": false,
+        "why": "none of ['certificat médical'] in the answer",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Tout dépend si : Vous demandez la CMI en même temps que l’allocation personnalisée d’autonomie (Apa) Vous demandez la CMI et percevez déjà l’Apa Vous demandez la CMI sans être concerné par l’Apa. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "le département a refusé ma carte mobilité inclusion, comment je conteste ?",
+        "kind": "docs",
+        "ok": false,
+        "why": "none of ['Rapo', 'recours administratif', 'président du conseil départemental'] in the answer",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Les règles varient selon la situation : Vous devez déposer votre demande de carte en retirant un formulaire pour les personnes percevant déjà l'Apa, auprès des services du département de votre lieu de résidence : (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "how long does the department have to answer my appeal against a CMI refusal",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I have no official document on this question.",
+        "tool_trace": []
+      },
+      {
+        "q": "la personne qui m'accompagne a aussi droit à la priorité avec ma CMI ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "La personne qui vous accompagne lors de vos déplacements bénéficie des mêmes avantages. La CMI Priorité remplace l'ancienne carte de priorité. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "jusqu'à quand mon ancienne carte de stationnement pour handicapé reste valable",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 523,
+        "fallback": null,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
+        "tool_trace": []
+      },
+      {
+        "q": "how do I send my photo once my CMI is approved",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Ce courrier contient un code secret vous permettant d’accéder au site internet dédié à la CMI. Il comprend également un coupon réponse et une enveloppe jointe pour vous permettre de transmettre une photo d’identité. (Source: Service Public / DILA, updated 28/04/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "where do I put the disabled parking card, dashboard or windscreen?",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "rules",
+        "latency_ms": 1085,
+        "fallback": null,
+        "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "Javel accessible en fauteuil roulant ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 87,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Javel : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "wheelchair access at Vincennes RER station",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 94,
+        "fallback": null,
+        "answer": "Accessibility, Île-de-France Mobilités data (in French). Vincennes : train accessible sur demande auprès d'un agent en station. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "gare de Poissy accessible PMR ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 47,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Poissy : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Nanterre Préfecture fauteuil roulant possible ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 242,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Nanterre Préfecture : train accessible sur demande auprès d'un agent en station. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "is Évry Val de Seine step free",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 105,
+        "fallback": null,
+        "answer": "Accessibility, Île-de-France Mobilités data (in French). Évry - Val de Seine : gare ou arrêt non accessible. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "accessibilité handicapé à Sartrouville",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 115,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Sartrouville : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Orly Ville accessible en chaise roulante ?",
+        "kind": "access",
+        "ok": false,
+        "why": "did not give the accessibility level 'non accessible'",
+        "path": "rules",
+        "latency_ms": 292,
+        "fallback": null,
+        "answer": "Station la plus proche de l'aéroport d'Orly : Aéroport d'Orly. Je n'ai pas d'information d'accessibilité pour Aéroport d'Orly : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Ermont Halte wheelchair accessible?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 80,
+        "fallback": null,
+        "answer": "Accessibility, Île-de-France Mobilités data (in French). Ermont Halte : véhicule accessible en toute autonomie. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Abbesses accessible en fauteuil ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 54,
+        "fallback": null,
+        "answer": "Je n'ai pas d'information d'accessibilité pour Abbesses : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "wheelchair access at Place d'Italie",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 133,
+        "fallback": null,
+        "answer": "I have no accessibility information for Place d'Italie: the Île-de-France Mobilités data covers train and RER stations, not the metro. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "ascenseur station Belleville ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 58,
+        "fallback": null,
+        "answer": "Je n'ai pas d'information d'accessibilité pour Belleville : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "can I bring my electric scooter on the RER",
+        "kind": "trick",
+        "ok": false,
+        "why": "did not say it has no document on this",
+        "path": "rules",
+        "latency_ms": 637,
+        "fallback": null,
+        "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "est-ce qu'on a le droit de manger dans le métro",
+        "kind": "trick",
+        "ok": false,
+        "why": "did not say it has no document on this",
+        "path": "rules",
+        "latency_ms": 589,
+        "fallback": null,
+        "answer": "Je ne trouve pas de station dans votre question. Donnez un nom de station, par exemple : Bir-Hakeim, ou ligne 4 à Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "how do I apply for a French passport",
+        "kind": "trick",
+        "ok": false,
+        "why": "did not say it has no document on this",
+        "path": "rules",
+        "latency_ms": 581,
+        "fallback": null,
+        "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "comment refaire ma carte vitale perdue",
+        "kind": "trick",
+        "ok": false,
+        "why": "did not say it has no document on this",
+        "path": "rules",
+        "latency_ms": 650,
+        "fallback": null,
+        "answer": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "carte de stationnement résident à Paris, comment l'obtenir",
+        "kind": "trick",
+        "ok": false,
+        "why": "did not say it has no document on this",
+        "path": "rules",
+        "latency_ms": 394,
+        "fallback": null,
+        "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
+        "tool_trace": []
+      },
+      {
+        "q": "rules for musicians playing in the Paris metro",
+        "kind": "trick",
+        "ok": false,
+        "why": "did not say it has no document on this",
+        "path": "rules",
+        "latency_ms": 628,
+        "fallback": null,
+        "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
+        "tool_trace": []
+      },
+      {
+        "q": "how much is the fine for riding the RER without a ticket",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I don't give fares or ticket prices. I answer about departures, disruptions, routes and Vélib'.",
+        "tool_trace": []
+      },
+      {
+        "q": "combien coûte un duplicata de CMI",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Je ne donne pas les tarifs ni les titres de transport. Je réponds sur les horaires, les perturbations, les trajets et les Vélib.",
+        "tool_trace": []
+      }
+    ]
+  },
+  "hybrid": {
+    "summary": {
+      "mode": "hybrid",
+      "questions": 38,
+      "success_rate": 0.895,
+      "by_kind": {
+        "docs": "17/19",
+        "access": "10/11",
+        "trick": "7/8"
+      },
+      "latency_p50_ms": 3008,
+      "latency_p95_ms": 4072,
+      "ai_share": 0.658,
+      "guard_corrections": 2,
+      "guard_blocked_to_template": 0,
+      "ai_unavailable": 0,
+      "model": "openai/gpt-4.1-mini",
+      "cost_usd_total": 0.0463,
+      "cost_usd_per_question": 0.00122,
+      "cost_cap_usd": 0.5
+    },
+    "rows": [
+      {
+        "q": "is it free to take a dispute to the SNCF mediator?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 2790,
+        "fallback": null,
+        "answer": "The recourse to the SNCF mediator is free. The mediator examines your request and gives an opinion within 3 months, proposing a solution to the dispute. If the mediator's opinion does not resolve the dispute, you can take it to the judicial court of your residence. (Source: Service Public / DILA, updated 16/11/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "contester amende transport médiateur gratuité"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-9\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Comment est traitée la demande par la médiatrice de la SNCF Voyageurs ? · Litige commercial\", \"passage\": \"Le recours est gratuit. Le traitement de la demande diffère selon la nature du litige : La médiatrice examine votre demande et rend un avis dans un délai de 3 mois. En cas de litige complexe, il vous informe du prolongement du délai d’instruction. Cet avis propose une solution au litige. Il a valeur de proposition. Vous et le transporteur êtes libres de suivre "
+          }
+        ]
+      },
+      {
+        "q": "le médiateur SNCF peut-il s'occuper de mon dossier si j'ai déjà lancé une procédure au tribunal ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3140,
+        "fallback": null,
+        "answer": "Le médiateur SNCF rend un avis dans un délai de 3 mois pour proposer une solution au litige. Si vous avez déjà lancé une procédure au tribunal, cela signifie que l'avis du médiateur n'a pas réglé le litige. Donc, si vous êtes déjà devant le tribunal, le médiateur ne peut plus intervenir sur ce dossier. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "médiateur SNCF procédure tribunal dossier"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-10\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Comment est traitée la demande par la médiatrice de la SNCF Voyageurs ? · Contravention\", \"passage\": \"La médiatrice examine votre demande et rend un avis dans un délai de 3 mois. En cas de litige complexe, il vous informe du prolongement du délai d’instruction. Cet avis propose une solution au litige. Il a valeur de proposition. Si la médiatrice recommande une minoration du montant de la contravention et que vous et le transporteur acceptez cette proposition, vous"
+          }
+        ]
+      },
+      {
+        "q": "how long after my written complaint can I still go to the SNCF mediator",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3514,
+        "fallback": null,
+        "answer": "You can go to the SNCF mediator if your written complaint was made less than 1 year ago. You must have sent the complaint first and either received no reply within 1 month or found their reply unsatisfactory. The matter must not be in court procedure. (Source: Service Public / DILA, updated 16/11/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "délai recours médiateur SNCF"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-4\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Quand saisir la médiatrice de la SNCF Voyageurs ?\", \"passage\": \"Avant de saisir la médiatrice, vous devez avoir adressé une réclamation écrite : au service clientèle du transporteur lorsque votre litige est de nature commerciale, au centre de recouvrement lorsque votre litige concerne un procès-verbal (une contravention). Les coordonnées figurent sur l’avis de contravention. Il est également possible de contacter le centre de recouvrement en ligne : Vous pouvez sai"
+          }
+        ]
+      },
+      {
+        "q": "the mediator suggested a lower fine, what happens if I refuse and don't pay",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 2940,
+        "fallback": null,
+        "answer": "If you refuse the mediator's proposed lower fine and do not pay the original fine, your case will be sent to the public prosecutor's officer and the fine will be increased. You can then take your dispute to the judicial court of your residence to resolve it. (Source: Service Public / DILA, updated 16/11/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "médiateur refus amende transport non paiement"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-10\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Comment est traitée la demande par la médiatrice de la SNCF Voyageurs ? · Contravention\", \"passage\": \"La médiatrice examine votre demande et rend un avis dans un délai de 3 mois. En cas de litige complexe, il vous informe du prolongement du délai d’instruction. Cet avis propose une solution au litige. Il a valeur de proposition. Si la médiatrice recommande une minoration du montant de la contravention et que vous et le transporteur acceptez cette proposition, vous"
+          }
+        ]
+      },
+      {
+        "q": "pièces à joindre pour saisir la médiatrice par courrier à cause d'un PV",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3023,
+        "fallback": null,
+        "answer": "Pour saisir la médiatrice de la SNCF Voyageurs par courrier à cause d'un procès-verbal, vous devez joindre une copie du procès-verbal et une copie de la réclamation écrite adressée au centre de recouvrement. Votre courrier doit décrire précisément l'objet de votre litige et être envoyé en lettre recommandée avec avis de réception. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "contester amende transport médiatrice"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-8\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Quelle est la démarche pour saisir la médiatrice de la SNCF Voyageurs ? · Contravention · Par courrier\", \"passage\": \"Vous devez décrire précisément l'objet de votre litige dans votre courrier. Vous pouvez vous aider d'un modèle de lettre pour rédiger votre courrier : Vous devez joindre à votre courrier les documents suivants : Copie du procès-verbal Copie de la réclamation écrite adressée au centre de recouvrement. Votre courrier doit être envoyé à la médiatrice de"
+          }
+        ]
+      },
+      {
+        "q": "combien de jours pour accepter ou refuser l'avis de la médiatrice sncf",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3450,
+        "fallback": null,
+        "answer": "Vous disposez d'un délai de 14 jours à partir de la date figurant sur l'avis de la médiatrice SNCF pour accepter ou refuser cet avis. Passé ce délai, l'avis est considéré comme accepté. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "délai accepter refuser avis médiatrice SNCF"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-9\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Comment est traitée la demande par la médiatrice de la SNCF Voyageurs ? · Litige commercial\", \"passage\": \"Le recours est gratuit. Le traitement de la demande diffère selon la nature du litige : La médiatrice examine votre demande et rend un avis dans un délai de 3 mois. En cas de litige complexe, il vous informe du prolongement du délai d’instruction. Cet avis propose une solution au litige. Il a valeur de proposition. Vous et le transporteur êtes libres de suivre "
+          }
+        ]
+      },
+      {
+        "q": "ma batterie de téléphone a lâché pendant le contrôle et mon ticket était dedans, l'amende est contestable ?",
+        "kind": "docs",
+        "ok": false,
+        "why": "4 sentences (max 3 for voice)",
+        "path": "ai",
+        "latency_ms": 3134,
+        "fallback": null,
+        "answer": "Oui, vous pouvez contester une amende si votre ticket était bien valide sur votre téléphone mais que sa batterie a lâché pendant le contrôle. Vous avez 3 mois pour faire une réclamation par lettre recommandée au service clientèle du transporteur. En cas de réponse insatisfaisante ou absence de réponse sous 1 mois, vous pouvez saisir le médiateur, par ex. celui de la RATP ou de la SNCF selon le transporteur. (Source : Service Public / DILA, mise à jour le 21/07/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "contester amende ticket téléphone batterie"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F31852-1\", \"title\": \"Peut-on contester un procès-verbal (une amende) reçu dans les transports en commun (train, bus, métro, tramway...) ?\", \"passage\": \"Oui, vous pouvez contester un procès-verbal (amende) reçu dans les transports en commun (bus, métro, train, tramway...) si vous estimez qu’il a été établi à tort, notamment lorsque l’absence de présentation du titre de transport était sans intention de frauder. Par exemple, vous disposiez d’un titre de transport valide enregistré sur votre téléphone, mais l’extinction imprévue de celui-ci vou"
+          }
+        ]
+      },
+      {
+        "q": "I complained about a fine and the operator never replied, what's the next step",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 2959,
+        "fallback": null,
+        "answer": "If the operator never replied to your complaint about a fine within one month, you can next contact the mediator of the transport company, for instance, the SNCF mediator if it is SNCF. Your written complaint must have been sent less than a year ago, and the dispute should not be in court proceedings. The mediation suspends fine collection during the process. (Source: Service Public / DILA, updated 21/07/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "contester amende transport"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F31852-1\", \"title\": \"Peut-on contester un procès-verbal (une amende) reçu dans les transports en commun (train, bus, métro, tramway...) ?\", \"passage\": \"Oui, vous pouvez contester un procès-verbal (amende) reçu dans les transports en commun (bus, métro, train, tramway...) si vous estimez qu’il a été établi à tort, notamment lorsque l’absence de présentation du titre de transport était sans intention de frauder. Par exemple, vous disposiez d’un titre de transport valide enregistré sur votre téléphone, mais l’extinction imprévue de celui-ci vou"
+          }
+        ]
+      },
+      {
+        "q": "avec la CMI stationnement on se gare sans payer ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3059,
+        "fallback": null,
+        "answer": "Avec la carte mobilité inclusion (CMI) mention stationnement, vous pouvez vous garer gratuitement et sans limitation de durée sur toutes les places de stationnement ouvertes au public en France et dans l'Union européenne. Toutefois, la commune peut limiter la durée de stationnement à au moins 12 heures, et un tarif peut s'appliquer dans certains parkings équipés de bornes d'entrée et de sortie. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte mobilité inclusion stationnement sans payer"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-2\", \"title\": \"Carte mobilité inclusion (CMI) · Stationnement · À quoi sert la CMI Stationnement ?\", \"passage\": \"La carte vous permet, vous et la personne qui vous accompagne, d'utiliser gratuitement et sans limitation de durée toutes les places de stationnement ouvertes au public en France et dans l'ensemble des pays de l'Union européenne. La commune peut toutefois décider de limiter la durée de stationnement, sans pouvoir la fixer à moins de 12 heures. Par ailleurs, une redevance peut être exigée pour l’accès aux parcs de stationneme"
+          }
+        ]
+      },
+      {
+        "q": "for how long is the mobility inclusion card issued",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 4072,
+        "fallback": null,
+        "answer": "The mobility inclusion card (CMI) is issued for a duration of 1 to 20 years, except in cases where you receive Apa and fall under group 1 or 2 of the Aggir scale, in which case it is granted indefinitely. (Source: Service Public / DILA, updated 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte mobilité inclusion délai"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-30\", \"title\": \"Carte mobilité inclusion (CMI) · Priorité · Quelle est la durée d'attribution de la CMI Priorité ?\", \"passage\": \"Vous devez conserver la carte sur vous lors de vos déplacements. Si vous percevez l'Apa et relevez du groupe 1 ou du groupe 2 de la grille Aggir., la carte est attribuée de manière définitive. En dehors de ce cas, la CMI est accordée pour une durée de 1 à 20 ans.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-04-28\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdroits/F34049\"}, {\"doc_id\":"
+          }
+        ]
+      },
+      {
+        "q": "can a foreigner living in France get a CMI",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3711,
+        "fallback": null,
+        "answer": "A foreigner living in France can get the Carte Mobilité Inclusion (CMI) if they have a valid residence permit and reside in the department where they apply. The card requires meeting certain disability criteria and submitting documents like a valid residence permit. Requirements vary slightly depending on the CMI type (priority, invalidity, parking). (Source: Service Public / DILA, updated 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte mobilité inclusion étrangers résidents"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-20\", \"title\": \"Carte mobilité inclusion (CMI) · Priorité · Qui peut demander la CMI Priorité ?\", \"passage\": \"Pour demander la carte, il faut respecter toutes les conditions suivantes : Être atteint d’une incapacité inférieure à 80 % rendant la station debout pénible. Ce taux est déterminé par la CDAPH en fonction d'un guide-barème pour l'évaluation des déficiences et incapacités des personnes handicapées. Être de nationalité française ou ressortissant d’un pays de l'Espace économique européen (EEE) ou avoir un titre de séjour en cours"
+          }
+        ]
+      },
+      {
+        "q": "quel taux d'incapacité il faut pour la carte invalidité",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3469,
+        "fallback": null,
+        "answer": "Pour obtenir la carte d'invalidité, il faut avoir un taux d'incapacité permanente de 80 % ou plus, déterminé par la CDAPH selon un guide-barème. Alternativement, il est possible d'en bénéficier en étant invalide classé en 3e catégorie. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "taux incapacité carte invalidité"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-38\", \"title\": \"Carte mobilité inclusion (CMI) · Invalidité · Qui peut demander la CMI Invalidité ?\", \"passage\": \"Pour demander la carte, il faut : Avoir un taux d'incapacité permanente de 80 % ou plus. Ce taux est déterminé par la CDAPH en fonction d'un guide-barème pour l'évaluation des déficiences et incapacités des personnes handicapées. Ou être invalide classé en 3e catégorie. Par ailleurs, il faut : Être de nationalité française ou ressortissant d’un pays de l'Espace économique européen (EEE) ou avoir un titre de séjour en cours "
+          }
+        ]
+      },
+      {
+        "q": "faut-il un certificat médical quand on demande la CMI en même temps que l'APA",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 2994,
+        "fallback": null,
+        "answer": "Oui, un certificat médical est nécessaire lorsque vous demandez la Carte Mobilité Inclusion (CMI) en même temps que l'Allocation Personnalisée d'Autonomie (APA). Il faut joindre ce certificat médical à votre demande, ainsi qu'une copie de votre carte d'identité ou titre de séjour, et envoyer le tout aux services du département de votre lieu de résidence. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "certificat médical CMI APA"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-22\", \"title\": \"Carte mobilité inclusion (CMI) · Priorité · Comment demander la CMI Priorité ? · Vous demandez la CMI et l’Apa\", \"passage\": \"Vous devez remplir le formulaire de demande d’Apa sur lequel est incluse la demande de CMI : Vous devez joindre à votre demande les documents suivants : Certificat médical Copie de votre carte d’identité ou passeport ou, si vous êtes de nationalité étrangère, un titre de séjour valide. Le formulaire et les documents justificatifs doivent être envoyés aux services du département de votre lieu de ré"
+          }
+        ]
+      },
+      {
+        "q": "le département a refusé ma carte mobilité inclusion, comment je conteste ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3136,
+        "fallback": null,
+        "answer": "Si le département a refusé votre carte mobilité inclusion (CMI), vous devez d'abord faire un recours administratif préalable obligatoire (Rapo) auprès du président du conseil départemental, en envoyant un courrier expliquant votre désaccord et en joignant la décision de refus. Vous pouvez envoyer ce courrier en recommandé avec avis de réception ou le déposer directement. Si la réponse reste négative, vous pouvez contester devant le tribunal judiciaire de votre lieu de résidence dans les 2 mois suivants. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "contester carte mobilité inclusion"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-46\", \"title\": \"Carte mobilité inclusion (CMI) · Invalidité · Quels recours faire en cas de refus d'attribution de la CMI Invalidité ?\", \"passage\": \"Que vous soyez concerné ou on par l’Apa, si vous n'êtes pas d'accord avec la décision de refus du président du conseil départemental, vous devez faire un recours administratif préalable obligatoire (Rapo) auprès de lui. Pour cela, vous devez lui adresser un courrier en expliquant pourquoi vous n'êtes pas d'accord avec sa décision. Vous devez joindre le courrier vous informant de la décisio"
+          }
+        ]
+      },
+      {
+        "q": "how long does the department have to answer my appeal against a CMI refusal",
+        "kind": "docs",
+        "ok": false,
+        "why": "no Service Public citation",
+        "path": "ai",
+        "latency_ms": 3318,
+        "fallback": null,
+        "answer": "I have no official document on how long the department has to answer an appeal against a CMI refusal.",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "délai réponse appel refus CMI"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [], \"note\": \"no passage matches: say you have no document on this\"}"
+          }
+        ]
+      },
+      {
+        "q": "la personne qui m'accompagne a aussi droit à la priorité avec ma CMI ?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3306,
+        "fallback": null,
+        "answer": "La personne qui vous accompagne lors de vos déplacements avec la CMI (Carte Mobilité Inclusion) bénéficie des mêmes avantages de priorité, notamment pour les places assises et les files d'attente. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte mobilité inclusion priorité accompagnant"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-19\", \"title\": \"Carte mobilité inclusion (CMI) · Priorité · À quoi sert la CMI Priorité ?\", \"passage\": \"Cette carte vous permet d'obtenir un droit à une place assise dans les transports en commun et dans les salles d'attente. Elle vous donne également la priorité dans les files d'attente. La personne qui vous accompagne lors de vos déplacements bénéficie des mêmes avantages. La CMI Priorité remplace l'ancienne carte de priorité.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-04-28\", \"url\": \"https://www.service-public.gouv.fr/par"
+          }
+        ]
+      },
+      {
+        "q": "jusqu'à quand mon ancienne carte de stationnement pour handicapé reste valable",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3041,
+        "fallback": null,
+        "answer": "Votre ancienne carte de stationnement pour handicapé reste valable jusqu'au 31 décembre 2026. Vous pouvez demander la nouvelle Carte Mobilité Inclusion Stationnement sans attendre cette date. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte mobilité inclusion délai validité"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-2\", \"title\": \"Carte mobilité inclusion (CMI) · Stationnement · À quoi sert la CMI Stationnement ?\", \"passage\": \"La carte vous permet, vous et la personne qui vous accompagne, d'utiliser gratuitement et sans limitation de durée toutes les places de stationnement ouvertes au public en France et dans l'ensemble des pays de l'Union européenne. La commune peut toutefois décider de limiter la durée de stationnement, sans pouvoir la fixer à moins de 12 heures. Par ailleurs, une redevance peut être exigée pour l’accès aux parcs de stationneme"
+          }
+        ]
+      },
+      {
+        "q": "how do I send my photo once my CMI is approved",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3108,
+        "fallback": null,
+        "answer": "Once your CMI is approved, you will receive a letter from the National Printing Office containing a secret code to access the dedicated CMI website. This letter also includes a response coupon and an envelope for sending your identity photo. You can provide your photo either by mail using the received documents or directly online in a digital format. (Source: Service Public / DILA, updated 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "envoyer photo carte mobilité inclusion"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-27\", \"title\": \"Carte mobilité inclusion (CMI) · Priorité · Qui décide d’attribuer la CMI Priorité ?\", \"passage\": \"Que vous soyez concerné ou non par l’Apa, c’est le président du conseil départemental qui décide de l’attribution de la carte. Une fois la décision prise, la carte est fabriquée par l’Imprimerie nationale. Si votre demande est acceptée, vous recevez un courrier envoyé par l’Imprimerie nationale. Ce courrier contient un code secret vous permettant d’accéder au site internet dédié à la CMI. Il comprend également un coupon ré"
+          }
+        ]
+      },
+      {
+        "q": "where do I put the disabled parking card, dashboard or windscreen?",
+        "kind": "docs",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 4263,
+        "fallback": null,
+        "answer": "The disabled parking card (CMI Stationnement) must be fixed against the vehicle's windscreen (pare-brise), placed very visibly, and removed once the vehicle is no longer used. (Source: Service Public / DILA, updated 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte stationnement personne handicapée tableau de bord ou pare-brise"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-13\", \"title\": \"Carte mobilité inclusion (CMI) · Stationnement · Comment utiliser la CMI Stationnement ?\", \"passage\": \"La carte doit être fixée contre le pare-brise du véhicule (il peut s’agir de votre propre voiture ou de celle du proche qui vous accompagne). Elle doit être placée de manière très visible, puis retirée dès lors que le véhicule n’est plus utilisé.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-04-28\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdroits/F34049\"}, {\"doc_id\": \"sp-F34049-18\", \"title\": \""
+          }
+        ]
+      },
+      {
+        "q": "Javel accessible en fauteuil roulant ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 94,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Javel : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "wheelchair access at Vincennes RER station",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 101,
+        "fallback": null,
+        "answer": "Accessibility, Île-de-France Mobilités data (in French). Vincennes : train accessible sur demande auprès d'un agent en station. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "gare de Poissy accessible PMR ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 53,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Poissy : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Nanterre Préfecture fauteuil roulant possible ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 234,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Nanterre Préfecture : train accessible sur demande auprès d'un agent en station. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "is Évry Val de Seine step free",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 111,
+        "fallback": null,
+        "answer": "Accessibility, Île-de-France Mobilités data (in French). Évry - Val de Seine : gare ou arrêt non accessible. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "accessibilité handicapé à Sartrouville",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 124,
+        "fallback": null,
+        "answer": "Accessibilité, données Île-de-France Mobilités. Sartrouville : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Orly Ville accessible en chaise roulante ?",
+        "kind": "access",
+        "ok": false,
+        "why": "did not give the accessibility level 'non accessible'",
+        "path": "rules",
+        "latency_ms": 294,
+        "fallback": null,
+        "answer": "Station la plus proche de l'aéroport d'Orly : Aéroport d'Orly. Je n'ai pas d'information d'accessibilité pour Aéroport d'Orly : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Ermont Halte wheelchair accessible?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 82,
+        "fallback": null,
+        "answer": "Accessibility, Île-de-France Mobilités data (in French). Ermont Halte : véhicule accessible en toute autonomie. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "Abbesses accessible en fauteuil ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 56,
+        "fallback": null,
+        "answer": "Je n'ai pas d'information d'accessibilité pour Abbesses : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "wheelchair access at Place d'Italie",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 150,
+        "fallback": null,
+        "answer": "I have no accessibility information for Place d'Italie: the Île-de-France Mobilités data covers train and RER stations, not the metro. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "ascenseur station Belleville ?",
+        "kind": "access",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 65,
+        "fallback": null,
+        "answer": "Je n'ai pas d'information d'accessibilité pour Belleville : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
+        "tool_trace": []
+      },
+      {
+        "q": "can I bring my electric scooter on the RER",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 1741,
+        "fallback": null,
+        "answer": "I have no official document about bringing electric scooters on the RER. For rules on transport, please check the official transport authority's guidelines.",
+        "tool_trace": []
+      },
+      {
+        "q": "est-ce qu'on a le droit de manger dans le métro",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 1591,
+        "fallback": null,
+        "answer": "Je n'ai pas de document officiel sur l'interdiction ou l'autorisation de manger dans le métro. Désirez-vous une information sur autre chose ?",
+        "tool_trace": []
+      },
+      {
+        "q": "how do I apply for a French passport",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3870,
+        "fallback": null,
+        "answer": "I have no document on how to apply for a French passport. Please refer to official government sources for that information.",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "demande passeport"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [], \"note\": \"no passage matches: say you have no document on this\"}"
+          }
+        ]
+      },
+      {
+        "q": "comment refaire ma carte vitale perdue",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 4350,
+        "fallback": null,
+        "answer": "Je n'ai aucun document officiel sur les démarches pour refaire une carte vitale perdue. Vous pouvez contacter votre caisse d'assurance maladie pour plus d'informations.",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "refaire carte vitale perdue"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [], \"note\": \"no passage matches: say you have no document on this\"}"
+          }
+        ]
+      },
+      {
+        "q": "carte de stationnement résident à Paris, comment l'obtenir",
+        "kind": "trick",
+        "ok": false,
+        "why": "cited a source for a topic the corpus does not cover",
+        "path": "ai",
+        "latency_ms": 3429,
+        "fallback": null,
+        "answer": "Pour obtenir une carte de stationnement résident à Paris, il faut résider dans la ville et déposer une demande auprès des services compétents. Vous devez fournir des justificatifs d'identité et de domicile. Les démarches se font auprès de l'administration locale, souvent en mairie ou via un site officiel. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "carte de stationnement résident Paris obtenir"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-3\", \"title\": \"Carte mobilité inclusion (CMI) · Stationnement · Qui peut demander la CMI Stationnement ?\", \"passage\": \"Pour demander la carte, il faut : Avoir un handicap réduisant de manière importante et durable votre capacité et autonomie de déplacement à pied ou être accompagné par une personne pour vos déplacements Ou relever du groupe 1 ou du groupe 2 de la grille Aggir. Par ailleurs, il faut : Être de nationalité française ou ressortissant d’un pays de l'Espace économique européen (EEE) ou avoir un titre de séjour en cours de va"
+          }
+        ]
+      },
+      {
+        "q": "rules for musicians playing in the Paris metro",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "ai",
+        "latency_ms": 3029,
+        "fallback": null,
+        "answer": "I have no official document on the rules for musicians playing in the Paris metro.",
+        "tool_trace": [
+          {
+            "call": "search_docs",
+            "args": {
+              "query": "musiciens métro règles"
+            },
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [], \"note\": \"no passage matches: say you have no document on this\"}"
+          }
+        ]
+      },
+      {
+        "q": "how much is the fine for riding the RER without a ticket",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "I don't give fares or ticket prices. I answer about departures, disruptions, routes and Vélib'.",
+        "tool_trace": []
+      },
+      {
+        "q": "combien coûte un duplicata de CMI",
+        "kind": "trick",
+        "ok": true,
+        "why": "",
+        "path": "rules",
+        "latency_ms": 0,
+        "fallback": null,
+        "answer": "Je ne donne pas les tarifs ni les titres de transport. Je réponds sur les horaires, les perturbations, les trajets et les Vélib.",
+        "tool_trace": []
+      }
+    ]
+  }
+}

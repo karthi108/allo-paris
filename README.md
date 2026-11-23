@@ -50,11 +50,25 @@ Checks on every answer: right tools and stations, origin and time respected, the
 |---|---|---|---|---|
 | **Set 3**, 92 questions FR/EN: routes, departures, status, Vélib', EV, typos, slang, tricks (08a88e8, 2026-11-23) | 53/92 (57.6%) | **84/92 (91.3%)** | $0.00059 | 300 / 3376 ms |
 | **Set 4**, 32 RAG questions: station accessibility, official fiches, topics outside the corpus (81d3050, 2026-11-23) | 19/32 (59.4%) | **23/32 (71.9%)** | $0.00064 | 1688 / 2820 ms |
+| **Set 5**, 38 RAG questions (17 in English, corpus in French), with **RAG v2** (26bdf99, 2026-11-23) | 17/38 (44.7%) | **34/38 (89.5%)**, 35/38 on reading | $0.00122 | 3008 / 4072 ms |
+| Set 5, same commit, with RAG v1 (BM25) for comparison | 17/38 | 30/38 (78.9%) | $0.00091 | 1882 / 3215 ms |
 | Set 2, 15 questions (d88cc56, 2026-11-08) | 6/15 (40%) | 12/15 (80%) | $0.00097 | 2723 / 4125 ms |
 
 - **Set 3:** the judge said 83/92 and 52/92; reading the answers found one judge bug (a correct rules-path line status was rejected), so both scores are +1. 7 of the 8 real failures are the rules answering confidently when they should hand over to the AI; two of those give wrong departure times (a fake station fuzzy-matched to a real one, a typo origin).
 - **Set 4 (RAG v1, BM25):** accessibility 11/14, fiche questions 9/12, tricks 3/6. Failures include two confident wrong rules answers ("vélo dans le RER" read as Vélib', "Cité U" matched to Cité), the AI answering a dog question from general knowledge without a document, wrong passages retrieved from a long fiche, and one citation pointing to the wrong fiche.
-- **After each run** the failures became new dev questions and generic fixes; both sets are no longer blind. Latest dev run (74bd867, 52 questions): 51/52 on reading (judge 50/52), $0.00115 per question, hybrid p50 / p95 1854 / 4592 ms. A new held-out set is needed before quoting a post-fix number.
+- **Set 5 (RAG v2):** fiche questions 17/19 (RAG v1: 14/19), accessibility 10/11, tricks 7/8. The worst failure: a general-knowledge answer about resident parking carried a Service Public citation, because the code cites any retrieved passage (known limit, not fixed yet). Also: one correct English answer declined ("no document"), and "Orly Ville" taken by the rules as the airport.
+- **After each run** the failures became new dev questions and generic fixes; sets 3 to 5 are no longer blind. Latest dev run (f8e42c9, 52 questions): 51/52 by the judge, 52/52 on reading.
+
+**RAG v2 retrieval, measured on its own** ([retrieval_test.jsonl](eval/retrieval_test.jsonl), 41 queries frozen before the first run, written by the assistant; `python eval/run_retrieval_eval.py`). Search only, no answer generation. Embeddings: OpenAI `text-embedding-3-small` (512 dims, in memory, no vector database); reranker: `gpt-4.1-mini` choosing among the top 10, or none. See [D-027](docs/decisions.md).
+
+| Retrieval (test set, first run, 2af54e4) | recall@1 | recall@5 | MRR@5 | Uncovered topics declined | Cost / query | Time / query |
+|---|---|---|---|---|---|---|
+| BM25 (RAG v1) | 0.515 | 0.697 | 0.588 | 5/8 | 0 | < 1 ms |
+| Embeddings only | 0.788 | 0.970 | 0.860 | 2/8 | ≈ $0.0000003 | ≈ 20 ms + API call |
+| Hybrid (BM25 + embeddings) | 0.758 | 0.939 | 0.838 | 2/8 | same | same |
+| **Hybrid + LLM reranker** | **0.970** | **0.970** | **0.970** | **8/8** | ≈ $0.0004 | ≈ 0.7 s |
+
+Honest reading: the fusion weight chosen on the dev set did not beat embeddings alone on the test set; the gains come from the embeddings (English questions, paraphrases) and the reranker, which is also what makes "no document" work.
 
 **Rules path** (no AI):
 
@@ -63,7 +77,7 @@ Checks on every answer: right tools and stations, origin and time respected, the
 | Intent / line / station accuracy | **61/61 (100%)** | `python eval/run_eval.py`, synthetic FR/EN questions on the full IDFM station list |
 | Invented numbers in answers | **0** | same eval checks every number against data source, templates and names |
 | Answer latency p50 / p95 | **76 ms / 311 ms** | `python scripts/measure.py`: 20 live questions, cache off, 2026-11-07 |
-| Tests | **218 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
+| Tests | **233 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
 
 The eval questions are synthetic (written by the author and the assistant), not real user traffic.
 
