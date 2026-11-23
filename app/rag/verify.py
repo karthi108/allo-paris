@@ -16,9 +16,10 @@ from app.agent.llm import LLMClient, LLMUnavailable
 
 PASSAGE_CHARS = 1200
 SYSTEM = (
-    "You check an assistant's answer against official passages. Reply with JSON "
-    '{"supported": true} if every factual claim in the answer is stated in, or directly '
-    "follows from, the passages (the answer may be in another language and may rephrase). "
+    "You check an assistant's answer against official passages and tool data. Reply with "
+    'JSON {"supported": true} if every factual claim in the answer is stated in, or '
+    "directly follows from, the passages or tool data (the answer may be in another "
+    "language and may rephrase). "
     'Reply {"supported": false} if any claim is missing from the passages, even if it is '
     "true in general. A citation in brackets at the end is not a claim."
 )
@@ -38,7 +39,7 @@ class SupportChecker:
             return False
         listing = "\n\n".join(
             f"[{n}] {p.get('title', '')}\n{str(p.get('passage', ''))[:PASSAGE_CHARS]}"
-            for n, p in enumerate(passages[:5], 1)
+            for n, p in enumerate(passages[:8], 1)
         )
         body: dict[str, Any] = {
             "model": self.client.model,

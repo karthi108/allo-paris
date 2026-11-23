@@ -7,6 +7,7 @@ deterministic fallback is used. The model never produces a time on its own.
 
 from __future__ import annotations
 
+import json
 import re
 import time
 from collections.abc import Callable
@@ -298,8 +299,16 @@ class Agent:
             and reply.fallback is None
             and not is_question_or_no_doc(answer)
         ):
+            # The other tool results count as evidence too (station lines from find_station,
+            # the "not metro" note): dev run 386a627 rejected a correct La Défense answer
+            # that named lines given by find_station, not by the passage
+            evidence = passages + [
+                {"title": f"tool data: {o.get('_tool', '')}", "passage": json.dumps(o)[:1200]}
+                for o in box.outputs
+                if not o.get("passages")
+            ]
             try:
-                if not self.verify(answer, passages):
+                if not self.verify(answer, evidence):
                     # Claims not in the passages must not carry their citation (set 5)
                     reply.fallback = "not supported by the documents"
                     answer = no_doc_text(lang)
