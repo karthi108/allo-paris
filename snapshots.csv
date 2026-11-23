@@ -2244,3 +2244,4 @@ observed_at,points,by_status,new_events,restamped,changed_same_time,feed_newest,
 2026-11-23T18:20:38+00:00,2104,"{""available"": 1098, ""charging"": 848, ""maintenance"": 49, ""planned"": 83, ""unknown"": 26}",134,12,0,2026-11-23T18:20:33+00:00,0
 2026-11-23T18:30:48+00:00,2104,"{""available"": 1072, ""charging"": 875, ""maintenance"": 48, ""planned"": 83, ""unknown"": 26}",107,10,0,2026-11-23T18:30:22+00:00,0
 2026-11-23T18:40:43+00:00,2104,"{""available"": 1059, ""charging"": 886, ""maintenance"": 50, ""planned"": 83, ""unknown"": 26}",110,9,0,2026-11-23T18:40:38+00:00,0
+2026-11-23T18:50:37+00:00,2104,"{""available"": 1034, ""charging"": 913, ""maintenance"": 48, ""planned"": 83, ""unknown"": 26}",123,8,0,2026-11-23T18:50:31+00:00,0
