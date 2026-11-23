@@ -40,19 +40,21 @@ question ─► injection filter ─► rules parser ──── confident? ─
 Every number below comes from a script in this repo; raw results with tool traces are in [eval/results](eval/results).
 
 **AI agent: how it is evaluated.** Real LLM (`openai/gpt-4.1-mini`), fixed fake transport data with a scripted RER B disruption, so runs are reproducible and use no PRIM quota. Two kinds of question sets:
-- **Dev set** ([questions_agent.jsonl](eval/questions_agent.jsonl), 24 questions): the system was improved against it, so it measures stability, not general accuracy.
-- **Held-out sets**: committed to git **before** their first run and never tuned against; a held-out failure becomes a new dev question with different wording, never a targeted fix. Set 1 lost that status (two fixes were motivated by it), so set 2 is the one quoted.
+- **Dev set** ([questions_agent.jsonl](eval/questions_agent.jsonl), now 52 questions): the system was improved against it, so it measures stability, not general accuracy.
+- **Held-out sets**: committed to git **before** their first run and never tuned against; a held-out failure becomes a new dev question with different wording, never a targeted fix. Each set is blind for one run only; the first run is the quoted number.
+- **Who wrote the questions:** every held-out question was written by the AI assistant used to build this project (Claude), at the owner's request. None comes from the owner or from real users, so these are synthetic tests, not real-traffic accuracy.
 
-Checks on every answer: right tools and stations, origin and time respected, the journey that avoids the disruption recommended first, at most 3 sentences (answers are read aloud), no invented numbers. History and every change to the judge: [eval/HISTORY.md](eval/HISTORY.md), [eval/HOLDOUT.md](eval/HOLDOUT.md), [eval/CHANGES.md](eval/CHANGES.md).
+Checks on every answer: right tools and stations, origin and time respected, the journey that avoids the disruption recommended first, at most 3 sentences (answers are read aloud), no invented numbers; for document answers, a citation of the right document and "no document" (without citation) when the corpus does not cover the topic. Every answer of every held-out run was also read by hand. History and every change to the judge: [eval/HISTORY.md](eval/HISTORY.md), [eval/HOLDOUT.md](eval/HOLDOUT.md), [eval/CHANGES.md](eval/CHANGES.md).
 
-| Measure | Rules only | Hybrid (rules + AI) |
-|---|---|---|
-| **Held-out set 2**, 15 new questions, single run (d88cc56) | 6/15 (40%) | **12/15 (80%)** |
-| Dev set, 3 identical runs (95210ef) | 8/24 each run | **71/72 (98.6%)** |
-| Cost per question (dev runs) | 0 | ≈ $0.0011 |
-| Latency p50 / p95, AI-heavy dev set | ≈ 0 ms | ≈ 3.1 s / 3.9 s |
+| Held-out set (first and only blind run) | Rules only | Hybrid (rules + AI) | Cost / question | Hybrid p50 / p95 |
+|---|---|---|---|---|
+| **Set 3**, 92 questions FR/EN: routes, departures, status, Vélib', EV, typos, slang, tricks (08a88e8, 2026-11-23) | 53/92 (57.6%) | **84/92 (91.3%)** | $0.00059 | 300 / 3376 ms |
+| **Set 4**, 32 RAG questions: station accessibility, official fiches, topics outside the corpus (81d3050, 2026-11-23) | 19/32 (59.4%) | **23/32 (71.9%)** | $0.00064 | 1688 / 2820 ms |
+| Set 2, 15 questions (d88cc56, 2026-11-08) | 6/15 (40%) | 12/15 (80%) | $0.00097 | 2723 / 4125 ms |
 
-Held-out set 2 failures, all read one by one: a terse "A -> B" trip answered by the rules with departures (fixed: two named stations and no line now means a trip), and two line-status questions where the agent could not produce a status (traces of a later run show the model inventing a line id such as `metro_4`; the tool now resolves those). In both status cases the guard prevented an unsupported answer.
+- **Set 3:** the judge said 83/92 and 52/92; reading the answers found one judge bug (a correct rules-path line status was rejected), so both scores are +1. 7 of the 8 real failures are the rules answering confidently when they should hand over to the AI; two of those give wrong departure times (a fake station fuzzy-matched to a real one, a typo origin).
+- **Set 4 (RAG v1, BM25):** accessibility 11/14, fiche questions 9/12, tricks 3/6. Failures include two confident wrong rules answers ("vélo dans le RER" read as Vélib', "Cité U" matched to Cité), the AI answering a dog question from general knowledge without a document, wrong passages retrieved from a long fiche, and one citation pointing to the wrong fiche.
+- **After each run** the failures became new dev questions and generic fixes; both sets are no longer blind. Latest dev run (74bd867, 52 questions): 51/52 on reading (judge 50/52), $0.00115 per question, hybrid p50 / p95 1854 / 4592 ms. A new held-out set is needed before quoting a post-fix number.
 
 **Rules path** (no AI):
 
@@ -61,7 +63,7 @@ Held-out set 2 failures, all read one by one: a terse "A -> B" trip answered by 
 | Intent / line / station accuracy | **61/61 (100%)** | `python eval/run_eval.py`, synthetic FR/EN questions on the full IDFM station list |
 | Invented numbers in answers | **0** | same eval checks every number against data source, templates and names |
 | Answer latency p50 / p95 | **76 ms / 311 ms** | `python scripts/measure.py`: 20 live questions, cache off, 2026-11-07 |
-| Tests | **156 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
+| Tests | **218 passing** | `pytest`, in CI with ruff, mypy strict and gitleaks |
 
 The eval questions are synthetic (written by the author and the assistant), not real user traffic.
 
