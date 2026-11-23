@@ -11,7 +11,7 @@ on:
       set:
         description: "Question set (held-out sets 1 to 3 are no longer blind)"
         type: choice
-        options: [dev, holdout, holdout2, holdout3, holdout4, holdout5]
+        options: [dev, holdout, holdout2, holdout3, holdout4, holdout5, holdout6]
         default: dev
       max_usd:
         description: "Cost cap for this run in USD (estimated from token usage)"

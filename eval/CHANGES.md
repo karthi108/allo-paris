@@ -294,3 +294,9 @@ Set 5 is no longer blind after these runs.
 
 ## Town stations containing a landmark word (2026-11-23)
 - Generic rules fix (app/agent/parser.py landmark_wins, also used by find_station): a landmark ("Roissy", "Orly") no longer replaces an exact station match when the user said the station's full multi-word name ("Roissy-en-Brie", "Orly Ville"). Airport words alone still mean the airport. Unit tests with new wording (tests/test_rag.py, 5 cases). Fixes the Roissy-en-Brie dev question (wrong in the last 3 dev runs, passed by the judge) and the cause of the Orly Ville failure in held-out set 5.
+
+## Held-out set 6, mixed (written 2026-11-23, committed before any run)
+- eval/questions_agent_holdout6.jsonl: 39 questions (22 FR, 17 EN), written by the assistant, none from the owner or real users. 10 routes (2 with a future time, 2 to landmarks), 3 missing origin, 6 departures, 4 status (one slang), 6 document questions, 3 accessibility, 1 metro-only station, 3 topics outside the corpus, 3 tricks (price, fake place, injection). No Vélib' or EV questions: their eval fixtures cover specific stations and addresses.
+- Purpose: the first quotable measure after today's changes (support check before citing, reranker 20 candidates, landmark fix, ML gate).
+- Static checks before freezing (no question run): every station name exists in the index; every departure line serves its station; each document question has an expected fact in the corpus; each accessibility level is in the station's record; the metro-only station has no record; outside topics have no matching word in the corpus; no question repeats an earlier set, the retrieval sets or the intent set.
+- Judge unchanged. New option --set holdout6 (also in the CI workflow).
