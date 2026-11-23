@@ -42,6 +42,13 @@ from app.rag.corpus import Corpus  # noqa: E402
 # RAG v1 corpus (real, committed snapshot): deterministic, so no fixture is needed (D-025)
 DOCS = Corpus.load(ROOT / "data" / "docs.json")
 _CITE = re.compile(r"\(Source ?: ", re.I)
+# "No document / not covered" wording, on normalize()d text (FR and EN)
+_NO_DOC = re.compile(
+    r"\b(pas de document|aucun document|no (official )?document|pas d information|"
+    r"aucune information|no information|n ai pas (d information|de document)|"
+    r"ne (couvre|couvrent) pas|pas couvert|not covered|do not cover|don t cover|"
+    r"cannot answer|can t answer|ne peux pas (repondre|vous renseigner))\b"
+)
 
 DISRUPTION_B = "Trafic interrompu entre Gare du Nord et Châtelet - Les Halles (incident technique)."
 
@@ -454,6 +461,13 @@ def judge(
         if normalize(case["level"]) not in normalize(text):
             return False, f"did not give the accessibility level {case['level']!r}"
         return True, ""
+    if exp == "docs_none":
+        # Added for held-out set 4, before its first run: a topic outside the corpus must get
+        # "no document / not covered", never a cited or general-knowledge answer
+        if _CITE.search(text):
+            return False, "cited a source for a topic the corpus does not cover"
+        ok = _NO_DOC.search(normalize(text)) is not None
+        return ok, "" if ok else "did not say it has no document on this"
     if exp == "access_none":
         levels = ("non accessible", "sur demande", "sur reservation", "en toute autonomie")
         if any(lv in normalize(text) for lv in levels):
@@ -570,7 +584,9 @@ def run_mode(
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", choices=["dev", "holdout", "holdout2", "holdout3"], default="dev")
+    ap.add_argument(
+        "--set", choices=["dev", "holdout", "holdout2", "holdout3", "holdout4"], default="dev"
+    )
     ap.add_argument("--only", help="run only questions containing this text (diagnosis, not saved)")
     ap.add_argument("--trace", action="store_true", help="print tool calls and outputs")
     ap.add_argument(
@@ -583,6 +599,7 @@ def main() -> None:
         "holdout": "questions_agent_holdout.jsonl",
         "holdout2": "questions_agent_holdout2.jsonl",
         "holdout3": "questions_agent_holdout3.jsonl",
+        "holdout4": "questions_agent_holdout4.jsonl",
     }[args.set]
     index = StopIndex.load(ROOT / "eval" / "data" / "stops_snapshot.json")
     cases = [

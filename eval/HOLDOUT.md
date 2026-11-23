@@ -15,3 +15,5 @@ Held-out set 3 (questions_agent_holdout3.jsonl, 92 questions, written 2026-11-23
 | 2026-11-23 04:55 | 08a88e8 | openai/gpt-4.1-mini | 56% | 90% | 17/20 | 300 / 3376 ms | $0.00059 | 2 / 2 | [agent_holdout3_2026-11-23_0455_08a88e8.json](results/agent_holdout3_2026-11-23_0455_08a88e8.json) |
 
 Note on the held-out set 3 row (08a88e8, first and only run, 2026-11-23 04:55 UTC): the judge said hybrid 83/92, rules only 52/92. Reading every answer: "le métro 6 à Bercy, il roule ?" was answered by the rules with a correct line 6 status, which the question accepts, but the judge only accepts a status from the AI path (judge bug, not fixed yet). Corrected: hybrid 84/92 (91.3%), rules only 53/92 (57.6%). This is the quotable held-out result. Details in CHANGES.md.
+
+Held-out set 4 (questions_agent_holdout4.jsonl, 32 RAG questions, written 2026-11-23 by the assistant at the owner's request) was committed before its first run. Rows for it will say holdout4 in the Results file name.
