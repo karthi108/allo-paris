@@ -207,3 +207,28 @@ Known limits kept: the nickname "BNF" (needs a nickname table, owner's call); "C
 - eval/retrieval_test.jsonl: 41 queries (25 fiche, 8 accessibility, 8 not covered; 30 FR, 11 EN). Frozen: run once per measured version, never tuned against.
 - Labels: "relevant" lists every passage that answers the query. Identical CMI sections repeated under Stationnement, Priorité and Invalidité are all listed when the query does not name a card type. "none" queries expect no passage (including two metro-only stations and two queries sharing words with CMI passages, such as "carte d'identité").
 - Written by the assistant, labels checked against data/docs.json (every id exists; no query repeats another set). Not checked by the owner.
+
+## Retrieval test set, run 1 (2af54e4, 2026-11-23 15:01 UTC): first and only blind run
+Search alone, the user's question as the query; 33 covered and 8 uncovered queries. Raw: eval/results/retrieval_test_2026-11-23_1501_2af54e4.json.
+
+| Mode | recall@1 | recall@3 | recall@5 | MRR@5 | uncovered declined | covered with no result |
+|---|---|---|---|---|---|---|
+| BM25 (RAG v1) | 0.515 | 0.667 | 0.697 | 0.588 | 5/8 | 5 |
+| Dense (embeddings, cosine floor 0.46) | 0.788 | 0.939 | 0.970 | 0.860 | 2/8 | 1 |
+| Hybrid (BM25 + dense, 1:3 RRF) | 0.758 | 0.939 | 0.939 | 0.838 | 2/8 | 1 |
+| Hybrid + LLM reranker (gpt-4.1-mini, top 10) | **0.970** | 0.970 | 0.970 | 0.970 | **8/8** | 1 |
+
+- Dev set (same day, before the test run): BM25 0.559 / 0.706 recall@1 / @5, hybrid 0.853 / 1.0, hybrid + reranker 1.0 / 1.0 and 8/8 declined. The dev numbers are optimistic: the fusion weight and the floor were chosen on it.
+- Honest reading: on the test set the hybrid fusion chosen on dev is slightly worse than dense alone (recall@5 0.939 vs 0.970). The gain comes from the embeddings (English questions, paraphrases) and from the reranker, which is also what makes "no document" work: cosine alone declined 2/8.
+- The one miss: "what happens if I refuse the mediator's opinion on my fine and don't pay" (English, no French word in common) got no candidate at the 0.46 floor. Change after this run (not blind any more): with the reranker, the cosine floor is 0.30, since the reranker decides relevance; on the dev set the reranker still declined 8/8 at 0.30.
+- Cost and time per query: embedding ≈ $0.0000003; reranker ≈ $0.0004 (41,293 input and 356 output tokens for 41 queries, at the configured gpt-4.1-mini default prices; check them on the pricing page) and ≈ 660 ms; search itself ≈ 19 ms in pure Python.
+
+## RAG v2 in the app, dev run (f8e42c9, 2026-11-23 15:06 UTC): judge 51/52, read 52/52
+- search_docs uses hybrid + reranker (OpenAI provider), with fallbacks: no embedding → BM25; reranker error → hybrid order. Rules path unchanged (BM25, free).
+- The only judge failure is the known English La Défense case (judge expects the French level text; the answer is correct). The lost-CMI question that failed in the last run (old-card procedure) now gives the duplicata route.
+- Cost $0.0642 ($0.00123 per question, was $0.00115), hybrid p50 / p95 2718 / 4706 ms (was 1854 / 4592).
+
+## Held-out set 5, RAG (written 2026-11-23, committed before any run)
+- eval/questions_agent_holdout5.jsonl: 38 questions (21 FR, 17 EN), written by the assistant, none from the owner or real users. 19 fiche questions (many in English while the corpus is French), 8 accessibility questions for stations in the data, 3 metro-only stations (one with a near name, Le Plessis-Belleville), 6 topics outside the corpus (three near misses: passport, lost carte Vitale, resident parking card), 2 price questions.
+- Static checks before freezing (no question run): each fiche question has at least one expected fact in the corpus; each accessibility level is in the named station's record; metro-only stations have no record; outside topics have no matching word in the corpus except "passeport" (on purpose); no question repeats an earlier set or the retrieval sets.
+- Judge unchanged. New option --set holdout5 (also in the CI workflow). Run once with RAG v2; the RAG v1 comparison uses --rag v1 on the same commit.

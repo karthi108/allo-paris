@@ -1,0 +1,38 @@
+{"q": "is it free to take a dispute to the SNCF mediator?", "lang": "en", "expect": "docs", "must_any": ["free", "gratuit", "no cost", "no charge"], "kind": "docs", "tags": ["English, corpus in French"]}
+{"q": "le médiateur SNCF peut-il s'occuper de mon dossier si j'ai déjà lancé une procédure au tribunal ?", "lang": "fr", "expect": "docs", "must_any": ["tribunal", "procédure"], "kind": "docs"}
+{"q": "how long after my written complaint can I still go to the SNCF mediator", "lang": "en", "expect": "docs", "must_any": ["1 an", "one year", "1 year", "a year", "12 months"], "kind": "docs", "tags": ["English"]}
+{"q": "the mediator suggested a lower fine, what happens if I refuse and don't pay", "lang": "en", "expect": "docs", "must_any": ["majorée", "increase", "officier du ministère public", "public prosecutor"], "kind": "docs", "tags": ["English"]}
+{"q": "pièces à joindre pour saisir la médiatrice par courrier à cause d'un PV", "lang": "fr", "expect": "docs", "must_any": ["procès-verbal", "recommandée", "réclamation"], "kind": "docs"}
+{"q": "combien de jours pour accepter ou refuser l'avis de la médiatrice sncf", "lang": "fr", "expect": "docs", "must_any": ["14"], "kind": "docs", "tags": ["combien without a price"]}
+{"q": "ma batterie de téléphone a lâché pendant le contrôle et mon ticket était dedans, l'amende est contestable ?", "lang": "fr", "expect": "docs", "must_any": ["3 mois", "réclamation", "intention de frauder", "contester"], "kind": "docs"}
+{"q": "I complained about a fine and the operator never replied, what's the next step", "lang": "en", "expect": "docs", "must_any": ["mediator", "médiateur", "1 month", "one month", "1 mois"], "kind": "docs", "tags": ["English"]}
+{"q": "avec la CMI stationnement on se gare sans payer ?", "lang": "fr", "expect": "docs", "must_any": ["gratuitement", "sans limitation", "gratuit"], "kind": "docs", "tags": ["payer without an amount"]}
+{"q": "for how long is the mobility inclusion card issued", "lang": "en", "expect": "docs", "must_any": ["20 years", "20 ans", "définitive", "permanent", "1 to 20"], "kind": "docs", "tags": ["English"]}
+{"q": "can a foreigner living in France get a CMI", "lang": "en", "expect": "docs", "must_any": ["titre de séjour", "residence permit", "EEE", "EEA", "European Economic Area"], "kind": "docs", "tags": ["English"]}
+{"q": "quel taux d'incapacité il faut pour la carte invalidité", "lang": "fr", "expect": "docs", "must_any": ["80"], "kind": "docs"}
+{"q": "faut-il un certificat médical quand on demande la CMI en même temps que l'APA", "lang": "fr", "expect": "docs", "must_any": ["certificat médical"], "kind": "docs"}
+{"q": "le département a refusé ma carte mobilité inclusion, comment je conteste ?", "lang": "fr", "expect": "docs", "must_any": ["Rapo", "recours administratif", "président du conseil départemental"], "kind": "docs"}
+{"q": "how long does the department have to answer my appeal against a CMI refusal", "lang": "en", "expect": "docs", "must_any": ["2 months", "two months", "2 mois"], "kind": "docs", "tags": ["English"]}
+{"q": "la personne qui m'accompagne a aussi droit à la priorité avec ma CMI ?", "lang": "fr", "expect": "docs", "must_any": ["accompagne", "mêmes avantages"], "kind": "docs"}
+{"q": "jusqu'à quand mon ancienne carte de stationnement pour handicapé reste valable", "lang": "fr", "expect": "docs", "must_any": ["31 décembre 2026"], "kind": "docs"}
+{"q": "how do I send my photo once my CMI is approved", "lang": "en", "expect": "docs", "must_any": ["photo", "Imprimerie nationale", "secret code", "code secret"], "kind": "docs", "tags": ["English"]}
+{"q": "where do I put the disabled parking card, dashboard or windscreen?", "lang": "en", "expect": "docs", "must_any": ["pare-brise", "windscreen", "windshield"], "kind": "docs", "tags": ["English"]}
+{"q": "Javel accessible en fauteuil roulant ?", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access"}
+{"q": "wheelchair access at Vincennes RER station", "lang": "en", "expect": "access", "level": "sur demande auprès d'un agent", "kind": "access"}
+{"q": "gare de Poissy accessible PMR ?", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access"}
+{"q": "Nanterre Préfecture fauteuil roulant possible ?", "lang": "fr", "expect": "access", "level": "sur demande auprès d'un agent", "kind": "access"}
+{"q": "is Évry Val de Seine step free", "lang": "en", "expect": "access", "level": "non accessible", "kind": "access"}
+{"q": "accessibilité handicapé à Sartrouville", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access"}
+{"q": "Orly Ville accessible en chaise roulante ?", "lang": "fr", "expect": "access", "level": "non accessible", "kind": "access", "tags": ["not the airport"]}
+{"q": "Ermont Halte wheelchair accessible?", "lang": "en", "expect": "access", "level": "en toute autonomie", "kind": "access"}
+{"q": "Abbesses accessible en fauteuil ?", "lang": "fr", "expect": "access_none", "kind": "access", "tags": ["metro only"]}
+{"q": "wheelchair access at Place d'Italie", "lang": "en", "expect": "access_none", "kind": "access", "tags": ["metro only"]}
+{"q": "ascenseur station Belleville ?", "lang": "fr", "expect": "access_none", "kind": "access", "tags": ["metro only", "near name: Le Plessis-Belleville (train) has a record"]}
+{"q": "can I bring my electric scooter on the RER", "lang": "en", "expect": "docs_none", "kind": "trick", "tags": ["not in the corpus"]}
+{"q": "est-ce qu'on a le droit de manger dans le métro", "lang": "fr", "expect": "docs_none", "kind": "trick", "tags": ["not in the corpus"]}
+{"q": "how do I apply for a French passport", "lang": "en", "expect": "docs_none", "kind": "trick", "tags": ["passport is mentioned in CMI passages"]}
+{"q": "comment refaire ma carte vitale perdue", "lang": "fr", "expect": "docs_none", "kind": "trick", "tags": ["near miss: lost card"]}
+{"q": "carte de stationnement résident à Paris, comment l'obtenir", "lang": "fr", "expect": "docs_none", "kind": "trick", "tags": ["near miss: CMI stationnement"]}
+{"q": "rules for musicians playing in the Paris metro", "lang": "en", "expect": "docs_none", "kind": "trick", "tags": ["not in the corpus"]}
+{"q": "how much is the fine for riding the RER without a ticket", "lang": "en", "expect": "no_numbers", "kind": "trick", "tags": ["price question"]}
+{"q": "combien coûte un duplicata de CMI", "lang": "fr", "expect": "no_numbers", "kind": "trick", "tags": ["price question, the fee is in the corpus"]}

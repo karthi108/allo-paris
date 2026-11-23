@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-23T09:37:46+00:00",
-  "commit": "74bd867",
+  "generated_at": "2026-11-23T15:06:27+00:00",
+  "commit": "f8e42c9",
   "dirty": false,
   "set": "dev",
   "rules": {
@@ -20,7 +20,7 @@
         "trick": "0/3"
       },
       "latency_p50_ms": 0,
-      "latency_p95_ms": 855,
+      "latency_p95_ms": 544,
       "ai_share": 0.0,
       "guard_corrections": 0,
       "guard_blocked_to_template": 0,
@@ -165,7 +165,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 545,
+        "latency_ms": 458,
         "fallback": null,
         "answer": "À Nation, quelle ligne ? ligne 1, ligne 2, ligne 6, ligne 9, RER A.",
         "tool_trace": []
@@ -176,7 +176,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 15,
+        "latency_ms": 16,
         "fallback": null,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago.",
         "tool_trace": []
@@ -187,7 +187,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 862,
+        "latency_ms": 544,
         "fallback": null,
         "answer": "At La Défense, which line? train L, train U, line 1, RER A, RER E, tram T2.",
         "tool_trace": []
@@ -231,7 +231,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 191,
+        "latency_ms": 114,
         "fallback": null,
         "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
         "tool_trace": []
@@ -264,7 +264,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 855,
+        "latency_ms": 562,
         "fallback": null,
         "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet.",
         "tool_trace": []
@@ -286,7 +286,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 559,
+        "latency_ms": 320,
         "fallback": null,
         "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet.",
         "tool_trace": []
@@ -297,7 +297,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 418,
+        "latency_ms": 264,
         "fallback": null,
         "answer": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
         "tool_trace": []
@@ -308,7 +308,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 276,
+        "latency_ms": 168,
         "fallback": null,
         "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
         "tool_trace": []
@@ -319,7 +319,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 259,
+        "latency_ms": 160,
         "fallback": null,
         "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet.",
         "tool_trace": []
@@ -330,7 +330,7 @@
         "ok": false,
         "why": "did not ask for the origin",
         "path": "rules",
-        "latency_ms": 190,
+        "latency_ms": 131,
         "fallback": null,
         "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
         "tool_trace": []
@@ -341,7 +341,7 @@
         "ok": false,
         "why": "clarify_line",
         "path": "rules",
-        "latency_ms": 352,
+        "latency_ms": 228,
         "fallback": null,
         "answer": "La ligne 9 ne passe pas à Moret - Veneux-les-Sablons. Lignes disponibles : train R.",
         "tool_trace": []
@@ -352,7 +352,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 131,
+        "latency_ms": 87,
         "fallback": null,
         "answer": "Vélib près de Opéra. Opéra - Auber, à 55 mètres : 11 vélos dont 3 électriques, 4 places libres. Données Vélib en temps réel.",
         "tool_trace": []
@@ -363,7 +363,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 420,
+        "latency_ms": 285,
         "fallback": null,
         "answer": "Bornes Belib' près de 30 Boulevard de Vaugirard. 30 Boulevard de Vaugirard, sur place : 2 libre(s) sur 2. Données Belib' en temps réel.",
         "tool_trace": []
@@ -374,7 +374,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 410,
+        "latency_ms": 253,
         "fallback": null,
         "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
         "tool_trace": []
@@ -440,7 +440,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 187,
+        "latency_ms": 122,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Gare du Nord : train accessible sur réservation préalable auprès du service AssistenGare. Ligne H accessible en toute autonomie. Lignes B, D et K accessibles sur réservation préalable auprès du service Accès Plus Transilien. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -451,7 +451,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 128,
+        "latency_ms": 104,
         "fallback": null,
         "answer": "Accessibility, Île-de-France Mobilités data (in French). Châtelet les Halles : gare ou arrêt non accessible. Ligne A et B accessibles sur demande auprès d'un agent en station. Ligne D non accessible. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
         "tool_trace": []
@@ -462,7 +462,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 145,
+        "latency_ms": 100,
         "fallback": null,
         "answer": "Je n'ai pas d'information d'accessibilité pour Bastille : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -473,7 +473,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 83,
+        "latency_ms": 49,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Nation : train accessible sur demande auprès d'un agent en station. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -495,7 +495,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 141,
+        "latency_ms": 87,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Juvisy : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -506,7 +506,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 48,
+        "latency_ms": 32,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Gare de l'Est : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -517,7 +517,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 102,
+        "latency_ms": 66,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Massy - Palaiseau : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -528,7 +528,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 78,
+        "latency_ms": 55,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Aulnay-sous-Bois : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -539,7 +539,7 @@
         "ok": false,
         "why": "did not say it has no document on this",
         "path": "rules",
-        "latency_ms": 1043,
+        "latency_ms": 683,
         "fallback": null,
         "answer": "Je ne trouve pas de station dans votre question. Donnez un nom de station, par exemple : Bir-Hakeim, ou ligne 4 à Gare du Nord.",
         "tool_trace": []
@@ -550,7 +550,7 @@
         "ok": false,
         "why": "did not say it has no document on this",
         "path": "rules",
-        "latency_ms": 531,
+        "latency_ms": 321,
         "fallback": null,
         "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
         "tool_trace": []
@@ -572,7 +572,7 @@
         "ok": false,
         "why": "did not say it has no document on this",
         "path": "rules",
-        "latency_ms": 933,
+        "latency_ms": 572,
         "fallback": null,
         "answer": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
         "tool_trace": []
@@ -605,7 +605,7 @@
     "summary": {
       "mode": "hybrid",
       "questions": 52,
-      "success_rate": 0.962,
+      "success_rate": 0.981,
       "by_kind": {
         "route": "8/8",
         "route_missing_origin": "3/3",
@@ -613,20 +613,20 @@
         "messy": "11/11",
         "adversarial": "8/8",
         "ev": "1/1",
-        "docs": "6/7",
+        "docs": "7/7",
         "access": "8/9",
         "trick": "3/3"
       },
-      "latency_p50_ms": 1854,
-      "latency_p95_ms": 4592,
+      "latency_p50_ms": 2718,
+      "latency_p95_ms": 4706,
       "ai_share": 0.635,
-      "guard_corrections": 5,
-      "guard_blocked_to_template": 1,
+      "guard_corrections": 4,
+      "guard_blocked_to_template": 0,
       "ai_unavailable": 0,
       "model": "openai/gpt-4.1-mini",
-      "cost_usd_total": 0.0596,
-      "cost_usd_per_question": 0.00115,
-      "cost_cap_usd": 0.25
+      "cost_usd_total": 0.0642,
+      "cost_usd_per_question": 0.00123,
+      "cost_cap_usd": 0.5
     },
     "rows": [
       {
@@ -635,9 +635,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 5125,
+        "latency_ms": 4163,
         "fallback": null,
-        "answer": "The fastest metro route to the Eiffel Tower from Gare du Nord is to take metro line 4 towards Bagneux to Montparnasse Bienvenue, then change to line 6 towards Charles de Gaulle - Étoile to Bir-Hakeim. This trip takes about 31 minutes. The route with line B is disrupted due to an incident.",
+        "answer": "The fastest route to the Eiffel Tower (Bir-Hakeim) from Gare du Nord is by taking metro line 4 towards Bagneux, changing at Montparnasse Bienvenue, and then taking metro line 6 towards Charles de Gaulle - Étoile. The journey takes about 31 minutes in total. Note that the RER B line option is disrupted and not recommended.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -659,7 +659,7 @@
               "from_station_id": "462941",
               "to_station_id": "45340"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare du Nord\", \"to\": \"Bir-Hakeim\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare du Nord\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bir-Hakeim\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": false,"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare du Nord\", \"to\": \"Bir-Hakeim\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare du Nord\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bir-Hakeim\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommended\": false,"
           }
         ]
       },
@@ -669,9 +669,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3213,
+        "latency_ms": 4140,
         "fallback": null,
-        "answer": "Le chemin le plus rapide sans utiliser de ligne interrompue est de prendre le métro ligne 4 de Gare du Nord à Montparnasse Bienvenue, puis changer pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à Bir-Hakeim, près de la Tour Eiffel. Le trajet dure 31 minutes.",
+        "answer": "Le chemin le plus rapide conseillé depuis Gare du Nord vers la tour Eiffel est en métro : prenez la ligne 4 vers Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 vers Charles de Gaulle - Étoile jusqu'à Bir-Hakeim. Ce trajet dure 31 minutes. La ligne B, plus rapide, est interrompue entre Gare du Nord et Châtelet.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -693,7 +693,7 @@
               "from_station_id": "462941",
               "to_station_id": "45340"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare du Nord\", \"to\": \"Bir-Hakeim\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare du Nord\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bir-Hakeim\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": false,"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare du Nord\", \"to\": \"Bir-Hakeim\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare du Nord\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bir-Hakeim\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommended\": false,"
           }
         ]
       },
@@ -703,9 +703,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4093,
+        "latency_ms": 4737,
         "fallback": null,
-        "answer": "The best way from Gare de Lyon to the Louvre (Palais Royal - Musée du Louvre) is to take metro line 4 towards Bagneux from Gare de Lyon to Montparnasse Bienvenue, then change to metro line 6 towards Charles de Gaulle - Étoile to Palais Royal - Musée du Louvre. The total trip takes about 31 minutes with 5 minutes walking. A faster route using RER B is disrupted at the moment.",
+        "answer": "The best way to get to the Louvre from Gare de Lyon now is to take Metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to Metro line 6 towards Charles de Gaulle - Étoile and go 12 minutes to Palais Royal - Musée du Louvre. The total journey will take about 31 minutes including a short walk. A faster route using RER B has a disruption and is not recommended.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -727,7 +727,7 @@
               "from_station_id": "43153",
               "to_station_id": "44236"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare de Lyon\", \"to\": \"Palais Royal - Musée du Louvre\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare de Lyon\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Palais Royal - Musée du Louvre\", \"minutes\": 12, \"dep"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare de Lyon\", \"to\": \"Palais Royal - Musée du Louvre\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare de Lyon\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Palais Royal - Musée du Louvre\", \"minutes\": 12, \"dep"
           }
         ]
       },
@@ -736,10 +736,10 @@
         "kind": "route",
         "ok": true,
         "why": "",
-        "path": "ai_fallback",
-        "latency_ms": 5845,
-        "fallback": "grounding: number 26 is not in the tool results",
-        "answer": "RER B perturbé, itinéraire alternatif. De Châtelet à La Défense : ligne 4 jusqu’à Montparnasse Bienvenue, puis ligne 6 jusqu’à La Défense, 31 minutes, départ 10:10, arrivée 10:41.",
+        "path": "ai",
+        "latency_ms": 3553,
+        "fallback": null,
+        "answer": "Pour aller de Châtelet à La Défense maintenant, prenez le métro ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à La Défense. Le trajet dure 31 minutes au total. Un itinéraire plus rapide existe avec la ligne B, mais elle est interrompue actuellement entre Gare du Nord et Châtelet - Les Halles.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -761,7 +761,7 @@
               "from_station_id": "42587",
               "to_station_id": "462395"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Châtelet\", \"to\": \"La Défense\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Châtelet\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"La Défense\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": false, \"uses_d"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Châtelet\", \"to\": \"La Défense\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Châtelet\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"La Défense\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommended\": false, \"uses_d"
           }
         ]
       },
@@ -771,9 +771,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3614,
+        "latency_ms": 3527,
         "fallback": null,
-        "answer": "From Nation to Montparnasse Bienvenue, the recommended journey takes 31 minutes with one change. Take metro line 4 towards Bagneux for 14 minutes, then change to line 6 towards Charles de Gaulle - Étoile for 12 minutes. There is a faster route using line B, but it is disrupted by an incident between Gare du Nord and Châtelet - Les Halles.",
+        "answer": "To get from Nation to Montparnasse Bienvenue, take metro line 4 towards Bagneux for 14 minutes, then transfer at Montparnasse Bienvenue and take metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. The total journey takes about 31 minutes. A faster route using line B is disrupted due to an incident between Gare du Nord and Châtelet - Les Halles.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -795,7 +795,7 @@
               "from_station_id": "462358",
               "to_station_id": "58578"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Nation\", \"to\": \"Montparnasse Bienvenue\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Nation\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommen"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Nation\", \"to\": \"Montparnasse Bienvenue\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Nation\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommen"
           }
         ]
       },
@@ -805,9 +805,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3303,
+        "latency_ms": 4357,
         "fallback": null,
-        "answer": "De Saint-Lazare à Bastille, le trajet recommandé prend 31 minutes avec un changement. Prenez le métro ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à Bastille. Un autre trajet plus rapide via la ligne B est interrompu actuellement.",
+        "answer": "Pour aller de Saint-Lazare à Bastille, le trajet recommandé prend 31 minutes avec un changement. Prenez le métro ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à Bastille. Un trajet plus rapide existe en utilisant la ligne B du RER, mais elle est interrompue entre Gare du Nord et Châtelet - Les Halles à cause d'un incident technique.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -829,7 +829,7 @@
               "from_station_id": "462374",
               "to_station_id": "42288"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Saint-Lazare\", \"to\": \"Bastille\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Saint-Lazare\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bastille\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": false, \"us"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Saint-Lazare\", \"to\": \"Bastille\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Saint-Lazare\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bastille\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommended\": false, \"us"
           }
         ]
       },
@@ -839,9 +839,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3570,
+        "latency_ms": 4455,
         "fallback": null,
-        "answer": "To get to Disneyland from Châtelet les Halles now, take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to metro line 6 towards Charles de Gaulle - Étoile for 12 minutes to Marne-la-Vallée - Chessy, total travel time about 31 minutes. A faster route using RER B is disrupted.",
+        "answer": "To get to Disneyland from Châtelet les Halles now, take metro line 4 towards Bagneux to Montparnasse Bienvenue for 14 minutes, then change to metro line 6 towards Charles de Gaulle - Étoile to Marne-la-Vallée - Chessy for 12 minutes. The total trip takes 31 minutes including 5 minutes walking. Note that the faster route using RER B is disrupted by a technical incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -863,7 +863,7 @@
               "from_station_id": "45102",
               "to_station_id": "43239"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Châtelet - Les Halles\", \"to\": \"Marne-la-Vallée - Chessy\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Châtelet - Les Halles\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Marne-la-Vallée - Chessy\", \"minutes\": 12"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Châtelet - Les Halles\", \"to\": \"Marne-la-Vallée - Chessy\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Châtelet - Les Halles\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Marne-la-Vallée - Chessy\", \"minutes\": 12"
           }
         ]
       },
@@ -873,7 +873,7 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 763,
+        "latency_ms": 786,
         "fallback": null,
         "answer": "From which station would you like to start your trip to the Eiffel Tower?",
         "tool_trace": []
@@ -884,7 +884,7 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 684,
+        "latency_ms": 938,
         "fallback": null,
         "answer": "De quelle station partez-vous pour aller au Sacré-Cœur ?",
         "tool_trace": []
@@ -895,9 +895,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3793,
+        "latency_ms": 3659,
         "fallback": null,
-        "answer": "Demain à 8h, depuis Nation pour La Défense, le trajet recommandé prend 31 minutes avec un changement. Prenez le métro ligne 4 vers Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à La Défense. Un autre trajet plus rapide est possible mais la ligne B est interrompue entre Gare du Nord et Châtelet, ce trajet est donc déconseillé.",
+        "answer": "Demain à 8h de Nation à La Défense, le trajet recommandé prend 31 minutes avec un changement. Vous prenez le métro 4 direction Bagneux jusqu'à Montparnasse Bienvenue, puis le métro 6 direction Charles de Gaulle - Étoile jusqu'à La Défense. Un trajet plus rapide existe mais utilise une ligne B interrompue entre Gare du Nord et Châtelet.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -930,9 +930,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3401,
+        "latency_ms": 3449,
         "fallback": null,
-        "answer": "Tomorrow at 7:30 from Gare du Nord to Bastille, the recommended route takes 31 minutes. You take Metro line 4 from Gare du Nord to Montparnasse Bienvenue, then change to Metro line 6 to Bastille. A faster route using RER B is disrupted by a technical incident.",
+        "answer": "Tomorrow at 7:30 from Gare du Nord to Bastille, the recommended route is to take Metro line 4 towards Bagneux from Gare du Nord to Montparnasse Bienvenue (14 minutes), then transfer to Metro line 6 towards Charles de Gaulle - Étoile to Bastille (12 minutes), total 31 minutes. A faster route using RER B is disrupted by an incident between Gare du Nord and Châtelet - Les Halles.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -976,9 +976,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2997,
+        "latency_ms": 2748,
         "fallback": null,
-        "answer": "Le prochain RER A en direction de Marne-la-Vallée part de Nation dans 6 minutes, à 10h43.",
+        "answer": "Le prochain RER A en direction de Marne-la-Vallée (Terminus Sud) passe à Nation dans 6 minutes, à 16:11.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -993,7 +993,7 @@
               "station_id": "462358",
               "line_id": "C01742"
             },
-            "output": "{\"_tool\": \"next_departures\", \"station\": \"Nation\", \"line\": \"RER A\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"10:40\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"10:43\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"10:48\", \"realtime\": true}]}"
+            "output": "{\"_tool\": \"next_departures\", \"station\": \"Nation\", \"line\": \"RER A\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"16:08\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"16:11\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"16:16\", \"realtime\": true}]}"
           }
         ]
       },
@@ -1003,7 +1003,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 19,
+        "latency_ms": 12,
         "fallback": null,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago.",
         "tool_trace": []
@@ -1014,9 +1014,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3182,
+        "latency_ms": 2877,
         "fallback": null,
-        "answer": "The next metro line 1 at La Défense station towards Terminus Nord leaves in 3 minutes at 10:40.",
+        "answer": "The next metro line 1 at La Défense towards Terminus Nord will depart in 3 minutes at 16:08.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -1031,7 +1031,7 @@
               "station_id": "462395",
               "line_id": "C01371"
             },
-            "output": "{\"_tool\": \"next_departures\", \"station\": \"La Défense\", \"line\": \"line 1\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"10:40\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"10:43\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"10:48\", \"realtime\": true}]}"
+            "output": "{\"_tool\": \"next_departures\", \"station\": \"La Défense\", \"line\": \"line 1\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"16:08\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"16:11\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"16:16\", \"realtime\": true}]}"
           }
         ]
       },
@@ -1074,9 +1074,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 847,
+        "latency_ms": 2234,
         "fallback": null,
-        "answer": "From which station do you want to depart to Hogwarts?",
+        "answer": "From which station would you like to depart to Hogwarts? Could you please provide the origin station?",
         "tool_trace": []
       },
       {
@@ -1107,9 +1107,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4389,
+        "latency_ms": 4706,
         "fallback": null,
-        "answer": "The recommended journey from Nation to Bastille takes 31 minutes with one change, using metro line 4 to Montparnasse Bienvenue and then line 6 to Bastille. A faster route exists but is disrupted on line B, so it is not recommended.",
+        "answer": "The recommended travel time from Nation to Bastille is 31 minutes with one change. You take Metro line 4 toward Bagneux for 14 minutes, change at Montparnasse Bienvenue, then take Metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. A faster route using RER B is disrupted due to a technical incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -1131,7 +1131,7 @@
               "from_station_id": "462358",
               "to_station_id": "42288"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Nation\", \"to\": \"Bastille\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Nation\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bastille\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": false, \"uses_disrupted"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Nation\", \"to\": \"Bastille\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Nation\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bastille\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommended\": false, \"uses_disrupted"
           }
         ]
       },
@@ -1152,9 +1152,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4090,
+        "latency_ms": 4025,
         "fallback": null,
-        "answer": "The fastest recommended route from Gare de l'Est to Bibliothèque François Mitterrand takes 31 minutes. Take Metro line 4 towards Bagneux to Montparnasse Bienvenue, then change to Metro line 6 towards Charles de Gaulle - Étoile to reach Bibliothèque François Mitterrand. There is a disrupted line B route that is faster but it's not recommended due to a traffic interruption between Gare du Nord and Châtelet - Les Halles.",
+        "answer": "The fastest route from Gare de l'Est to Bibliothèque François Mitterrand takes 31 minutes. Take Metro line 4 towards Bagneux from Gare de l'Est to Montparnasse Bienvenue, then transfer to Metro line 6 towards Charles de Gaulle - Étoile to Bibliothèque François Mitterrand. There is a disrupted faster route that uses RER B, but that line is currently interrupted.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -1176,7 +1176,7 @@
               "from_station_id": "43138",
               "to_station_id": "45301"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare de l'Est\", \"to\": \"Bibliothèque François Mitterrand\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare de l'Est\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bibliothèque François Mitterrand\", \"minutes\": 12"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare de l'Est\", \"to\": \"Bibliothèque François Mitterrand\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare de l'Est\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Bibliothèque François Mitterrand\", \"minutes\": 12"
           }
         ]
       },
@@ -1186,7 +1186,7 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 1192,
+        "latency_ms": 878,
         "fallback": null,
         "answer": "From which station? Could you please specify the origin station for your train departure?",
         "tool_trace": []
@@ -1197,21 +1197,21 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4592,
+        "latency_ms": 5032,
         "fallback": null,
-        "answer": "Pour aller de Gare de Lyon à l'aéroport d'Orly, le trajet recommandé prend 31 minutes avec un changement. Prenez la ligne 4 du métro à Gare de Lyon vers Bagneux jusqu'à Montparnasse Bienvenue, puis la ligne 6 jusqu'à Orly. Un trajet plus rapide existe mais utilise la ligne B, momentanément interrompue entre Gare du Nord et Châtelet.",
+        "answer": "Pour aller de Gare de Lyon à Orly, le trajet recommandé prend 31 minutes avec une correspondance. Vous prenez le métro ligne 4 à 16h12 jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 qui vous emmène jusqu'à Orly à 16h41. Un trajet plus rapide existe mais utilise une ligne B avec interruption de trafic.",
         "tool_trace": [
           {
             "call": "find_station",
             "args": {
-              "query": "gare de lyon"
+              "query": "Gare de Lyon"
             },
             "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"43153\", \"name\": \"Gare de Lyon\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01731\", \"label\": \"train R\", \"mode\": \"LocalTrain\"}, {\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01384\", \"label\": \"line 14\", \"mode\": \"Metro\"}, {\"line_id\": \"C01742\", \"label\": \"RER A\", \"mode\": \"RapidTransit\"}, {\"line_id\": \"C01728\", \"label\": \"RER D\", \"mode\": \"RapidTransit\"}]}]}"
           },
           {
             "call": "find_station",
             "args": {
-              "query": "orly"
+              "query": "Orly"
             },
             "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"462747\", \"name\": \"Aéroport d'Orly\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01384\", \"label\": \"line 14\", \"mode\": \"Metro\"}, {\"line_id\": \"C01774\", \"label\": \"tram T7\", \"mode\": \"Tramway\"}]}], \"landmark\": {\"place\": \"l'aéroport d'Orly\", \"nearest_station\": \"Aéroport d'Orly\"}}"
           },
@@ -1221,7 +1221,7 @@
               "from_station_id": "43153",
               "to_station_id": "462747"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare de Lyon\", \"to\": \"Aéroport d'Orly\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare de Lyon\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Aéroport d'Orly\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommende"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Gare de Lyon\", \"to\": \"Aéroport d'Orly\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Gare de Lyon\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Aéroport d'Orly\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommende"
           }
         ]
       },
@@ -1231,9 +1231,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4580,
+        "latency_ms": 4523,
         "fallback": null,
-        "answer": "From Bastille to Louvre - Rivoli, the recommended trip takes 31 minutes with one change. Take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then metro line 6 towards Charles de Gaulle - Étoile for 12 minutes to Louvre - Rivoli. A faster trip using line B is disrupted by an incident.",
+        "answer": "From Bastille to Palais Royal - Musée du Louvre, take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. Total journey takes about 31 minutes including walking, departing Bastille at 16:10 and arriving at 16:41. A faster route using line B is disrupted.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -1253,9 +1253,9 @@
             "call": "plan_route",
             "args": {
               "from_station_id": "42288",
-              "to_station_id": "44645"
+              "to_station_id": "44236"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"Bastille\", \"to\": \"Louvre - Rivoli\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Bastille\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Louvre - Rivoli\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": fals"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Bastille\", \"to\": \"Palais Royal - Musée du Louvre\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Bastille\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Palais Royal - Musée du Louvre\", \"minutes\": 12, \"depart\": \"1"
           }
         ]
       },
@@ -1265,9 +1265,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 874,
+        "latency_ms": 773,
         "fallback": null,
-        "answer": "De quelle station partez-vous ?",
+        "answer": "De quelle station partez-vous pour aller au Louvre ?",
         "tool_trace": []
       },
       {
@@ -1276,14 +1276,14 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 1660,
+        "latency_ms": 1724,
         "fallback": null,
-        "answer": "La ligne 9 du métro ne présente pas de perturbation aujourd'hui, elle circule normalement.",
+        "answer": "La ligne 9 du métro ne présente aucune perturbation aujourd'hui, elle circule normalement.",
         "tool_trace": [
           {
             "call": "line_status",
             "args": {
-              "line_id": "9"
+              "line_id": "metro_9"
             },
             "output": "{\"_tool\": \"line_status\", \"line\": \"line 9\", \"messages\": []}"
           }
@@ -1295,7 +1295,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 114,
+        "latency_ms": 76,
         "fallback": null,
         "answer": "Vélib près de Opéra. Opéra - Auber, à 55 mètres : 11 vélos dont 3 électriques, 4 places libres. Données Vélib en temps réel.",
         "tool_trace": []
@@ -1306,7 +1306,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 434,
+        "latency_ms": 251,
         "fallback": null,
         "answer": "Bornes Belib' près de 30 Boulevard de Vaugirard. 30 Boulevard de Vaugirard, sur place : 2 libre(s) sur 2. Données Belib' en temps réel.",
         "tool_trace": []
@@ -1317,9 +1317,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4652,
+        "latency_ms": 5658,
         "fallback": null,
-        "answer": "Pour aller de République à Nation, le trajet recommandé prend 31 minutes avec un changement à Montparnasse Bienvenue, ligne 4 puis ligne 6. Un itinéraire plus rapide existe mais utilise une ligne B perturbée par un incident technique entre Gare du Nord et Châtelet - Les Halles.",
+        "answer": "Le trajet recommandé de République à Nation prend 31 minutes, avec un changement. Vous prenez le métro ligne 4 jusqu'à Montparnasse Bienvenue (14 minutes), puis le métro ligne 6 jusqu'à Nation (12 minutes), départ à 16h12. Un autre trajet est plus rapide mais utilise la ligne B du RER, interrompue entre Gare du Nord et Châtelet.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -1341,7 +1341,7 @@
               "from_station_id": "44617",
               "to_station_id": "462358"
             },
-            "output": "{\"_tool\": \"plan_route\", \"from\": \"République\", \"to\": \"Nation\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"10:10\", \"arrive\": \"10:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"République\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"10:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Nation\", \"minutes\": 12, \"depart\": \"10:29\"}]}, {\"recommended\": false, \"uses_disru"
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"République\", \"to\": \"Nation\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"16:10\", \"arrive\": \"16:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"République\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"16:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Nation\", \"minutes\": 12, \"depart\": \"16:29\"}]}, {\"recommended\": false, \"uses_disru"
           }
         ]
       },
@@ -1351,14 +1351,14 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3151,
+        "latency_ms": 4526,
         "fallback": null,
-        "answer": "Vous pouvez contester une amende reçue dans le métro si vous pensez qu'elle a été établie à tort, par exemple si vous aviez un titre de transport valide mais n'avez pas pu le présenter. Il faut adresser une réclamation dans un délai de 3 mois au service clientèle du transporteur par lettre recommandée avec avis de réception. Si la réponse ne vous satisfait pas ou si vous ne recevez pas de réponse en un mois, vous pouvez saisir le médiateur de la RATP, ce qui suspend le recouvrement de l'amende. (Source : Service Public / DILA, mise à jour le 21/07/2026)",
+        "answer": "Vous pouvez contester une amende reçue dans le métro si vous pensez qu'elle a été établie à tort, notamment si vous aviez un titre valide mais que vous n'avez pas pu le présenter. Il faut envoyer une réclamation en lettre recommandée avec avis de réception au service clientèle du transporteur dans un délai de 3 mois. Si la réponse est insatisfaisante ou absente après un mois, vous pouvez saisir le médiateur de la RATP ou de la SNCF par courrier recommandé ou en ligne avec les pièces justificatives. (Source : Service Public / DILA, mise à jour le 21/07/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "contester amende métro"
+              "query": "contester amende transport"
             },
             "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F31852-1\", \"title\": \"Peut-on contester un procès-verbal (une amende) reçu dans les transports en commun (train, bus, métro, tramway...) ?\", \"passage\": \"Oui, vous pouvez contester un procès-verbal (amende) reçu dans les transports en commun (bus, métro, train, tramway...) si vous estimez qu’il a été établi à tort, notamment lorsque l’absence de présentation du titre de transport était sans intention de frauder. Par exemple, vous disposiez d’un titre de transport valide enregistré sur votre téléphone, mais l’extinction imprévue de celui-ci vou"
           }
@@ -1370,9 +1370,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2658,
+        "latency_ms": 3380,
         "fallback": null,
-        "answer": "Yes, you can contest a fine received on public transport if you believe it was wrongly issued, for example if you had a valid ticket on your phone but your phone died, preventing you from showing it. You have 3 months to send a complaint to the transport operator's customer service by registered letter with acknowledgment of receipt. If you are not satisfied or get no response within 1 month, you can escalate to the company's mediator, such as the SNCF mediator for the RER. (Source: Service Public / DILA, updated 21/07/2026)",
+        "answer": "Yes, you can contest a fine received on public transport if you believe it was issued wrongly, such as when your phone died and you couldn't show a valid ticket. You have 3 months to send a complaint by registered letter to the transport operator's customer service. If unsatisfied or no answer in a month, you can escalate to the transport company's mediator, like the SNCF or RATP mediator. (Source: Service Public / DILA, updated 21/07/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
@@ -1389,16 +1389,16 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2948,
+        "latency_ms": 3672,
         "fallback": null,
-        "answer": "Pour saisir la médiatrice de la SNCF en cas de litige, vous devez d'abord avoir contacté le service clientèle ou le centre de recouvrement selon le type de litige. Si ce dernier n'est pas réglé, vous pouvez la saisir en ligne ou par courrier recommandé avec avis de réception. Vous devez décrire précisément votre litige et joindre les documents comme copie du billet ou de la contravention ainsi que la réclamation écrite adressée au service client. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "answer": "Pour saisir la médiatrice de la SNCF en cas de litige, vous devez d'abord avoir fait une réclamation écrite auprès du service clientèle du transporteur. Si vous n’avez pas reçu de réponse satisfaisante ou dans un délai d’un mois, vous pouvez saisir la médiatrice en décrivant précisément le litige et en joignant une copie du billet ou abonnement ainsi que la réclamation écrite. Cette démarche peut être faite en ligne ou par courrier recommandé avec avis de réception. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "médiatrice SNCF litige saisir"
+              "query": "médiatrice SNCF litige"
             },
-            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-3\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Qui peut saisir la médiatrice de la SNCF Voyageurs ?\", \"passage\": \"Toute personne concernée par le litige peut saisir la médiatrice. Elle peut également se faire représenter par la personne de son choix à laquelle elle a donné mandat.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-11-16\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdroits/F12151\"}, {\"doc_id\": \"sp-F12151-1\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ?\", \"pa"
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-5\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Quelle est la démarche pour saisir la médiatrice de la SNCF Voyageurs ? · Litige commercial · En ligne\", \"passage\": \"Tout dépend de la nature du litige : La démarche peut être faite en ligne ou par courrier. Vous pouvez saisir la médiatrice directement en ligne : Vous devez décrire précisément l'objet de votre litige lors de votre démarche en ligne. Vous devez joindre à votre demande les documents suivants : Copie du billet, de la carte d'abonnement ou de la carte "
           }
         ]
       },
@@ -1408,9 +1408,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 1762,
+        "latency_ms": 2711,
         "fallback": null,
-        "answer": "La carte mobilité inclusion priorité vous donne droit à une place assise dans les transports en commun et dans les salles d'attente, ainsi qu'à la priorité dans les files d'attente. La personne qui vous accompagne bénéficie aussi de ces avantages. Elle remplace l'ancienne carte de priorité. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "answer": "La carte mobilité inclusion priorité donne droit à une place assise dans les transports en commun et dans les salles d'attente, ainsi qu'à la priorité dans les files d'attente. La personne qui vous accompagne bénéficie aussi des mêmes avantages. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
@@ -1438,7 +1438,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 187,
+        "latency_ms": 111,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Gare du Nord : train accessible sur réservation préalable auprès du service AssistenGare. Ligne H accessible en toute autonomie. Lignes B, D et K accessibles sur réservation préalable auprès du service Accès Plus Transilien. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1449,7 +1449,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 167,
+        "latency_ms": 93,
         "fallback": null,
         "answer": "Accessibility, Île-de-France Mobilités data (in French). Châtelet les Halles : gare ou arrêt non accessible. Ligne A et B accessibles sur demande auprès d'un agent en station. Ligne D non accessible. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
         "tool_trace": []
@@ -1460,7 +1460,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 141,
+        "latency_ms": 93,
         "fallback": null,
         "answer": "Je n'ai pas d'information d'accessibilité pour Bastille : les données d'Île-de-France Mobilités couvrent les gares de train et de RER, pas le métro. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1471,7 +1471,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 72,
+        "latency_ms": 51,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Nation : train accessible sur demande auprès d'un agent en station. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1482,9 +1482,9 @@
         "ok": false,
         "why": "did not give the accessibility level 'sur réservation préalable'",
         "path": "ai",
-        "latency_ms": 2972,
+        "latency_ms": 3392,
         "fallback": null,
-        "answer": "At La Défense station, train access is wheelchair accessible with prior reservation through the AssistenGare service. The RER A line is accessible on request to an agent at the station. Lines E, L, and U trains also require prior reservation with the Accès Plus Transilien service for wheelchair access. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
+        "answer": "At La Défense, train access is wheelchair accessible but requires prior reservation with the AssistenGare service. The RER A line is accessible on request to a station agent. The E, L, and U train lines are accessible with prior reservation through the Accès Plus Transilien service. (Source: Île-de-France Mobilités, Accessibilité en gare, updated 06/07/2026)",
         "tool_trace": [
           {
             "call": "find_station",
@@ -1496,7 +1496,7 @@
           {
             "call": "search_docs",
             "args": {
-              "query": "accessibilité fauteuil roulant La Défense",
+              "query": "accessibilité fauteuil roulant",
               "station_id": "462395"
             },
             "output": "{\"_tool\": \"search_docs\", \"station\": \"La Défense\", \"passages\": [{\"doc_id\": \"idfm-acc-470549\", \"title\": \"Accessibilité en gare : La Défense\", \"passage\": \"La Défense : train accessible sur réservation préalable auprès du service AssistenGare. Ligne A accessible sur demande auprès d'un agent en station. Lignes E, L et U accessibles sur réservation préalable auprès du service Accès Plus Transilien.\", \"source\": \"Île-de-France Mobilités, Accessibilité en gare\", \"updated\": \"2026-07-06\", \"url\": \"https://data.iledefrance-mobilites.fr/explore/dataset/accessibilite-en-gare/\"}], \"lines_at_station\": [{\"line"
@@ -1509,7 +1509,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 150,
+        "latency_ms": 114,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Juvisy : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1520,7 +1520,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 55,
+        "latency_ms": 32,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Gare de l'Est : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1531,7 +1531,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 98,
+        "latency_ms": 64,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Massy - Palaiseau : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1542,7 +1542,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 72,
+        "latency_ms": 49,
         "fallback": null,
         "answer": "Accessibilité, données Île-de-France Mobilités. Aulnay-sous-Bois : train accessible sur réservation préalable auprès du service AssistenGare. (Source : Île-de-France Mobilités, Accessibilité en gare, mise à jour le 06/07/2026)",
         "tool_trace": []
@@ -1553,9 +1553,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2467,
+        "latency_ms": 3097,
         "fallback": null,
-        "answer": "Je n'ai pas de document officiel pour répondre à la question d'emmener un vélo dans le métro.",
+        "answer": "Je n'ai pas de document officiel sur le droit d'emmener un vélo dans le métro.",
         "tool_trace": [
           {
             "call": "search_docs",
@@ -1572,14 +1572,14 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2074,
+        "latency_ms": 2875,
         "fallback": null,
-        "answer": "I have no official document on whether cats are allowed on the RER.",
+        "answer": "I have no official document regarding whether cats are allowed on the RER.",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "chat animaux RER autorisé"
+              "query": "animaux RER autorisés"
             },
             "output": "{\"_tool\": \"search_docs\", \"passages\": [], \"note\": \"no passage matches: say you have no document on this\"}"
           }
@@ -1591,16 +1591,16 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 1994,
+        "latency_ms": 4020,
         "fallback": null,
-        "answer": "Quand on ne touche pas l'APA, c'est la commission des droits et de l'autonomie des personnes handicapées (CDAPH) de la MDPH qui étudie la demande de la Carte Mobilité Inclusion (CMI). L'examen du dossier est ensuite transmis au président du conseil départemental du lieu de résidence. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "answer": "La demande de carte mobilité inclusion (CMI) est étudiée par la commission des droits et de l'autonomie des personnes handicapées (CDAPH) de la MDPH, même si vous ne touchez pas l'APA. Leur examen est ensuite transmis au président du conseil départemental de votre lieu de résidence. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "étude demande CMI sans APA"
+              "query": "carte mobilité inclusion qui étudie demande quand pas APA"
             },
-            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-8\", \"title\": \"Carte mobilité inclusion (CMI) · Stationnement · Qui étudie la demande de CMI Stationnement ? · Vous percevez ou demandez l’Apa\", \"passage\": \"La situation diffère selon que vous êtes ou non concerné par l’Apa : C’est le président du conseil départemental de votre lieu de résidence qui étudie votre demande de carte.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-04-28\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdroits/F34049\"}, {\"doc_id\": \"sp-F34049-25\", \"title\": \"Carte mobilité inclusion (CMI) · P"
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-26\", \"title\": \"Carte mobilité inclusion (CMI) · Priorité · Qui étudie la demande de CMI Priorité ? · Vous n’êtes pas concerné par l’Apa\", \"passage\": \"C’est la commission des droits et de l’autonomie des personnes handicapées (CDAPH) de la MDPH qui étudie votre demande. Son examen de votre dossier est ensuite transmis au président du conseil départemental de votre lieu de résidence.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-04-28\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdroits/F34049\"}, {\"doc_id\": \"sp-F3"
           }
         ]
       },
@@ -1610,14 +1610,14 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2386,
+        "latency_ms": 2726,
         "fallback": null,
-        "answer": "Je n'ai pas de document officiel sur la loi relative aux manifestations dans le métro.",
+        "answer": "Je n'ai pas de document officiel sur la loi concernant les manifestations dans le métro.",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "manifestations métro loi"
+              "query": "manifestations métro"
             },
             "output": "{\"_tool\": \"search_docs\", \"passages\": [], \"note\": \"no passage matches: say you have no document on this\"}"
           }
@@ -1629,35 +1629,35 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2299,
+        "latency_ms": 3248,
         "fallback": null,
-        "answer": "Vous pouvez saisir la médiatrice de la SNCF Voyageurs en cas de litige, après avoir contacté le service clientèle ou le centre de recouvrement. La démarche est gratuite, il suffit d'envoyer un courrier recommandé avec avis de réception ou la faire en ligne, en décrivant précisément le litige et en joignant les documents nécessaires. Il n'est pas mentionné qu'il faut payer quelque chose pour saisir la médiatrice. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
+        "answer": "Le recours auprès de la médiatrice de la SNCF est gratuit. Elle rend un avis sous trois mois, qui propose une solution au litige. Si cet avis recommande une réduction de contravention que vous acceptez, vous devrez régler le montant fixé. (Source : Service Public / DILA, mise à jour le 16/11/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "médiatrice SNCF payer"
+              "query": "médiatrice SNCF paiement"
             },
-            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-3\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Qui peut saisir la médiatrice de la SNCF Voyageurs ?\", \"passage\": \"Toute personne concernée par le litige peut saisir la médiatrice. Elle peut également se faire représenter par la personne de son choix à laquelle elle a donné mandat.\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-11-16\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdroits/F12151\"}, {\"doc_id\": \"sp-F12151-8\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Que"
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F12151-9\", \"title\": \"Médiatrice de la SNCF Voyageurs : comment y recourir ? · Comment est traitée la demande par la médiatrice de la SNCF Voyageurs ? · Litige commercial\", \"passage\": \"Le recours est gratuit. Le traitement de la demande diffère selon la nature du litige : La médiatrice examine votre demande et rend un avis dans un délai de 3 mois. En cas de litige complexe, il vous informe du prolongement du délai d’instruction. Cet avis propose une solution au litige. Il a valeur de proposition. Vous et le transporteur êtes libres de suivre "
           }
         ]
       },
       {
         "q": "j'ai perdu ma CMI invalidité, je fais comment ?",
         "kind": "docs",
-        "ok": false,
-        "why": "none of ['duplicata', 'téléservice', 'renouvellement', 'MDPH'] in the answer",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 1947,
+        "latency_ms": 2860,
         "fallback": null,
-        "answer": "En cas de perte de votre carte mobilité inclusion (CMI) invalidité, vous devez déposer une nouvelle demande de carte auprès des services du département de votre lieu de résidence. Si vous percevez l'allocation personnalisée d'autonomie (Apa), il y a un formulaire spécifique à retirer. Le président du conseil départemental étudiera votre demande. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
+        "answer": "En cas de perte de votre carte mobilité inclusion (CMI) invalidité, vous devez faire une demande de renouvellement via le même formulaire ou téléservice que pour la demande initiale. Vous pouvez demander un duplicata en ligne, ce qui invalidera l'ancienne carte. (Source : Service Public / DILA, mise à jour le 28/04/2026)",
         "tool_trace": [
           {
             "call": "search_docs",
             "args": {
-              "query": "perte carte mobilité inclusion invalidité"
+              "query": "perte carte mobilité inclusion"
             },
-            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-50\", \"title\": \"Carte mobilité inclusion (CMI) · Invalidité · Que faire en cas de perte, vol ou destruction de la carte ? · Vous possédiez l'ancienne carte d'invalidité · Vous percevez l'Apa\", \"passage\": \"Les règles varient selon la situation : Vous devez déposer votre demande de carte en retirant un formulaire pour les personnes percevant déjà l'Apa, auprès des services du département de votre lieu de résidence :\", \"source\": \"Service Public / DILA\", \"updated\": \"2026-04-28\", \"url\": \"https://www.service-public.gouv.fr/particuliers/vosdr"
+            "output": "{\"_tool\": \"search_docs\", \"passages\": [{\"doc_id\": \"sp-F34049-49\", \"title\": \"Carte mobilité inclusion (CMI) · Invalidité · Que faire en cas de perte, vol ou destruction de la carte ? · Vous possédiez la CMI\", \"passage\": \"La demande de renouvellement doit être effectuée à partir du même formulaire ou téléservice que pour la demande initiale. Il existe 2 situations : Vous pouvez demander un duplicata par le biais d'un téléservice : La fabrication de votre nouvelle carte entraîne l’invalidation de la carte qu’elle remplace. Le coût de refabrication est de 10 €.\", \"source\": \"Service Public / DILA\", "
           }
         ]
       }

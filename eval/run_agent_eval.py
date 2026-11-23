@@ -595,7 +595,9 @@ def run_mode(
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "--set", choices=["dev", "holdout", "holdout2", "holdout3", "holdout4"], default="dev"
+        "--set",
+        choices=["dev", "holdout", "holdout2", "holdout3", "holdout4", "holdout5"],
+        default="dev",
     )
     ap.add_argument("--only", help="run only questions containing this text (diagnosis, not saved)")
     ap.add_argument("--trace", action="store_true", help="print tool calls and outputs")
@@ -613,6 +615,7 @@ def main() -> None:
         "holdout2": "questions_agent_holdout2.jsonl",
         "holdout3": "questions_agent_holdout3.jsonl",
         "holdout4": "questions_agent_holdout4.jsonl",
+        "holdout5": "questions_agent_holdout5.jsonl",
     }[args.set]
     index = StopIndex.load(ROOT / "eval" / "data" / "stops_snapshot.json")
     cases = [
