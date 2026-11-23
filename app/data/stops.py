@@ -252,12 +252,20 @@ class StopIndex:
         if not words:
             return []
         results: list[StopMatch] = []
+        norm_utt = normalize(utterance)
         for area in self.areas:
             if line and line.line_id not in {ln.line_id for ln in area.lines}:
                 continue
             name_toks = self._tokens[area.zda_id]
             if not name_toks:
                 continue
+            if len(name_toks) == 1 and name_toks[0] in _COMMON_WORD_NAMES:
+                # "Gare de l'Est" reduces to "est": "c'est" / "est-ce" must not match it
+                # (held-out set 4, 2026-11-23). Only the full name counts.
+                full = normalize(area.name)
+                needed = full if full != name_toks[0] else f"gare d {full}"
+                if not re.search(rf"\b{re.escape(needed)}\b", norm_utt):
+                    continue
             score = _best_window_score(words, name_toks)
             if score >= 0.75:
                 results.append(StopMatch(area, score))
@@ -277,6 +285,9 @@ def _distance_m(a: StopArea, b: StopArea) -> float:
 
 
 _GENERIC_FIRST = {"saint", "sainte", "porte", "pont", "place", "rue", "avenue", "boulevard"}
+# Station names that reduce to an everyday word once filler words are dropped
+# ("Gare de l'Est" -> "est", "Quai de la Gare" -> "quai", "Us" -> "us")
+_COMMON_WORD_NAMES = {"est", "quai", "us"}
 
 
 def _tok_eq(a: str, b: str) -> bool:
@@ -304,4 +315,12 @@ def _best_window_score(words: list[str], name_toks: list[str]) -> float:
         for i in range(0, len(words) - k + 1):
             if all(_tok_eq(w, p) for w, p in zip(words[i : i + k], prefix, strict=True)):
                 best = max(best, 0.8 + 0.15 * k / n)
+    # Abbreviated last word after the exact other words ("Cité U", "Massy Pal"): a full
+    # match, so the tie rule then prefers it over the shorter name ("Cité")
+    if n >= 2:
+        head, last = name_toks[:-1], name_toks[-1]
+        for i in range(0, len(words) - n + 1):
+            abbr = words[i + n - 1]
+            if words[i : i + n - 1] == head and 1 <= len(abbr) <= 3 and last.startswith(abbr):
+                best = max(best, 1.0)
     return best

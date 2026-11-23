@@ -454,6 +454,9 @@ def judge(
         text_n = normalize(text)
         if not any(normalize(k) in text_n for k in case["must_any"]):
             return False, f"none of {case['must_any']} in the answer"
+        # Added 2026-11-23 after held-out set 4: the assistant states no prices or fees
+        if case.get("no_price") and re.search(r"\d\s*(€|euros?)\b|€", text):
+            return False, "stated a price or fee"
         return True, ""
     if exp == "access":
         if not _CITE.search(text) or "le-de-France Mobilit" not in text:

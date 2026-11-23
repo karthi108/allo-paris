@@ -192,3 +192,112 @@ def test_agent_cannot_invent_a_number_not_in_the_passage(corpus: Corpus, full: S
     )
     assert reply.path == "ai_fallback"  # guard: 6 is not in the passage
     assert "6 mois" not in reply.text and "(Source" in reply.text
+
+
+# ---------- fixes after held-out set 4 (2026-11-23); wording differs from the eval ----------
+
+
+@pytest.mark.parametrize(
+    "q", ["c'est quoi le prochain RER à Juvisy", "est-ce que Vincennes est accessible ?"]
+)
+def test_bare_est_does_not_match_gare_de_l_est(full: StopIndex, q: str) -> None:
+    # R1: "Gare de l'Est" reduces to "est"; "c'est" / "est-ce" must not match it
+    assert all(m.area.name != "Gare de l'Est" for m in full.match(q))
+
+
+@pytest.mark.parametrize("q", ["Gare de l'Est", "prochain métro 5 gare de l est"])
+def test_full_name_still_matches_gare_de_l_est(full: StopIndex, q: str) -> None:
+    assert full.match(q)[0].area.name == "Gare de l'Est"
+
+
+def test_abbreviated_last_word_prefers_the_longer_name(full: StopIndex) -> None:
+    # R2: "Cité U" is Cité Universitaire; "Cité" alone stays the metro station
+    assert full.match("RER à cité u")[0].area.name == "Cité Universitaire"
+    assert full.match("métro à cité")[0].area.name == "Cité"
+
+
+def test_partial_name_accepted_only_when_unique(corpus: Corpus, full: StopIndex) -> None:
+    # R3: "Juvisy" style partial names; "Massy" has several stations, so it asks
+    dialog = Dialog(full, FakeSource(), docs=corpus)
+    one = dialog.handle("Denfert PMR accessible", CallState())
+    assert "Denfert-Rochereau" in one.text and "(Source" in one.text
+    many = dialog.handle("Massy accessible PMR", CallState())
+    assert many.intent == "clarify_stop"
+
+
+@pytest.mark.parametrize(
+    "q", ["puis-je monter avec mon vélo dans le tram ?", "bike allowed on the RER?"]
+)
+def test_bike_on_board_is_not_velib(full: StopIndex, q: str) -> None:
+    # R4
+    assert parse(q, full).intent != "velib"
+
+
+@pytest.mark.parametrize("q", ["vélo près de Bastille", "Vélib à la gare RER de Nation"])
+def test_bike_availability_stays_velib(full: StopIndex, q: str) -> None:
+    assert parse(q, full).intent == "velib"
+
+
+def test_search_needs_two_shared_words() -> None:
+    # A3: one incidental shared word is not a match
+    c = Corpus(
+        [
+            _doc("a", "Le médiateur de la RATP traite les litiges."),
+            _doc("b", "La médiatrice de la SNCF rend un avis."),
+        ]
+    )
+    assert c.search("loi grève RATP") == []
+    assert [d.id for d in c.search("médiateur SNCF avis")] == ["b"]  # -trice read as -teur
+    assert [d.id for d in c.search("RATP")] == ["a"]  # a one-word query needs that word
+
+
+def test_search_docs_ranks_on_the_users_words_too(corpus: Corpus, full: StopIndex) -> None:
+    # A2: the model's generic keywords plus the user's question pick the right section
+    box = Toolbox(full, FakeSource(), docs=corpus)
+    box.question = "qui décide d'attribuer la carte ?"
+    out = box._t_search_docs("carte mobilité inclusion")
+    assert len(out["passages"]) == 5
+    assert "Qui décide" in out["passages"][0]["title"]
+
+
+def test_facts_without_any_tool_are_replaced(corpus: Corpus, full: StopIndex) -> None:
+    # A1: an answer with no tool call gets one retry, then the "no document" template
+    llm = ScriptedLLM(
+        [
+            LLMResponse("Small parrots must travel in a closed cage.", [], 100, 20),
+            LLMResponse("Small parrots must travel in a closed cage.", [], 100, 20),
+        ]
+    )
+    agent = Agent(llm, lambda: Toolbox(full, FakeSource(), docs=corpus))
+    reply = Dialog(full, FakeSource(), agent=agent, docs=corpus).handle(
+        "can I bring my parrot on the tram", CallState(lang="en")
+    )
+    assert reply.text == "I have no official document on this question."
+    assert len(llm.sent) == 2  # the retry happened
+
+
+def test_a_question_back_needs_no_tool(corpus: Corpus, full: StopIndex) -> None:
+    llm = ScriptedLLM([LLMResponse("Which station do you mean?", [], 100, 20)])
+    agent = Agent(llm, lambda: Toolbox(full, FakeSource(), docs=corpus))
+    reply = Dialog(full, FakeSource(), agent=agent, docs=corpus).handle(
+        "hello, I have a question for you about something", CallState(lang="en")
+    )
+    assert reply.path == "ai"
+    assert reply.text == "Which station do you mean?" and len(llm.sent) == 1
+
+
+def test_no_fee_from_a_document(corpus: Corpus, full: StopIndex) -> None:
+    # A5: a fee stated in a fiche is never repeated
+    fee = "Demandez un duplicata en ligne. La refabrication coûte 10 €."
+    llm = ScriptedLLM(
+        [
+            call("search_docs", query="perte carte mobilité inclusion duplicata"),
+            LLMResponse(fee, [], 100, 20),
+            LLMResponse(fee, [], 100, 20),
+        ]
+    )
+    agent = Agent(llm, lambda: Toolbox(full, FakeSource(), docs=corpus))
+    reply = Dialog(full, FakeSource(), agent=agent, docs=corpus).handle(
+        "j'ai égaré ma carte d'invalidité CMI", CallState()
+    )
+    assert "€" not in reply.text and "duplicata" in reply.text

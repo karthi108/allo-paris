@@ -27,17 +27,20 @@ _STOP_WORDS = (
 )
 _STOP = frozenset(_STOP_WORDS.split())
 K1, B = 1.5, 0.75
+MIN_HITS = 2  # distinct query terms a passage must share to be returned
 
 
 def terms(text: str) -> list[str]:
     """Normalised search terms: accents and case folded, stop words dropped, a plural 's'
-    removed on long words so 'amendes' finds 'amende'."""
+    removed on long words so 'amendes' finds 'amende', feminine '-trice' read as '-teur'."""
     out = []
     for w in normalize(text).split():
         if w in _STOP:
             continue
         if len(w) > 4 and w.endswith("s"):
             w = w[:-1]
+        if len(w) > 6 and w.endswith("trice"):
+            w = w[:-5] + "teur"  # médiatrice = médiateur (feminine form)
         out.append(w)
     return out
 
@@ -153,12 +156,16 @@ class Corpus:
                 continue
             tf = self._tf[i]
             score = 0.0
+            hits = 0
             for t in q:
                 f = tf.get(t, 0)
                 if f:
+                    hits += 1
                     norm = f + K1 * (1 - B + B * self._len[i] / self._avg)
                     score += self._idf[t] * f * (K1 + 1) / norm
-            if score > 0:
+            # Relevance floor: one shared word ("RATP") is not a match for "loi grève RATP"
+            # (held-out set 4, 2026-11-23). A one-word query needs that word.
+            if score > 0 and hits >= min(MIN_HITS, len(q)):
                 scored.append((score, i))
         scored.sort(key=lambda x: (-x[0], x[1]))
         return [self.docs[i] for _, i in scored[:limit]]

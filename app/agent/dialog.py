@@ -15,7 +15,7 @@ from typing import Protocol
 
 from app.agent.agent import Agent, fallback_text
 from app.agent.llm import LLMUnavailable
-from app.agent.parser import ParsedQuery, parse
+from app.agent.parser import MIN_STOP_SCORE, ParsedQuery, parse
 from app.core.metrics import Metrics
 from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.stops import Line, StopArea, StopIndex, StopMatch, normalize
@@ -517,7 +517,12 @@ class Dialog:
         """IDFM accessibility record for a clearly named station, cited (D-025)."""
         if self.docs is None:
             return Reply(t(lang, "docs_down"), "feed_down")
-        if not q.stops or q.stops[0].score < 0.95:
+        if not q.stops or q.stops[0].score < MIN_STOP_SCORE:
+            return Reply(t(lang, "access_which"), "clarify_stop")
+        # A partial name ("Denfert") is accepted when it points to one station name only
+        # (held-out set 4, 2026-11-23); otherwise ask which station
+        names = {m.area.name for m in q.stops if m.score >= MIN_STOP_SCORE}
+        if q.stops[0].score < 0.95 and len(names) > 1:
             return Reply(t(lang, "access_which"), "clarify_stop")
         stop = q.stops[0].area
         doc = next(

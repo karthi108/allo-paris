@@ -154,9 +154,21 @@ _CONNECTOR = re.compile(r"\s(?:to|vers|jusqu a|jusqu au|jusqu aux|a destination 
 _TO_PLACE = re.compile(r"\b(?:to|au|aux|a la|a l|jusqu a|jusqu au)\s")
 
 
+# "Un vélo dans le RER": a bike on board a train is a question about travel rules, not
+# Vélib' availability (held-out set 4, 2026-11-23). "Vélib" itself always means Vélib'.
+_ON_BOARD = re.compile(r"\b(rer|metro|train|trains|tram|tramway|bus|transilien)\b")
+
+
 def _velib_word(text: str) -> str | None:
-    """The word meaning Vélib', also misspelt ("vlib", "velibe"); None if absent."""
+    """The word meaning Vélib', also misspelt ("vlib", "velibe"); None if absent.
+    A plain bike word next to a transport mode is not Vélib'."""
     m = _VELIB.search(text)
+    if m and not m.group(0).startswith("velib") and _ON_BOARD.search(text):
+        return None
+    if m:
+        return m.group(0)
+    if _ON_BOARD.search(text) and re.search(r"\b(velo|velos|bike|bikes)\b", text):
+        return None
     if m:
         return m.group(0)
     for w in text.split():

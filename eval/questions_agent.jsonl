@@ -40,3 +40,13 @@
 {"q": "y a un ascenseur à Bastille ?", "lang": "fr", "expect": "access_none", "kind": "access", "note": "RAG v1 dev question (2026-11-23): metro-only station, not in the dataset"}
 {"q": "Nation accessible PMR ?", "lang": "fr", "expect": "access", "level": "sur demande auprès d'un agent", "kind": "access", "note": "RAG v1 dev question (2026-11-23)"}
 {"q": "can I get to the platforms at La Défense in a wheelchair", "lang": "en", "expect": "access", "level": "sur réservation préalable", "kind": "access", "note": "RAG v1 dev question (2026-11-23)"}
+{"q": "c'est accessible en fauteuil à Juvisy ?", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access", "note": "from held-out set 4 run 1 (c'est / est-ce matched Gare de l'Est), new wording"}
+{"q": "Gare de l'Est accessible PMR ?", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access", "note": "control for the Gare de l'Est fix: the full name must still work"}
+{"q": "Massy Pal accessible en fauteuil ?", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access", "note": "from held-out set 4 run 1 (abbreviated last word, Cité U), new wording"}
+{"q": "Aulnay accessible PMR", "lang": "fr", "expect": "access", "level": "sur réservation préalable", "kind": "access", "note": "from held-out set 4 run 1 (partial name below 0.95), new wording"}
+{"q": "j'ai le droit d'emmener mon vélo dans le métro ?", "lang": "fr", "expect": "docs_none", "kind": "trick", "note": "from held-out set 4 run 1 (vélo read as Vélib'), new wording"}
+{"q": "are cats allowed on the RER?", "lang": "en", "expect": "docs_none", "kind": "trick", "note": "from held-out set 4 run 1 (AI answered without a tool), new wording"}
+{"q": "qui étudie la demande de CMI quand on ne touche pas l'APA ?", "lang": "fr", "expect": "docs", "must_any": ["CDAPH", "commission des droits"], "kind": "docs", "note": "from held-out set 4 run 1 (generic search query, wrong section), new wording"}
+{"q": "que dit la loi sur les manifestations dans le métro ?", "lang": "fr", "expect": "docs_none", "kind": "trick", "note": "from held-out set 4 run 1 (weak match returned and padded), new wording"}
+{"q": "la médiatrice de la SNCF, il faut payer quelque chose ?", "lang": "fr", "expect": "docs", "must_any": ["gratuit"], "kind": "docs", "note": "from held-out set 4 run 1 (word mismatch payant / gratuit), new wording"}
+{"q": "j'ai perdu ma CMI invalidité, je fais comment ?", "lang": "fr", "expect": "docs", "must_any": ["duplicata", "téléservice", "renouvellement", "MDPH"], "no_price": true, "kind": "docs", "note": "from held-out set 4 run 1 (a fee from the fiche was stated), new wording"}
