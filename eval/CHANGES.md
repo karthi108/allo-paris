@@ -291,3 +291,6 @@ Set 5 is no longer blind after these runs.
 - New dev question, different wording ("conditions to be eligible for the CMI Priorité"): passes. The English administrative-court question that failed in the last two dev runs now passes too.
 - Remaining: La Défense English (judge limit, correct on reading); Roissy-en-Brie answered for Charles de Gaulle airport (rules path, judge false pass, wrong on reading).
 - Cost $0.00132 per question (was $0.00121), hybrid p50 / p95 2823 / 5066 ms.
+
+## Town stations containing a landmark word (2026-11-23)
+- Generic rules fix (app/agent/parser.py landmark_wins, also used by find_station): a landmark ("Roissy", "Orly") no longer replaces an exact station match when the user said the station's full multi-word name ("Roissy-en-Brie", "Orly Ville"). Airport words alone still mean the airport. Unit tests with new wording (tests/test_rag.py, 5 cases). Fixes the Roissy-en-Brie dev question (wrong in the last 3 dev runs, passed by the judge) and the cause of the Orly Ville failure in held-out set 5.

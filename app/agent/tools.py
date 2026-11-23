@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from typing import Any, Protocol
 
 from app.agent.llm import ToolSpec
-from app.agent.parser import LANDMARKS, _landmark
+from app.agent.parser import LANDMARKS, _landmark, landmark_wins
 from app.data.prim import DeparturesResult, FeedError, TrafficResult
 from app.data.routes import PARIS, Journey
 from app.data.stops import Line, StopArea, StopIndex
@@ -202,7 +202,7 @@ class Toolbox:
     def _t_find_station(self, query: str) -> dict[str, Any]:
         matches = self.index.match(str(query)[:120], limit=5)
         landmark = _landmark(str(query))
-        if landmark and (not matches or matches[0].score < 0.95 or landmark[2] >= 0.95):
+        if landmark and landmark_wins(str(query), matches, landmark):
             near = self.index.match(landmark[1], limit=1)
             if near and near[0].score >= 0.95:
                 matches = near + [m for m in matches if m.area is not near[0].area]

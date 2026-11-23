@@ -47,6 +47,21 @@ def _landmark(text: str) -> tuple[str, str, float] | None:
     return (best[1][0], best[1][1], best[0]) if best else None
 
 
+def landmark_wins(text: str, stops: list[StopMatch], found: tuple[str, str, float] | None) -> bool:
+    """True when the landmark should replace the station match. Not when the user said a
+    longer station name that contains the landmark word in full: "Roissy-en-Brie" and
+    "Orly Ville" are train stations, not the airports (dev questions from a live check and
+    held-out set 5, 2026-11-23)."""
+    if not found or (stops and stops[0].score >= 0.95 and found[2] < 0.95):
+        return False
+    if stops and stops[0].score >= 0.999:
+        name = tokens(stops[0].area.name)
+        said = " " + " ".join(tokens(text)) + " "
+        if len(name) >= 2 and f" {' '.join(name)} " in said:
+            return False
+    return True
+
+
 _STATUS_WORDS = re.compile(
     r"\b(perturbation|perturbations|trafic|traffic|incident|incidents|probleme|problemes|"
     r"panne|greve|retard|retards|travaux|disruption|disruptions|delay|delays|status|statut|"
@@ -290,7 +305,7 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         stops = index.match(place)
         landmark = None
         found = _landmark(place)
-        if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+        if found and landmark_wins(place, stops, found):
             near = index.match(found[1])
             if near and near[0].score >= 0.95:
                 stops, landmark = near[:1], found[0]
@@ -300,7 +315,7 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         stops = index.match(place)
         landmark = None
         found = _landmark(place)
-        if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+        if found and landmark_wins(place, stops, found):
             near = index.match(found[1])
             if near and near[0].score >= 0.95:
                 stops, landmark = near[:1], found[0]
@@ -321,7 +336,7 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         stops = index.match(place)
         landmark = None
         found = _landmark(place)
-        if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+        if found and landmark_wins(place, stops, found):
             near = index.match(found[1])
             if near and near[0].score >= 0.95:
                 stops, landmark = near[:1], found[0]
@@ -364,7 +379,7 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
     landmark = None
     found = _landmark(rest) if rest else None
     # A landmark said exactly ("stade de france") wins over a partial station match
-    if found and (not stops or stops[0].score < 0.95 or found[2] >= 0.95):
+    if found and landmark_wins(rest, stops, found):
         near = index.match(found[1], line=line) or index.match(found[1])
         if near and near[0].score >= 0.95:
             stops, landmark = near[:1], found[0]

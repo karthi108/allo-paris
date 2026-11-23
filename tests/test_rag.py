@@ -369,3 +369,28 @@ def test_support_check_unavailable_keeps_the_answer(corpus: Corpus, full: StopIn
         "comment avoir la vignette de stationnement de mon quartier", CallState()
     )
     assert "mairie" in reply.text  # unchanged: the numbers-and-lines guard still applied
+
+
+# ---------- town names containing a landmark word (live check 2026-11-23); new wording ----------
+
+
+@pytest.mark.parametrize(
+    ("q", "station"),
+    [
+        ("Roissy-en-Brie, ascenseur sur le quai ?", "Roissy-en-Brie"),
+        ("is Orly Ville station step free", "Orly Ville"),
+        ("prochain RER E à Roissy-en-Brie", "Roissy-en-Brie"),
+    ],
+)
+def test_full_town_station_name_beats_the_airport_landmark(
+    full: StopIndex, q: str, station: str
+) -> None:
+    p = parse(q, full)
+    assert p.stops and p.stops[0].area.name == station
+    assert p.landmark is None
+
+
+@pytest.mark.parametrize("q", ["accessibilité fauteuil aéroport d'Orly", "prochain RER B à Roissy"])
+def test_airport_words_alone_still_mean_the_airport(full: StopIndex, q: str) -> None:
+    p = parse(q, full)
+    assert p.stops and "roport" in p.stops[0].area.name
