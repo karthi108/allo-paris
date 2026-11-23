@@ -48,13 +48,16 @@ jobs:
         run: >
           python eval/run_agent_eval.py --set "$EVAL_SET" --max-usd "$EVAL_MAX_USD"
           --summary "$GITHUB_STEP_SUMMARY"
+      # Only this run's file: the repo also holds older committed results. A failed run
+      # saves nothing (eval exits before writing), so there is nothing to keep then.
+      - name: Pick this run's result file
+        run: |
+          if [ "$EVAL_SET" = dev ]; then f=eval/agent_results.json; else f="eval/agent_${EVAL_SET}_results.json"; fi
+          echo "RESULT_FILE=$f" >> "$GITHUB_ENV"
       - name: Keep results (30 days)
-        if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7 # v7 runs on Node 24 (v4 on deprecated Node 20)
         with:
           name: agent-eval-${{ env.EVAL_SET }}-${{ github.run_id }}
-          path: |
-            eval/agent*_results.json
-            eval/results/agent*.json
-          if-no-files-found: ignore
+          path: ${{ env.RESULT_FILE }}
+          if-no-files-found: error
           retention-days: 30

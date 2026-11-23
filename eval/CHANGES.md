@@ -137,3 +137,8 @@ Dev run, answers read one by one; judge and reading agree:
 
 ## AI eval in CI (2026-11-23, see docs/decisions.md D-024)
 - run_agent_eval.py: --max-usd (hard cost cap for the run), --summary FILE (Markdown for the CI job summary, with every hybrid failure), and a run fails without saving when any question fell back to rules because the AI was unavailable. Without --max-usd the old default cap is kept, so local runs behave as before. No judge change.
+
+## First CI run of the AI eval (9fecb62, run 45142014273, 2026-11-23 08:53 UTC): hybrid 32/32, rules only 12/32
+- Manual run on the dev set in GitHub Actions, cap $0.20: cost $0.0346 ($0.00108 per question), no AI fallback, guard corrections 3, blocked 0, hybrid p50 / p95 1768 / 3932 ms. Same score as the local run on 1d3f1bc (no app change between them).
+- Answers read one by one from the run's results file; the judge's verdicts hold. Weak passes as before: "Hogwarts" and "Metropolis City Hall" get a safe question that treats the name as real.
+- Workflow fixes after this run: the artifact now holds only this run's result file (it also contained every older committed results file), and actions/upload-artifact moved from v4 (Node 20, deprecated warning) to v7 (Node 24; checked in the action's action.yml and v7.0.0 release notes, same inputs).
