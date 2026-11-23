@@ -29,9 +29,10 @@ from app.core.config import get_settings  # noqa: E402
 from app.rag.corpus import COS_FLOOR, Corpus  # noqa: E402
 from app.rag.embed import PRICE_PER_M, Vectors, embed_batch, passage_text  # noqa: E402
 from app.rag.rerank import LLMReranker  # noqa: E402
+from app.rag.retriever import CANDIDATES  # noqa: E402
 
 KS = (1, 3, 5)
-RERANK_CANDIDATES = 10
+RERANK_CANDIDATES = CANDIDATES  # same as the app
 SETS = {"dev": "retrieval_dev.jsonl", "test": "retrieval_test.jsonl"}
 
 

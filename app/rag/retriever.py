@@ -17,7 +17,11 @@ from app.rag.rerank import LLMReranker
 
 log = logging.getLogger(__name__)
 
-CANDIDATES = 10  # hybrid passages shown to the reranker
+# Hybrid passages shown to the reranker. 10 → 20 on 2026-11-23: the CMI fiche repeats near-
+# identical sections per card type, so "who can apply for the CMI priority card" had its answer
+# ranked 7th by the embeddings but outside the fused top 10 (live check). Dev retrieval set:
+# unchanged at 1.0; reranker cost per document question ≈ $0.00044 → $0.00078.
+CANDIDATES = 20
 # With the reranker deciding relevance, the cosine floor only trims obvious noise: at 0.46
 # (no reranker) an English question with no French word in common got no candidate at all
 # (retrieval test set, 2026-11-23). Checked on the dev set: the reranker still declines.

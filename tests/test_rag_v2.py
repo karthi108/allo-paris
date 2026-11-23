@@ -205,3 +205,21 @@ def test_support_checker_reads_the_verdict() -> None:
     assert SupportChecker(_client('{"supported": true}'))("x", []) is False
     with pytest.raises(LLMUnavailable):
         SupportChecker(_client("nope"))("x", p)
+
+
+def test_reranker_sees_up_to_twenty_candidates() -> None:
+    from app.rag.retriever import CANDIDATES
+
+    docs = [_doc(str(i), "Carte mobilité inclusion", f"La carte section {i}.") for i in range(30)]
+    c = Corpus(docs)
+    c.attach_vectors(Vectors({d.id: unit([1.0, 0.0, 0.0]) for d in docs}, "m", 3))
+    seen: list[int] = []
+
+    class Spy(LLMReranker):
+        def rerank(self, question: str, docs: Any) -> list[Doc]:  # type: ignore[override]
+            seen.append(len(docs))
+            return list(docs)[:1]
+
+    r = Retriever(c, lambda q: unit([1.0, 0.0, 0.0]), Spy(_client('{"relevant": [1]}')))
+    assert len(r.search("carte mobilité inclusion", "who can apply")) == 1
+    assert seen == [CANDIDATES] and CANDIDATES == 20
