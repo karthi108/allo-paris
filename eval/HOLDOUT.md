@@ -10,3 +10,5 @@ Note on the first row: the judge passed a generic "could not verify" answer to a
 | 2026-11-08 13:43 | d88cc56 | openai/gpt-4.1-mini | 40% | 80% | 3/4 | 2723 / 4125 ms | $0.00097 | 2 / 2 | [agent_holdout2_2026-11-08_1343_d88cc56.json](results/agent_holdout2_2026-11-08_1343_d88cc56.json) |
 
 Note: the held-out set 2 row (d88cc56) is the quotable held-out result: 12/15 (80%), rules only 6/15 (40%).
+
+Held-out set 3 (questions_agent_holdout3.jsonl, 92 questions, written 2026-11-23 by the assistant at the owner's request) was committed before its first run. Rows for it will say holdout3 in the Results file name.

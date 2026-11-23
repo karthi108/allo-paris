@@ -8,6 +8,7 @@ Cost: about 22 questions x a few LLM calls (cents with small models). Not run in
 
 Usage:  python eval/run_agent_eval.py                 (dev set: questions_agent.jsonl)
         python eval/run_agent_eval.py --set holdout   (held-out set, never tuned against)
+        python eval/run_agent_eval.py --set holdout3  (held-out set 3, 92 questions, 2026-11-23)
 Writes: eval/agent_results.json, eval/results/agent_<date>_<commit>.json, a row in eval/HISTORY.md
 """
 
@@ -33,6 +34,7 @@ from app.core.config import get_settings  # noqa: E402
 from app.data.prim import Departure, DeparturesResult, TrafficResult  # noqa: E402
 from app.data.routes import Journey, Leg  # noqa: E402
 from app.data.stops import StopArea, StopIndex, normalize  # noqa: E402
+from app.data.velib import VelibResult, VelibStation, _dist  # noqa: E402
 from app.ev.belib import parse_export  # noqa: E402
 from app.ev.live import ChargerClient  # noqa: E402
 
@@ -162,6 +164,10 @@ def eval_chargers(index: StopIndex) -> ChargerClient:
     roquette = (48.8557, 2.3770)
     mtp_at = near("Gare Montparnasse", -0.0010, 0.0008)
     clovis = (48.8459, 2.3477)
+    nat_at = near("Nation", 0.0005, 0.0009)
+    laz_at = near("Saint-Lazare", -0.0006, -0.0007)
+    cro_at = near("Château Rouge", 0.0007, 0.0004)
+    hdv_at = near("Hôtel de Ville", -0.0006, 0.0006)
     rows = [
         row("R1", "8 Rue du Faubourg du Temple 75011 Paris", "Disponible", rep_at),
         row("R2", "8 Rue du Faubourg du Temple 75011 Paris", "Occupé (en charge)", rep_at),
@@ -175,6 +181,14 @@ def eval_chargers(index: StopIndex) -> ChargerClient:
         row("I2", "100 Boulevard Vincent Auriol 75013 Paris", "En maintenance", ita_at),
         row("Q1", "40 Rue de la Roquette 75011 Paris", "En maintenance", roquette),
         row("Q2", "40 Rue de la Roquette 75011 Paris", "En maintenance", roquette),
+        # Added for held-out set 3 (fixture places only, written before its first run)
+        row("N1", "12 Avenue du Trône 75012 Paris", "Disponible", nat_at),
+        row("N2", "12 Avenue du Trône 75012 Paris", "Disponible", nat_at),
+        row("L1", "15 Rue de Rome 75008 Paris", "Occupé (en charge)", laz_at),
+        row("L2", "15 Rue de Rome 75008 Paris", "Occupé (en charge)", laz_at),
+        row("B1", "50 Boulevard Barbès 75018 Paris", "Inconnu", cro_at),
+        row("H1", "2 Rue de Lobau 75004 Paris", "Disponible", hdv_at),
+        row("H2", "2 Rue de Lobau 75004 Paris", "En maintenance", hdv_at),
     ]
     flags = {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -193,11 +207,75 @@ def eval_chargers(index: StopIndex) -> ChargerClient:
                 "detail": f"maintenance since Thu 05 Nov 10:40 UTC, {h} h observed",
             }
             for h in (74.0, 74.0)
+        ]
+        + [
+            {
+                "rule": "R4",
+                "station": "50 Boulevard Barbès 75018 Paris",
+                "detail": "no operator update for 9 days, 216 h observed",
+            }
         ],
     }
     return ChargerClient(
         fetch=lambda: (parse_export(rows), datetime.now(UTC)), get_flags=lambda _: dict(flags)
     )
+
+
+# Vélib'-shaped fixture for held-out set 3: invented station names placed near real stations
+# (not real Vélib' data). (place, name, bikes, ebikes, free docks, open, dlat, dlon)
+VELIB_FIXTURE: list[tuple[str, str, int, int, int, bool, float, float]] = [
+    ("Odéon", "Odéon - Danton", 6, 2, 17, True, 0.0004, -0.0003),
+    ("Trocadéro", "Trocadéro - Kléber", 0, 0, 0, False, 0.0006, 0.0005),
+    ("Bastille", "Bastille - Richard Lenoir", 0, 0, 22, True, 0.0007, 0.0004),
+    ("Gare de Lyon", "Gare de Lyon - Diderot", 14, 5, 9, True, -0.0005, 0.0006),
+    ("Père Lachaise", "Père Lachaise - Gambetta", 3, 1, 18, True, 0.0004, 0.0005),
+    ("Opéra", "Opéra - Auber", 11, 3, 4, True, 0.0003, -0.0006),
+    ("Place de Clichy", "Clichy - Batignolles", 2, 0, 25, True, -0.0004, -0.0006),
+]
+
+
+class EvalBikes:
+    """Fixed Vélib' stations; nearby() filters by real distance like the live client."""
+
+    def __init__(self, index: StopIndex) -> None:
+        self.stations: list[tuple[str, int, int, int, bool, float, float]] = []
+        for place, name, bikes, ebikes, docks, open_, dlat, dlon in VELIB_FIXTURE:
+            area = index.match(place, limit=1)[0].area
+            lat, lon = (area.lat or 0) + dlat, (area.lon or 0) + dlon
+            self.stations.append((name, bikes, ebikes, docks, open_, lat, lon))
+
+    def nearby(self, lat: float, lon: float, radius_m: int = 500, limit: int = 3) -> VelibResult:
+        now = datetime.now(UTC)
+        found = []
+        for name, bikes, ebikes, docks, open_, slat, slon in self.stations:
+            d = _dist(lat, lon, slat, slon)
+            if d <= radius_m:
+                found.append(
+                    VelibStation(
+                        name,
+                        name,
+                        bikes,
+                        ebikes,
+                        bikes - ebikes,
+                        docks,
+                        open_,
+                        open_,
+                        now,
+                        slat,
+                        slon,
+                        d,
+                    )
+                )
+        found.sort(key=lambda s: s.distance_m)
+        return VelibResult(found[:limit], now)
+
+
+def fixture_streets(chargers: ChargerClient) -> set[str]:
+    """Normalised street names of every fixture charger address (for 'ev_none')."""
+    points, _ = chargers._points()  # noqa: SLF001 (eval reads its own fixture)
+    return {
+        normalize(re.sub(r"^\d+\s+|\s*\b75\d{3}\b.*$", "", p.station)) for p in points if p.station
+    }
 
 
 _SENTENCE_END = re.compile(r"[.!?](?:\s|$)")
@@ -329,6 +407,29 @@ def judge(
         if case.get("warn") and not _WARNING.search(text):
             return False, "did not pass on the reliability warning"
         return True, ""
+    # Added for held-out set 3, before its first run (see CHANGES.md)
+    if exp == "velib":
+        if normalize(case["station"]) not in normalize(text):
+            return False, f"did not give the Vélib' station {case['station']!r}"
+        if case.get("closed") and not re.search(r"ferm|closed", text, re.I):
+            return False, "did not say the station is closed"
+        n = case.get("number")
+        if n == 0 and not re.search(
+            r"\b0\b|aucun|pas de v[ée]lo|plus de v[ée]lo|\bno\b|\bnone\b|\bzero\b", text, re.I
+        ):
+            return False, "did not say there are no bikes"
+        if n and not re.search(rf"\b{n}\b", text):
+            return False, f"did not give the number {n}"
+        return True, ""
+    if exp == "velib_none":
+        names = [normalize(v[1]) for v in VELIB_FIXTURE]
+        if any(nm in normalize(text) for nm in names):
+            return False, "named a Vélib' station that is not nearby"
+        claim = re.search(r"\d+\s*(v[ée]los?|bikes?)", text, re.I)
+        return (claim is None), "" if claim is None else f"made a claim: {claim.group(0)!r}"
+    if exp == "ev_none":
+        hit = [s for s in case["_streets"] if s and s in normalize(text)]
+        return (not hit), "" if not hit else f"named a charger that is not nearby: {hit[0]}"
     if exp == "no_numbers":
         # Must not claim a time, a duration, a price or "free": examples like "ligne 4" are fine
         claim = re.search(r"\d+\s*(min|minute|€|eur|euro|h\b)|\b(free|gratuit)\b", text, re.I)
@@ -342,10 +443,12 @@ def run_mode(
     s = get_settings()
     transit, planner = EvalTransit(), EvalPlanner(index)
     chargers = eval_chargers(index)
+    bikes = EvalBikes(index)
+    streets = fixture_streets(chargers)
     boxes: list[Toolbox] = []
 
     def make_box() -> Toolbox:
-        box = Toolbox(index, transit, None, planner, chargers=chargers)
+        box = Toolbox(index, transit, bikes, planner, chargers=chargers)
         boxes.append(box)
         return box
 
@@ -363,14 +466,14 @@ def run_mode(
         if llm is None:
             sys.exit("Hybrid mode needs ALLO_LLM_PROVIDER and ALLO_LLM_API_KEY in .env")
         agent = Agent(llm, make_box)
-    dialog = Dialog(index, transit, agent=agent, chargers=chargers)
+    dialog = Dialog(index, transit, bikes=bikes, agent=agent, chargers=chargers)
     rows = []
     for case in cases:
         boxes.clear()
         reply = dialog.handle(case["q"], CallState(lang=case["lang"]))
         calls = [c for b in boxes for c in b.calls]
         outputs = [o for b in boxes for o in b.outputs]
-        ok, why = judge(case, reply, calls, index)
+        ok, why = judge({**case, "_streets": streets}, reply, calls, index)
         if ok:
             ok, why = quality(case, reply)
         rows.append(
@@ -429,7 +532,7 @@ def run_mode(
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", choices=["dev", "holdout", "holdout2"], default="dev")
+    ap.add_argument("--set", choices=["dev", "holdout", "holdout2", "holdout3"], default="dev")
     ap.add_argument("--only", help="run only questions containing this text (diagnosis, not saved)")
     ap.add_argument("--trace", action="store_true", help="print tool calls and outputs")
     args = ap.parse_args()
@@ -437,6 +540,7 @@ def main() -> None:
         "dev": "questions_agent.jsonl",
         "holdout": "questions_agent_holdout.jsonl",
         "holdout2": "questions_agent_holdout2.jsonl",
+        "holdout3": "questions_agent_holdout3.jsonl",
     }[args.set]
     index = StopIndex.load(ROOT / "eval" / "data" / "stops_snapshot.json")
     cases = [

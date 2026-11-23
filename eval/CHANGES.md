@@ -67,3 +67,13 @@ Failures:
 - Likely the same cause as the two held-out set 2 status failures, which did not reproduce and had no trace at the time.
 - Runs 2 and 3 were labelled "-dirty" only because run 1 had rewritten eval result files; the dirty check now ignores eval/.
 
+
+## Held-out set 3 (written 2026-11-23, committed before any run)
+- eval/questions_agent_holdout3.jsonl: 92 questions (52 FR, 40 EN): 20 routes, 6 future routes, 6 missing origin, 15 departures, 10 status, 10 Vélib', 10 EV chargers, 15 trick or out-of-scope. Typos, slang, no-accent spellings, landmarks, a fake line, a line that does not serve the station, a fake place, prices, a prediction request, an injection, gibberish. The "tags" field describes each question; the judge ignores it.
+- Written by the assistant. The plan asked the owner for 10 to 15 questions in his own words; on 2026-11-23 the owner asked the assistant to write them all instead. So no question in this set comes from a real user or from the owner.
+- Static checks only before freezing (no question was run): every station name and line exists in the snapshot, each fixture point is the nearest within 500 m of the station named in its question, the "nothing nearby" places have no fixture within 500 m, no question repeats an earlier set.
+Eval harness changes, made before the first run of set 3 (none motivated by a result):
+- Vélib' fixture (EvalBikes): 7 invented stations placed near real stations (one closed, two with 0 bikes). Before, the eval had no Vélib' source, so Vélib' questions could not be measured. It is wired into the agent tools and the rules path for every set; the dev and earlier held-out sets have no Vélib' questions.
+- 7 Belib'-shaped points at 4 new fixture addresses (Avenue du Trône, Rue de Rome, Boulevard Barbès with an R4 flag, Rue de Lobau), all more than 1 km from the earlier fixture addresses.
+- New expectation types: "velib" (answer names the expected station; "closed" → says closed; "number" must appear, 0 accepts "aucun / no / none"), "velib_none" (names no fixture station and claims no bike count), "ev_none" (names no fixture charger street).
+- New option: --set holdout3.
