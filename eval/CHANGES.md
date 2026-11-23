@@ -309,3 +309,10 @@ The 3 judge failures:
 - "how to reach the Pantheon from Nation": the AI did not map the Panthéon to a station and asked which one (safe, not useful).
 - "comment obtenir une carte Navigo Solidarité": the rules answered with the fares and tickets refusal instead of "no document". Counted as a pass on reading: a ticket product is out of scope and nothing was invented.
 Set 6 is no longer blind after this run. Patterns for new dev questions: an everyday word close to a station name in a non-transport question; a landmark missing from the landmark table.
+
+## Fixes after held-out set 6 (9e6cbcc, 2026-11-23 17:11 UTC): dev judge 56/59, read 57/59
+- Generic rules fix: a sentence of 6 words or more with no line and only a spelling-close station (score < 0.95) is handed to the AI instead of getting departures (cause of the e-cigarette failure: "stations" matched "Stains - La Cerisaie" at 0.875). Short typo questions ("prochain metro 4 garre du nord") stay on the rules. Rules eval 61/61.
+- Landmark table: 14 well-known places with no station of their name (Panthéon, jardin du Luxembourg, Opéra Garnier, Catacombes / Catacombs, Moulin Rouge, Grand Palais, Galeries Lafayette, place des Vosges, Parc des Princes, Roland-Garros, canal Saint-Martin, Accor Arena, parc de la Villette), each mapped to its nearest station (names checked in the index). The Panthéon case motivated the list; set 6 cannot measure it any more (not blind).
+- 2 new dev questions (cigarette on platforms → "no document"; Catacombs from Bastille → route): both correct on reading; the route answer has 4 sentences (judge fail, real: answers are read aloud).
+- Dev run, 59 questions: judge 56/59. Failures read: two 4-sentence route answers (Disneyland, Catacombs: content correct, too long for voice, real); La Défense English (judge limit, correct). Roissy-en-Brie now answered for Roissy-en-Brie (correct for the first time). Read 57/59.
+- Cost $0.00134 per question, hybrid p50 / p95 2840 / 5512 ms.
