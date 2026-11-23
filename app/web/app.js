@@ -31,6 +31,7 @@ const I18N = {
     logMore: "En savoir plus", proto: "Prototype : les réponses peuvent être fausses, vérifiez auprès des sources officielles.",
     feedErr: (e) => `Problème de données : ${e}`, feedUnknown: "Données IDFM prêtes",
     tooMany: "Trop de requêtes, réessayez dans une minute.", error: "Erreur réseau.",
+    slow1: "Je vérifie dans les données officielles…", slow2: "Encore quelques secondes : le serveur gratuit se réveille peut-être après une pause.",
     ask: (q) => `Demander : « ${q} »`,
     pathRules: "⚡ Règles", pathAi: "✦ IA vérifiée", pathAiFb: "✦ IA → modèle sûr", pathRulesFb: "⚡ Règles (IA indisponible)", tools: "outils",
     examples: ["prochain RER A à Châtelet", "comment aller à la tour Eiffel depuis Gare du Nord", "perturbations RER B", "Vélib près de la tour Eiffel", "bornes près du Panthéon"],
@@ -74,6 +75,7 @@ const I18N = {
     logMore: "Learn more", proto: "Prototype: answers may be wrong; check official sources.",
     feedErr: (e) => `Data problem: ${e}`, feedUnknown: "IDFM data ready",
     tooMany: "Too many requests, try again in a minute.", error: "Network error.",
+    slow1: "Checking the official data…", slow2: "A few more seconds: the free server may be waking up after a pause.",
     ask: (q) => `Ask: “${q}”`,
     pathRules: "⚡ Rules", pathAi: "✦ AI, verified", pathAiFb: "✦ AI → safe template", pathRulesFb: "⚡ Rules (AI unavailable)", tools: "tools",
     examples: ["next RER A at Châtelet", "fastest way from Gare du Nord to the Eiffel Tower", "disruptions RER B", "Vélib near the Eiffel Tower", "EV chargers near Bastille"],
@@ -559,6 +561,9 @@ async function ask(q) {
   q = (q || "").trim(); if (!q) return;
   $("suggest").replaceChildren(); $("q").blur();
   $("answer").textContent = "…"; $("answerMeta").replaceChildren(); $("card").classList.remove("collapsed");
+  // Slow answers say why (AI with tool calls takes a few seconds; the free host may be waking up)
+  const slow = [setTimeout(() => { $("answer").textContent = tr().slow1; }, 1500),
+    setTimeout(() => { $("answer").textContent = tr().slow2; }, 9000)];
   try {
     const r = await api("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ q, session: state.session, lang: state.lang }) });
@@ -572,6 +577,7 @@ async function ask(q) {
     }
     if (r.stop) { const s = state.byId.get(r.stop.id); if (s) openStation(s, r.line && r.line.id); }
   } catch (e) { $("answer").textContent = e.message; }
+  finally { slow.forEach(clearTimeout); }
   refreshStatus();
 }
 
