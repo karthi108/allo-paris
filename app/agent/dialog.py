@@ -6,6 +6,7 @@ inserts values taken from the data source, so it cannot invent a time.
 
 from __future__ import annotations
 
+import re
 import time
 from collections import OrderedDict
 from dataclasses import dataclass, field
@@ -351,6 +352,9 @@ class Reply:
     focus: tuple[float, float] | None = None  # map point for answers not tied to a station
 
 
+# Street words: "borne rue de Rome" is about the street, not the station Rome
+_STREET = re.compile(r"\b(rue|boulevard|bd|avenue|av|place|quai|allee|impasse|cours)\b")
+
 # Rule outcomes the AI agent may improve on (when an LLM is configured)
 AI_INTENTS = {"unknown", "unsupported_route", "unsupported_time"}
 
@@ -500,7 +504,18 @@ class Dialog:
         if self.chargers is None:
             return Reply(t(lang, "ev_down"), "feed_down")
         try:
-            if q.stops and q.stops[0].score >= 0.9 and q.stops[0].area.lat is not None:
+            # "borne rue de Rome": a street word means the address, not the station of the
+            # same name; the station is used only if no Belib' address matches
+            street = (
+                self.chargers.find_address(utterance)
+                if _STREET.search(normalize(utterance))
+                else None
+            )
+            lat: float | None
+            lon: float | None
+            if street is not None:
+                lat, lon, place = street
+            elif q.stops and q.stops[0].score >= 0.9 and q.stops[0].area.lat is not None:
                 stop = q.stops[0].area
                 place = _place(q.landmark, lang) if q.landmark else stop.name
                 lat, lon = stop.lat, stop.lon

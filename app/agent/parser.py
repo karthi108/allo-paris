@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from difflib import SequenceMatcher
 
 from app.data.stops import Line, StopIndex, StopMatch, _best_window_score, normalize, tokens
 
@@ -93,8 +94,9 @@ _LINE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("Tramway", re.compile(r"\bt(\d{1,2}[ab]?)\b")),
     ("Metro", re.compile(r"\b(?:ligne|line|metro|m)\s?" + _NUM + r"\b")),
     ("LocalTrain", re.compile(r"\b(?:ligne|line|train|transilien)\s?([hjklnpru])\b")),
-    # How Parisians say it: "la 13", "le 4". Only accepted if it is a real metro line.
-    ("MetroBare", re.compile(r"\b(?:la|le)\s(\d{1,2}(?:\s?bis)?)\b")),
+    # How Parisians say it: "la 13", "le 4", and in English "the 14". Only accepted if it
+    # is a real metro line.
+    ("MetroBare", re.compile(r"\b(?:la|le|the)\s(\d{1,2}(?:\s?bis)?)\b")),
 ]
 
 # Questions v1 cannot answer honestly: say so instead of guessing.
@@ -123,6 +125,52 @@ _EV = re.compile(
     r"voiture electrique|electric car)\b"
 )
 _VELIB = re.compile(r"\b(velib|velibs|velo|velos|bike|bikes|bicycle|bicycles|cycle)\b")
+# Below this score a station match is a guess ("Gotham City" ~ "Cité" 0.75). The weakest
+# correct match in the evals scores 0.875 (2026-11-23), so departures need at least 0.85.
+MIN_STOP_SCORE = 0.85
+# A departure question, even without a line ("prochain métro tour Eiffel")
+_DEPARTURE_WORDS = re.compile(
+    r"\b(prochain|prochaine|prochains|next|quand|when|passe|arrive|depart|departs|horaire|"
+    r"horaires|train|metro|rer|tram)\b"
+)
+# "X to Y" without from/de: trip connectors between two places
+_CONNECTOR = re.compile(r"\s(?:to|vers|jusqu a|jusqu au|jusqu aux|a destination de)\s")
+# A destination named with a preposition: "emmène-moi au Louvre", "take me to the ..."
+_TO_PLACE = re.compile(r"\b(?:to|au|aux|a la|a l|jusqu a|jusqu au)\s")
+
+
+def _velib_word(text: str) -> str | None:
+    """The word meaning Vélib', also misspelt ("vlib", "velibe"); None if absent."""
+    m = _VELIB.search(text)
+    if m:
+        return m.group(0)
+    for w in text.split():
+        if len(w) >= 4 and SequenceMatcher(None, w, "velib").ratio() >= 0.8:
+            return w
+    return None
+
+
+def _is_place(text: str, index: StopIndex) -> bool:
+    """A station named with reasonable confidence, or a landmark."""
+    if _landmark(text):
+        return True
+    found = index.match(text, limit=1)
+    return bool(found) and found[0].score >= MIN_STOP_SCORE
+
+
+def _connector_trip(text: str, index: StopIndex) -> bool:
+    """'Bastille to the Louvre', 'republiqe jusqu'a nation': a place on each side of a trip
+    connector and no departure word. Callers check that no line was named."""
+    if _DEPARTURE_WORDS.search(text):
+        return False
+    m = _CONNECTOR.search(" " + text + " ")
+    if not m:
+        return False
+    padded = " " + text + " "
+    before, after = padded[: m.start()].strip(), padded[m.end() :].strip()
+    return bool(before and after) and _is_place(before, index) and _is_place(after, index)
+
+
 # Prompt-injection phrasing: refused deterministically, never sent to the LLM or data APIs
 _INJECTION = re.compile(
     r"\b(ignore (all |your |the |any )?(previous |prior |above )?(instructions|rules|prompt)|"
@@ -228,8 +276,9 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         return ParsedQuery("unsupported_time")  # disruption questions may mention dates
     if _AIRPORT.search(text) and not _AIRPORT_NAMED.search(text):
         return ParsedQuery("clarify_airport")
-    if _VELIB.search(text):
-        place = _VELIB.sub(" ", text)
+    bike_word = _velib_word(text)
+    if bike_word:
+        place = re.sub(rf"\b{re.escape(bike_word)}\b", " ", _VELIB.sub(" ", text))
         stops = index.match(place)
         landmark = None
         found = _landmark(place)
@@ -252,6 +301,20 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
         # A trip between two places: rules cannot plan it (the AI can). Found in agent eval
         # run 2: "from Gare du Nord to Bir-Hakeim" was answered with line 6 departures.
         return ParsedQuery("unsupported_route")
+    if line is None and heard is None and _connector_trip(text, index):
+        # "X to Y" where one side is a landmark or a misspelt station: a trip, not departures
+        # at the clearer side (dev questions from held-out set 3, 2026-11-23)
+        return ParsedQuery("unsupported_route")
+    if (
+        line is None
+        and heard is None
+        and not _STATUS_WORDS.search(text)
+        and not _DEPARTURE_WORDS.search(text)
+        and _TO_PLACE.search(text)
+        and _landmark(text)
+    ):
+        # "emmène-moi au Louvre": a destination with no origin; the AI asks where from
+        return ParsedQuery("unsupported_route")
     intent = "line_status" if _STATUS_WORDS.search(text) else "next_departure"
     if intent == "line_status":
         return ParsedQuery(intent, line=line, line_heard=heard)
@@ -268,4 +331,8 @@ def parse(utterance: str, index: StopIndex) -> ParsedQuery:
             stops, landmark = near[:1], found[0]
     if not stops and line is None and heard is None and not rest:
         return ParsedQuery("unknown")
+    if stops and landmark is None and stops[0].score < MIN_STOP_SCORE:
+        # A weak guess must not get departure times ("Gotham City" -> "Cité"); the AI or
+        # the "not understood" reply handles it instead
+        return ParsedQuery("unknown", line=line)
     return ParsedQuery(intent, line=line, line_heard=heard, stops=stops, landmark=landmark)
