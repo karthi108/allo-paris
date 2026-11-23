@@ -4,6 +4,23 @@ A hybrid AI assistant for getting around Paris: deterministic rules for the comm
 
 > Independent project using public open data only (IDFM PRIM, Ville de Paris). Not affiliated with or endorsed by Île-de-France Mobilités, RATP or the City of Paris.
 
+### In 30 seconds
+- **Live:** https://allo-paris.onrender.com (free plan: the first visit after a while takes about a minute).
+- **What:** an AI assistant for getting around Paris (live departures, disruptions, routes, Vélib', EV chargers, station accessibility, official rules), FR/EN, web and phone line.
+- **How:** rules first (free, deterministic) → LLM agent with tool calling → grounding guard that blocks any number or line the data did not return. RAG over official documents: BM25 + OpenAI embeddings + LLM reranker, a support check before citing, every answer cited.
+- **Measured, not claimed** (held-out sets frozen in git before their first run; questions written by the assistant, not real users):
+
+| Result | Value |
+|---|---|
+| Transport questions, held-out set 3 (92) | **84/92 hybrid** vs 53/92 rules only |
+| Document questions, held-out set 5 (38) | **34/38 with RAG v2** vs 30/38 with keyword search |
+| Retrieval recall@1, frozen test set (41) | **0.97** with reranker vs 0.52 keyword search; off-topic declined 8/8 |
+| Intent classification, frozen test set (120) | LLM 98.3% · ML classifier 89.2% · rules 81.7% |
+| Cost per AI question | ≈ $0.0012 (gpt-4.1-mini), $1/day hard cap |
+| Engineering | 245 tests, ruff + mypy strict + gitleaks in CI, nightly AI eval in CI with a cost cap |
+
+Bad results are kept too: the reasons for every failure are in [eval/CHANGES.md](eval/CHANGES.md).
+
 **Status (2026-11-23):** live prototype at **https://allo-paris.onrender.com** (free plan: the first visit after a while takes about a minute) · AI agent with RAG v2 on live data · EV charger collector running every 10 min since 2026-11-08 · phone line built, not yet tested on a real call ([test kit](docs/phone-test.md)) · see [plan](docs/plan.md).
 
 ## What it does

@@ -216,7 +216,7 @@ Never delete an entry; mark it superseded and link the replacement.
 - Fare fiches (e.g. F34964, reductions for young people) are left out on purpose: the assistant refuses prices, and "how much is the fine" stays a price refusal.
 - Answers: a clearly named station's accessibility is answered by the rules, verbatim from the record, cited. A station with no record (any metro station) gets "not covered, the data covers train and RER stations", never a guess. Fine, mediator and CMI questions go to the AI with a search_docs tool; without AI, the rules give the two best-matching sentences verbatim, cited. The citation (source and date) is appended by code after the guard, so every document answer carries it whatever the model writes.
 - Guard: unchanged rules now apply to passages too (numbers and lines must appear in what search_docs returned; the station's lines are returned as structured data). Known limit: it does not check reworded claims without numbers or lines.
-- Open: the ev-data branch publishes a database derived from Belib' (ODbL) without a licence notice. Needs an ODbL notice and source credit there (owner to approve the push).
+- Done 2026-11-23 (owner approved): the ev-data branch now has a README with the source credit (Ville de Paris, Belib' dataset) and offers the derived database under ODbL 1.0 (commit 263bd44 on ev-data).
 
 ## D-026 · ML models allowed for RAG v2 and an intent classifier (2026-11-23)
 - Owner decision, 2026-11-23: the earlier rule "no ML models" is lifted for two uses only: (1) RAG v2 retrieval (embeddings and a reranker on top of BM25) and (2) a lightweight intent classifier between the rules and the LLM.
