@@ -358,6 +358,11 @@ def judge(
             "" if text.strip().endswith("?") else "did not ask for the origin",
         )
     if exp == "departures_or_status":
+        # Fixed 2026-11-23 after held-out set 3 run 1: a correct status from the rules path
+        # (no tool call) used to fall through to the departures check and fail
+        if reply.path == "rules" and reply.intent == "line_status":
+            ok = reply.line is not None and reply.line.short == case["line"]
+            return ok, "" if ok else "rules: status for the wrong line"
         if any(name == "line_status" for name, _ in calls):
             line_ids = [str(a.get("line_id", "")) for n, a in calls if n == "line_status"]
             # The tool accepts ids or plain names ("4", "RER A") since 2026-11-08

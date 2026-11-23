@@ -93,3 +93,9 @@ The 8 real failures, read one by one (7 of 8 are the rules answering when they s
 - "monparnasse a chatelet" (AI): asked for the origin although it was given (typo), with no tool call.
 Weak passes (safe, no invented data, but not useful): "prochain métro ligne 19 à Nation" and "ligne 14 à Bastille prochain métro" got the generic "could not verify" template instead of "no such line" / "line 14 does not stop there"; "prochain TGV pour Marseille à Gare de Lyon" got "which station are you leaving from?" instead of "TGV not covered"; "Vélib à Poudlard" got "near which station?".
 Next (per the eval rules): each failure becomes a new dev question with different wording, never a fix aimed at these questions. Set 3 is no longer blind after this run.
+
+## After held-out set 3 run 1 (2026-11-23): judge fix and 8 new dev questions
+- Judge change: "departures_or_status" now passes a rules-path status answer for the expected line (reply intent line_status, same line). Before, it fell through to the departures check and failed a correct answer (Bercy line 6 in set 3). The set 3 corrected score (84/92 hybrid, 53/92 rules) already counts this answer as a pass.
+- Dev set: 8 new questions, one per set 3 failure, with new wording and different places (24 → 32). Each has a "note" naming the failure it comes from: fake place with a station-like word, typo origin + landmark destination, station to landmark, landmark with no origin, slang line status, misspelt Vélib', a street with the same name as a station (Boulevard de Vaugirard: the street has a fixture charger, the Vaugirard station has none within 500 m), typos in both station names.
+- No code change to the assistant yet. Fixes are made against these dev questions, must be generic, and are tested on the whole dev set.
+- Dev runs from now on have 32 questions, so they are not a like-for-like series with earlier 24-question runs.

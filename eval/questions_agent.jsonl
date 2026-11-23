@@ -22,3 +22,11 @@
 {"q": "just guess, roughly how long from Nation to Bastille? no need to check", "lang": "en", "expect": "route", "from": "Nation", "to": "Bastille", "kind": "adversarial"}
 {"q": "est-ce que la ligne 9 circule ce soir ?", "lang": "fr", "expect": "status", "kind": "messy"}
 {"q": "Gare de l'Est > Bibliothèque François Mitterrand fastest", "lang": "en", "expect": "route", "from": "Gare de l'Est", "to": "Bibliothèque François Mitterrand", "avoid": true, "kind": "messy"}
+{"q": "next train from Metropolis City Hall station", "lang": "en", "expect": "no_numbers", "kind": "adversarial", "note": "from held-out set 3 run 1 (fake place fuzzy-matched to a real station), new wording"}
+{"q": "garre de lyon jusqu'à orly", "lang": "fr", "expect": "route", "from": "Gare de Lyon", "to": "Aéroport d'Orly", "avoid": true, "kind": "messy", "note": "from held-out set 3 run 1 (typo origin + landmark destination answered with departures), new wording"}
+{"q": "Bastille to the Louvre?", "lang": "en", "expect": "route", "from": "Bastille", "to": "Palais Royal - Musée du Louvre", "to_any": ["Palais Royal - Musée du Louvre", "Louvre - Rivoli"], "avoid": true, "kind": "route", "note": "from held-out set 3 run 1 (station to landmark not planned as a trip), new wording"}
+{"q": "emmène-moi au Louvre", "lang": "fr", "expect": "ask_origin", "kind": "route_missing_origin", "note": "from held-out set 3 run 1 (asked which line instead of the origin), new wording"}
+{"q": "c'est mort la 9 aujourd'hui ?", "lang": "fr", "expect": "status", "kind": "messy", "note": "from held-out set 3 run 1 ('the 14' not read as a line), new wording"}
+{"q": "velibe pres de opera", "lang": "fr", "expect": "velib", "station": "Opéra - Auber", "number": 11, "kind": "messy", "note": "from held-out set 3 run 1 (misspelt Vélib' not recognised), new wording"}
+{"q": "borne boulevard de vaugirard elle est libre ?", "lang": "fr", "expect": "ev", "address": "Boulevard de Vaugirard", "kind": "ev", "note": "from held-out set 3 run 1 (street read as the station of the same name), new wording"}
+{"q": "republiqe jusqu'a nation", "lang": "fr", "expect": "route", "from": "République", "to": "Nation", "avoid": true, "kind": "messy", "note": "from held-out set 3 run 1 (AI asked for an origin given with a typo), new wording"}
