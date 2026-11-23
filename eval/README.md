@@ -3,6 +3,7 @@
 | Eval | Input | Checks | Runs in CI |
 |---|---|---|---|
 | `run_eval.py` | `questions.jsonl` on `data/stops_snapshot.json` (full IDFM station list) | intent, line, station, invented numbers | yes (`--check`) |
+| `run_agent_eval.py` | `questions_agent*.jsonl`, real LLM on fixed fake transport data | route, origin, time, disruption avoided, Vélib', EV, no invented numbers, 3 sentences max | nightly + manual (`ai-eval.yml`, cost cap per run, needs the OPENAI_API_KEY secret) |
 | `../scripts/measure.py` | 20 questions against live PRIM, cache off | p50 / p95 latency, feed errors | no (needs API key) |
 | audio | 8 kHz clips | stop/line resolution | not yet (phone line not live) |
 

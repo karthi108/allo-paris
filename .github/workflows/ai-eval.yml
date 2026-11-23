@@ -1,0 +1,60 @@
+# AI agent eval: real LLM on fixed fake transport data (no PRIM quota). Costs a few US cents.
+# Nightly on the dev set, or by hand (Actions → AI eval → Run workflow) on any set.
+# The rules eval stays in ci.yml on every push. The owner adds the OPENAI_API_KEY secret
+# (Settings → Secrets and variables → Actions); without it the job stops before any call.
+name: AI eval
+on:
+  schedule:
+    - cron: "17 3 * * *" # 03:17 UTC nightly; GitHub may delay or skip scheduled runs
+  workflow_dispatch:
+    inputs:
+      set:
+        description: "Question set (held-out sets 1 to 3 are no longer blind)"
+        type: choice
+        options: [dev, holdout, holdout2, holdout3]
+        default: dev
+      max_usd:
+        description: "Cost cap for this run in USD (estimated from token usage)"
+        default: "0.20"
+permissions:
+  contents: read
+concurrency:
+  group: ai-eval
+  cancel-in-progress: false
+jobs:
+  agent-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ALLO_LLM_PROVIDER: openai
+      ALLO_LLM_MODEL: gpt-4.1-mini
+      ALLO_LLM_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      EVAL_SET: ${{ inputs.set || 'dev' }}
+      EVAL_MAX_USD: ${{ inputs.max_usd || '0.20' }}
+    steps:
+      - name: Check the API key secret is set
+        run: |
+          if [ -z "$ALLO_LLM_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret is not set; no LLM call was made."
+            exit 1
+          fi
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - name: Run agent eval
+        run: >
+          python eval/run_agent_eval.py --set "$EVAL_SET" --max-usd "$EVAL_MAX_USD"
+          --summary "$GITHUB_STEP_SUMMARY"
+      - name: Keep results (30 days)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-eval-${{ env.EVAL_SET }}-${{ github.run_id }}
+          path: |
+            eval/agent*_results.json
+            eval/results/agent*.json
+          if-no-files-found: ignore
+          retention-days: 30

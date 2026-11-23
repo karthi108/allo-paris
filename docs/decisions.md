@@ -190,3 +190,11 @@ Never delete an entry; mark it superseded and link the replacement.
 - Starting thresholds (24 h, 72 h, 6 changes/h, 7 days) are provisional. After 7 days of collection they are set from the observed distributions and the reasoning is recorded here.
 - Fixed rules, not ML or an LLM: testable, explainable, free per check.
 - 2026-11-08: the "*/10" schedule produced no scheduled run in 1 h 40 min after the push (manual runs worked). Changed to "3-59/10" (off the busy start of the hour) and re-pushed, which also re-registers the schedule. If runs still do not appear, an external trigger is the fallback.
+
+## D-024 · AI eval in CI: nightly and manual, hard cost cap (2026-11-23)
+- New workflow .github/workflows/ai-eval.yml. Nightly (03:17 UTC) on the dev set; manual (workflow_dispatch) on any set with a chosen cap. The rules eval stays in ci.yml on every push and pull request.
+- Real LLM (openai / gpt-4.1-mini, as in every recorded run) on the fixed fake transport data, so no PRIM quota is used. Key: the OPENAI_API_KEY repository secret, added by the owner; without it the job stops before any call.
+- Cost cap per run: --max-usd (default $0.20 in CI). The cap is estimated from token usage and the configured prices (0.4 / 1.6 USD per million tokens for OpenAI, "rough" in app/agent/llm.py, not checked against OpenAI's current price page). It is checked before each model call, so a run can pass it by up to one question's calls. Measured 2026-11-23: cap $0.0005 → spent $0.001, then stopped. A dev run costs about $0.035, so nightly is about $1 a month. A spending limit on the OpenAI account side is the real backstop (not verified which limits the owner's account offers).
+- A run where the AI was skipped (cap reached, provider error) fails and saves nothing: it would otherwise look like a bad score.
+- No score threshold fails the job: single runs vary (71/72 over 3 identical runs). The job summary lists every hybrid failure to read; results are kept as a 30-day artifact and not committed.
+- GitHub may delay or skip scheduled runs (seen for the EV collector, D-023); a missed night is acceptable here.

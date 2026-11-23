@@ -443,7 +443,11 @@ def judge(
 
 
 def run_mode(
-    mode: str, index: StopIndex, cases: list[dict[str, Any]], trace: bool = False
+    mode: str,
+    index: StopIndex,
+    cases: list[dict[str, Any]],
+    trace: bool = False,
+    max_usd: float | None = None,
 ) -> dict[str, Any]:
     s = get_settings()
     transit, planner = EvalTransit(), EvalPlanner(index)
@@ -464,7 +468,8 @@ def run_mode(
             s.llm_provider,
             s.llm_api_key,
             s.llm_model,
-            daily_usd=max(s.llm_daily_budget_usd, 0.5),
+            # --max-usd is a hard cap for this run (CI); without it, the old default
+            daily_usd=max_usd if max_usd is not None else max(s.llm_daily_budget_usd, 0.5),
             price_in=s.llm_price_in,
             price_out=s.llm_price_out,
         )
@@ -527,11 +532,14 @@ def run_mode(
         "ai_share": round(sum(r["path"].startswith("ai") for r in rows) / len(rows), 3),
         "guard_corrections": dialog.metrics.guard_retries,
         "guard_blocked_to_template": dialog.metrics.guard_fallbacks,
+        # The AI was skipped (cost cap reached, provider error): the run is not a measurement
+        "ai_unavailable": sum(r["path"] == "rules_fallback" for r in rows),
     }
     if llm is not None:
         summary["model"] = f"{llm.provider}/{llm.model}"
         summary["cost_usd_total"] = round(llm.budget.spent_usd, 4)
         summary["cost_usd_per_question"] = round(llm.budget.spent_usd / len(rows), 5)
+        summary["cost_cap_usd"] = llm.budget.daily_usd
     return {"summary": summary, "rows": rows}
 
 
@@ -540,6 +548,10 @@ def main() -> None:
     ap.add_argument("--set", choices=["dev", "holdout", "holdout2", "holdout3"], default="dev")
     ap.add_argument("--only", help="run only questions containing this text (diagnosis, not saved)")
     ap.add_argument("--trace", action="store_true", help="print tool calls and outputs")
+    ap.add_argument(
+        "--max-usd", type=float, help="hard cost cap for this run (estimated from token usage)"
+    )
+    ap.add_argument("--summary", help="append a Markdown summary to this file (CI job summary)")
     args = ap.parse_args()
     qfile = {
         "dev": "questions_agent.jsonl",
@@ -557,13 +569,26 @@ def main() -> None:
         cases = [c for c in cases if args.only.lower() in c["q"].lower()]
         if not cases:
             sys.exit(f"no question contains {args.only!r}")
-        run_mode("hybrid", index, cases, trace=True)
+        run_mode("hybrid", index, cases, trace=True, max_usd=args.max_usd)
         print("\nDiagnosis run: nothing saved, not a measurement.")
         return
-    results = {m: run_mode(m, index, cases, trace=args.trace) for m in ("rules", "hybrid")}
+    results = {
+        m: run_mode(m, index, cases, trace=args.trace, max_usd=args.max_usd)
+        for m in ("rules", "hybrid")
+    }
     print()
     for r in results.values():
         print(json.dumps(r["summary"], indent=2, ensure_ascii=False))
+    skipped = results["hybrid"]["summary"]["ai_unavailable"]
+    if skipped:
+        msg = (
+            f"AI unavailable on {skipped} question(s) (cost cap reached or provider error): "
+            "not a measurement, nothing saved."
+        )
+        if args.summary:
+            with open(args.summary, "a", encoding="utf-8") as f:
+                f.write(f"## Agent eval ({args.set}): FAILED\n\n{msg}\n")
+        sys.exit(msg)
     commit, dirty = git_state()
     now = datetime.now(UTC)
     out = {
@@ -603,6 +628,36 @@ def main() -> None:
     with hist.open("a", encoding="utf-8") as f:
         f.write(row)
     print(f"\nSaved eval/results/{name} and appended a row to eval/{hist.name}")
+    if args.summary:
+        write_summary(args.summary, args.set, commit, results)
+
+
+def write_summary(path: str, set_name: str, commit: str, results: dict[str, Any]) -> None:
+    """Markdown for the CI job summary: scores, cost, and every failing answer to read."""
+    h, r = results["hybrid"]["summary"], results["rules"]["summary"]
+    n = h["questions"]
+    lines = [
+        f"## Agent eval ({set_name}, {commit}, {h.get('model', '')})",
+        "",
+        "| | Rules only | Hybrid |",
+        "|---|---|---|",
+        f"| Score (judge) | {round(r['success_rate'] * n)}/{n} | {round(h['success_rate'] * n)}/{n} |",
+        f"| p50 / p95 | {r['latency_p50_ms']} / {r['latency_p95_ms']} ms "
+        f"| {h['latency_p50_ms']} / {h['latency_p95_ms']} ms |",
+        "",
+        f"Cost ${h.get('cost_usd_total', 0)} (cap ${h.get('cost_cap_usd', '')}, estimated from "
+        "token usage). Judge scores are not final until the answers are read.",
+        "",
+        "### Hybrid failures",
+    ]
+    fails = [x for x in results["hybrid"]["rows"] if not x["ok"]]
+    for x in fails:
+        answer = x["answer"].replace("|", "/").replace("\n", " ")[:200]
+        lines.append(f"- **{x['q']}** ({x['path']}): {x['why']}. Answer: {answer}")
+    if not fails:
+        lines.append("- none")
+    with open(path, "a", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
 
 
 _ = StopArea  # re-exported type used in annotations above
