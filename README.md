@@ -4,7 +4,7 @@ A hybrid AI assistant for getting around Paris: deterministic rules for the comm
 
 > Independent project using public open data only (IDFM PRIM, Ville de Paris). Not affiliated with or endorsed by Île-de-France Mobilités, RATP or the City of Paris.
 
-**Status (2026-11-08):** web app and AI agent working on live data · EV charger collector running every 10 min since 2026-11-08, reliability thresholds provisional until 7 days of data · phone line built, not yet tested on a real call · not yet deployed publicly · see [plan](docs/plan.md).
+**Status (2026-11-23):** live prototype at **https://allo-paris.onrender.com** (free plan: the first visit after a while takes about a minute) · AI agent with RAG v2 on live data · EV charger collector running every 10 min since 2026-11-08 · phone line built, not yet tested on a real call ([test kit](docs/phone-test.md)) · see [plan](docs/plan.md).
 
 ## What it does
 - **Next departures** for metro, RER, tram and Transilien: "prochain RER A à Châtelet", "la 13 à Saint-Lazare", "line four at chateau rouge"
@@ -121,7 +121,7 @@ Other commands: `python scripts\ask.py "ligne 4 Gare du Nord"` or `python script
 Optional AI agent: set `ALLO_LLM_PROVIDER` (`anthropic` or `openai`), `ALLO_LLM_API_KEY` and `ALLO_LLM_DAILY_BUDGET_USD` in `.env`. Without them everything still works on the rules path.
 
 ## Deploy (free)
-`render.yaml` is a Render Blueprint: Render dashboard → **New → Blueprint** → this repo → paste `ALLO_PRIM_API_KEY` when asked. Free instances sleep when idle (first request ~30-60 s).
+Live at https://allo-paris.onrender.com. `render.yaml` is a Render Blueprint: Render dashboard → **New → Blueprint** → this repo → paste `ALLO_PRIM_API_KEY`, `ALLO_LLM_PROVIDER` and `ALLO_LLM_API_KEY` when asked. Free instances sleep when idle (first request ~30-60 s).
 
 ## Phone line (optional, Twilio)
 Webhooks `/voice` and `/voice/gather` (signature-checked). Set `ALLO_TWILIO_AUTH_TOKEN` and `ALLO_PUBLIC_BASE_URL`, point the Twilio number's "A call comes in" webhook to `https://<host>/voice`. **Not yet tested on a real call.** The test kit is ready: 12 scripted call tasks written before any call, and a report with task completion (owner's verdict), speech-recognition word error rate, turns and latency ([docs/phone-test.md](docs/phone-test.md)).

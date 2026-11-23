@@ -103,7 +103,7 @@ Never delete an entry; mark it superseded and link the replacement.
 - **Found by the eval:** equal-score ties picked the shortest name ("Palaiseau" for "Massy Palaiseau"); fixed by preferring the name covering more words.
 
 ## D-017 · Free hosting on Render
-- **Status:** proposed (config in `render.yaml`, not deployed yet)
+- **Status:** deployed 2026-11-23 at https://allo-paris.onrender.com (Blueprint from `render.yaml`, commit 266ef19, build 51.6 s). Checked live the same day: `/healthz` alive, `/api/status` shows PRIM configured, AI on (gpt-4.1-mini, $1/day cap), question logging on, 1,039 stops; the prototype label, the logging notice and the updated /privacy are served; a live departures question (rules, 408 ms), an English mediator question (AI with RAG v2, cited, 6.6 s on a cold instance) and a dog question ("no document") answered as expected. Shares the free plan's 750 hours with another project (77 h used on 2026-11-23).
 - **Decision:** Free web service, Frankfurt. Liveness `/healthz` for the host; `/health` returns 503 when the PRIM feed fails, for an external uptime monitor.
 - **Trade-off:** free instances sleep; acceptable for a portfolio demo, stated in the README.
 

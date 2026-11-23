@@ -23,7 +23,7 @@ Working phone line first, hardening after. Scope cuts recorded in decisions.md D
 - [x] AI agent: hybrid routing, 5 tools, grounding guard, budget cap, metrics page (tests with scripted LLM)
 - [x] Routes via IDFM planner with disruptions; agent eval harness (rules baseline 7/22)
 - [ ] Confirm planner URL (scripts/check_routes.py) and run agent eval with a real key
-- [ ] Public deploy (render.yaml ready)
+- [x] Public deploy: https://allo-paris.onrender.com (2026-11-23)
 - [ ] First real phone call (Twilio trial)
 - [ ] 7 days unattended after deploy
 
