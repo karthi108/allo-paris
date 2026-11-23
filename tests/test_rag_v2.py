@@ -223,3 +223,37 @@ def test_reranker_sees_up_to_twenty_candidates() -> None:
     r = Retriever(c, lambda q: unit([1.0, 0.0, 0.0]), Spy(_client('{"relevant": [1]}')))
     assert len(r.search("carte mobilité inclusion", "who can apply")) == 1
     assert seen == [CANDIDATES] and CANDIDATES == 20
+
+
+def test_mistral_client_uses_its_url_and_names_tool_results() -> None:
+    from app.agent.llm import MistralClient, ToolCall, make_client
+
+    seen: list[str] = []
+
+    def post(url: str, h: dict[str, str], body: dict[str, Any], t: float) -> dict[str, Any]:
+        seen.append(url)
+        msg = {
+            "content": None,
+            "tool_calls": [
+                {
+                    "id": "D681PevKs",
+                    "function": {"name": "find_station", "arguments": '{"query": "Nation"}'},
+                }
+            ],
+        }
+        return {
+            "choices": [{"message": msg}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 2},
+        }
+
+    client = make_client("mistral", "k", post=post)
+    assert isinstance(client, MistralClient) and client.model == "mistral-small-latest"
+    resp = client.chat("sys", [{"role": "user", "content": "hi"}], [])
+    assert seen == ["https://api.mistral.ai/v1/chat/completions"]
+    assert resp.tool_calls[0].name == "find_station" and resp.tool_calls[0].args == {
+        "query": "Nation"
+    }
+    turn = client.tool_results_turn([(ToolCall("D681PevKs", "find_station", {}), "{}")])
+    assert turn == [
+        {"role": "tool", "tool_call_id": "D681PevKs", "name": "find_station", "content": "{}"}
+    ]

@@ -256,9 +256,29 @@ class OpenAIClient(LLMClient):
         return [{"role": "tool", "tool_call_id": c.id, "content": out} for c, out in results]
 
 
-DEFAULT_MODELS = {"anthropic": "claude-haiku-4-5", "openai": "gpt-4.1-mini"}
+class MistralClient(OpenAIClient):
+    """Mistral La Plateforme: same chat format as OpenAI for tools (docs.mistral.ai, read
+    2026-11-23: tools/tool_calls in the OpenAI shape, arguments as a JSON string); tool
+    results carry the function name as in Mistral's own example."""
+
+    provider = "mistral"
+    URL = "https://api.mistral.ai/v1/chat/completions"
+
+    def tool_results_turn(self, results: list[tuple[ToolCall, str]]) -> list[dict[str, Any]]:
+        return [
+            {"role": "tool", "tool_call_id": c.id, "name": c.name, "content": out}
+            for c, out in results
+        ]
+
+
+DEFAULT_MODELS = {
+    "anthropic": "claude-haiku-4-5",
+    "openai": "gpt-4.1-mini",
+    "mistral": "mistral-small-latest",
+}
 # Rough USD per million tokens (input, output). Check the provider's pricing page.
-DEFAULT_PRICES = {"anthropic": (1.0, 5.0), "openai": (0.4, 1.6)}
+# Mistral Small 4: $0.15 / $0.60 (docs.mistral.ai/inference/pricing, read 2026-11-23).
+DEFAULT_PRICES = {"anthropic": (1.0, 5.0), "openai": (0.4, 1.6), "mistral": (0.15, 0.6)}
 
 
 def make_client(
@@ -277,5 +297,10 @@ def make_client(
     budget = Budget(
         daily_usd, p_in if price_in is None else price_in, p_out if price_out is None else price_out
     )
-    cls: type[LLMClient] = AnthropicClient if provider == "anthropic" else OpenAIClient
+    classes: dict[str, type[LLMClient]] = {
+        "anthropic": AnthropicClient,
+        "openai": OpenAIClient,
+        "mistral": MistralClient,
+    }
+    cls = classes[provider]
     return cls(api_key, model or DEFAULT_MODELS[provider], budget, post=post)

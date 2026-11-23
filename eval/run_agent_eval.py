@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import statistics
 import sys
@@ -29,7 +30,7 @@ sys.path.insert(0, str(ROOT))
 from app.agent.agent import Agent  # noqa: E402
 from app.agent.dialog import CallState, Dialog  # noqa: E402
 from app.agent.intent_ml import IntentModel  # noqa: E402
-from app.agent.llm import make_client  # noqa: E402
+from app.agent.llm import LLMClient, make_client  # noqa: E402
 from app.agent.tools import Toolbox  # noqa: E402
 from app.core.config import get_settings  # noqa: E402
 from app.data.prim import Departure, DeparturesResult, TrafficResult  # noqa: E402
@@ -45,6 +46,7 @@ from app.rag.verify import SupportChecker  # noqa: E402
 # RAG v1 corpus (real, committed snapshot): deterministic, so no fixture is needed (D-025)
 DOCS = Corpus.load(ROOT / "data" / "docs.json")
 INTENT_MODEL = IntentModel.load(ROOT / "data" / "intent_model.json")
+AGENT_PROVIDER, AGENT_MODEL = "", ""  # --agent-provider / --agent-model
 RAG = "v2"  # --rag v1 = BM25 only in search_docs (RAG v1), for comparison
 _CITE = re.compile(r"\(Source ?: ", re.I)
 # "No document / not covered" wording, on normalize()d text (FR and EN)
@@ -515,6 +517,7 @@ def run_mode(
 
     agent = None
     llm = None
+    agent_llm: LLMClient | None = None
     if mode == "hybrid":
         llm = make_client(
             s.llm_provider,
@@ -531,7 +534,21 @@ def run_mode(
         if RAG == "v2":
             retriever = make_retriever(DOCS, ROOT / "data" / "docs.json", llm)
             verify = SupportChecker(llm) if llm.provider == "openai" else None
-        agent = Agent(llm, make_box, verify=verify)
+        # --agent-provider: only the agent's chat model changes; retrieval, reranker and
+        # support check stay on the configured OpenAI client, so the comparison is the model
+        if AGENT_PROVIDER:
+            key = os.environ.get(f"ALLO_{AGENT_PROVIDER.upper()}_API_KEY", "")
+            agent_llm = make_client(
+                AGENT_PROVIDER, key, AGENT_MODEL, daily_usd=llm.budget.daily_usd
+            )
+            if agent_llm is None:
+                sys.exit(
+                    f"--agent-provider {AGENT_PROVIDER} needs ALLO_{AGENT_PROVIDER.upper()}_API_KEY in .env"
+                )
+            agent = Agent(agent_llm, make_box, verify=verify)
+        else:
+            agent_llm = llm
+            agent = Agent(llm, make_box, verify=verify)
     dialog = Dialog(
         index,
         transit,
@@ -599,10 +616,12 @@ def run_mode(
         # The AI was skipped (cost cap reached, provider error): the run is not a measurement
         "ai_unavailable": sum(r["path"] == "rules_fallback" for r in rows),
     }
-    if llm is not None:
-        summary["model"] = f"{llm.provider}/{llm.model}"
-        summary["cost_usd_total"] = round(llm.budget.spent_usd, 4)
-        summary["cost_usd_per_question"] = round(llm.budget.spent_usd / len(rows), 5)
+    if llm is not None and agent_llm is not None:
+        summary["model"] = f"{agent_llm.provider}/{agent_llm.model}"
+        spent = llm.budget.spent_usd + (agent_llm.budget.spent_usd if agent_llm is not llm else 0)
+        summary["cost_usd_total"] = round(spent, 4)
+        summary["cost_usd_per_question"] = round(spent / len(rows), 5)
+        summary["cost_agent_model_usd"] = round(agent_llm.budget.spent_usd, 4)
         summary["cost_cap_usd"] = llm.budget.daily_usd
     return {"summary": summary, "rows": rows}
 
@@ -621,9 +640,17 @@ def main() -> None:
     )
     ap.add_argument("--summary", help="append a Markdown summary to this file (CI job summary)")
     ap.add_argument("--rag", choices=["v1", "v2"], default="v2", help="document search version")
+    ap.add_argument(
+        "--agent-provider",
+        choices=["openai", "mistral", "anthropic"],
+        default="",
+        help="chat model provider for the agent only (key: ALLO_<PROVIDER>_API_KEY)",
+    )
+    ap.add_argument("--agent-model", default="", help="model id for --agent-provider")
     args = ap.parse_args()
-    global RAG
+    global RAG, AGENT_PROVIDER, AGENT_MODEL
     RAG = args.rag
+    AGENT_PROVIDER, AGENT_MODEL = args.agent_provider, args.agent_model
     qfile = {
         "dev": "questions_agent.jsonl",
         "holdout": "questions_agent_holdout.jsonl",
