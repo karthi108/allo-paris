@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-23T05:13:23+00:00",
-  "commit": "a042807",
+  "generated_at": "2026-11-23T05:23:16+00:00",
+  "commit": "1d3f1bc",
   "dirty": false,
   "set": "dev",
   "rules": {
@@ -17,7 +17,7 @@
         "ev": "1/1"
       },
       "latency_p50_ms": 0,
-      "latency_p95_ms": 505,
+      "latency_p95_ms": 446,
       "ai_share": 0.0,
       "guard_corrections": 0,
       "guard_blocked_to_template": 0
@@ -161,7 +161,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 488,
+        "latency_ms": 435,
         "fallback": null,
         "answer": "À Nation, quelle ligne ? ligne 1, ligne 2, ligne 6, ligne 9, RER A.",
         "tool_trace": []
@@ -172,7 +172,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 14,
+        "latency_ms": 13,
         "fallback": null,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago.",
         "tool_trace": []
@@ -183,7 +183,7 @@
         "ok": false,
         "why": "rules: clarify_line",
         "path": "rules",
-        "latency_ms": 907,
+        "latency_ms": 883,
         "fallback": null,
         "answer": "At La Défense, which line? train L, train U, line 1, RER A, RER E, tram T2.",
         "tool_trace": []
@@ -227,7 +227,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 163,
+        "latency_ms": 214,
         "fallback": null,
         "answer": "I can't find a station in your question. Give a station name, for example: Bir-Hakeim, or line 4 at Gare du Nord.",
         "tool_trace": []
@@ -260,7 +260,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 850,
+        "latency_ms": 808,
         "fallback": null,
         "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet.",
         "tool_trace": []
@@ -282,7 +282,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 505,
+        "latency_ms": 446,
         "fallback": null,
         "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet.",
         "tool_trace": []
@@ -293,7 +293,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 395,
+        "latency_ms": 334,
         "fallback": null,
         "answer": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
         "tool_trace": []
@@ -304,7 +304,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 254,
+        "latency_ms": 207,
         "fallback": null,
         "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
         "tool_trace": []
@@ -315,7 +315,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 215,
+        "latency_ms": 266,
         "fallback": null,
         "answer": "I don't plan journeys yet. I give the next departures at a station: say for example, RER A at Châtelet.",
         "tool_trace": []
@@ -326,7 +326,7 @@
         "ok": false,
         "why": "did not ask for the origin",
         "path": "rules",
-        "latency_ms": 168,
+        "latency_ms": 167,
         "fallback": null,
         "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
         "tool_trace": []
@@ -337,7 +337,7 @@
         "ok": false,
         "why": "clarify_line",
         "path": "rules",
-        "latency_ms": 308,
+        "latency_ms": 275,
         "fallback": null,
         "answer": "La ligne 9 ne passe pas à Gare de l'Est. Lignes disponibles : train P, ligne 4, ligne 5, ligne 7.",
         "tool_trace": []
@@ -348,7 +348,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 128,
+        "latency_ms": 102,
         "fallback": null,
         "answer": "Vélib près de Opéra. Opéra - Auber, à 55 mètres : 11 vélos dont 3 électriques, 4 places libres. Données Vélib en temps réel.",
         "tool_trace": []
@@ -359,7 +359,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 387,
+        "latency_ms": 355,
         "fallback": null,
         "answer": "Bornes Belib' près de 30 Boulevard de Vaugirard. 30 Boulevard de Vaugirard, sur place : 2 libre(s) sur 2. Données Belib' en temps réel.",
         "tool_trace": []
@@ -370,7 +370,7 @@
         "ok": false,
         "why": "no route computed",
         "path": "rules",
-        "latency_ms": 368,
+        "latency_ms": 331,
         "fallback": null,
         "answer": "Je ne calcule pas encore les itinéraires. Je donne les prochains départs à une station : dites par exemple, RER A à Châtelet.",
         "tool_trace": []
@@ -381,23 +381,23 @@
     "summary": {
       "mode": "hybrid",
       "questions": 32,
-      "success_rate": 0.938,
+      "success_rate": 1.0,
       "by_kind": {
-        "route": "7/8",
+        "route": "8/8",
         "route_missing_origin": "3/3",
         "future_route": "2/2",
-        "messy": "10/11",
+        "messy": "11/11",
         "adversarial": "7/7",
         "ev": "1/1"
       },
-      "latency_p50_ms": 1050,
-      "latency_p95_ms": 4071,
+      "latency_p50_ms": 2168,
+      "latency_p95_ms": 3819,
       "ai_share": 0.688,
-      "guard_corrections": 2,
+      "guard_corrections": 3,
       "guard_blocked_to_template": 0,
       "model": "openai/gpt-4.1-mini",
-      "cost_usd_total": 0.0304,
-      "cost_usd_per_question": 0.00095
+      "cost_usd_total": 0.0342,
+      "cost_usd_per_question": 0.00107
     },
     "rows": [
       {
@@ -406,9 +406,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4071,
+        "latency_ms": 3284,
         "fallback": null,
-        "answer": "The fastest recommended metro route from Gare du Nord to the Eiffel Tower (Bir-Hakeim station) takes 31 minutes with one change: take metro line 4 from Gare du Nord to Montparnasse Bienvenue, then line 6 to Bir-Hakeim. Another route via RER B and metro line 1 is faster but disrupted by a traffic interruption.",
+        "answer": "The fastest metro route from Gare du Nord to the Eiffel Tower (Bir-Hakeim) takes 31 minutes with one change. Take metro line 4 towards Bagneux to Montparnasse Bienvenue, then change to line 6 towards Charles de Gaulle - Étoile to Bir-Hakeim. The faster journey on line B is disrupted by a technical incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -440,9 +440,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3576,
+        "latency_ms": 3157,
         "fallback": null,
-        "answer": "Le trajet recommandé de Gare du Nord à la tour Eiffel prend 31 minutes avec un changement au métro Montparnasse Bienvenue, en prenant la ligne 4 puis la ligne 6. Un autre trajet plus rapide existe mais utilise la ligne B qui est interrompue.",
+        "answer": "Le chemin le plus rapide sans perturbation est de prendre le métro ligne 4 de Gare du Nord à Montparnasse Bienvenue, puis la ligne 6 jusqu'à Bir-Hakeim, près de la Tour Eiffel. Ce trajet prend environ 31 minutes. Une autre option plus rapide utilise la ligne B interrompue, donc non recommandée.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -474,9 +474,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3441,
+        "latency_ms": 3082,
         "fallback": null,
-        "answer": "The best way from Gare de Lyon to Louvre - Rivoli is to take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to line 6 towards Charles de Gaulle - Étoile for 12 minutes, total 31 minutes travel. The route via RER B is faster but disrupted due to an incident.",
+        "answer": "The best way to get to the Louvre - Rivoli from Gare de Lyon now is to take Metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to Metro line 6 towards Charles de Gaulle - Étoile for 12 minutes, arriving in 31 minutes at 06:41. The faster route via RER B and Metro 1 is disrupted with traffic interrupted between Gare du Nord and Châtelet - Les Halles.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -508,9 +508,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3153,
+        "latency_ms": 3352,
         "fallback": null,
-        "answer": "Pour aller de Châtelet à La Défense maintenant, il y a un trajet recommandé en 31 minutes avec un changement : prenez le métro ligne 4 jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 jusqu'à La Défense. Un autre trajet plus rapide existe mais utilise la ligne B du RER, qui est interrompue actuellement entre Gare du Nord et Châtelet - Les Halles.",
+        "answer": "Pour aller de Châtelet à La Défense, il faut prendre le métro ligne 4 direction Bagneux jusqu'à Montparnasse Bienvenue (14 minutes), puis changer pour la ligne 6 direction Charles de Gaulle - Étoile jusqu'à La Défense (12 minutes), soit un trajet total de 31 minutes. Une autre option plus rapide utilise le RER B, mais la ligne B est interrompue entre Gare du Nord et Châtelet - Les Halles à cause d'un incident technique.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -542,9 +542,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2553,
+        "latency_ms": 2962,
         "fallback": null,
-        "answer": "From Nation to Montparnasse Bienvenue, the recommended journey takes 31 minutes with one change. Take metro line 4 towards Bagneux for 14 minutes and then metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. Note that another faster route uses disrupted line B with traffic interrupted.",
+        "answer": "From Nation to Montparnasse Bienvenue, the recommended journey takes 31 minutes with one change. Take metro line 4 towards Bagneux for 14 minutes, then change at Montparnasse Bienvenue for metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. A faster journey using RER B is disrupted due to an incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -576,9 +576,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3002,
+        "latency_ms": 2750,
         "fallback": null,
-        "answer": "Pour aller de Saint-Lazare à Bastille maintenant, prenez la ligne 4 du métro jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 jusqu'à Bastille. Le trajet dure 31 minutes au total. Une autre option plus rapide passe par la ligne B, mais elle est interrompue à cause d'un incident technique.",
+        "answer": "Pour aller de Saint-Lazare à Bastille maintenant, prenez le métro ligne 4 en direction de Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 en direction de Charles de Gaulle - Étoile jusqu'à Bastille. Le trajet dure 31 minutes environ avec un départ à 06:10. Une option plus rapide existe mais la ligne B est interrompue actuellement.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -610,9 +610,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3126,
+        "latency_ms": 3548,
         "fallback": null,
-        "answer": "From Châtelet les Halles to Disneyland (Marne-la-Vallée - Chessy), the recommended journey takes 31 minutes, with one change. Take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then metro line 6 towards Charles de Gaulle - Étoile for 12 minutes to Disneyland. There is a faster option via line B, but it is disrupted by a technical incident.",
+        "answer": "From Châtelet - Les Halles to Disneyland (Marne-la-Vallée - Chessy), take Metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to line 6 towards Charles de Gaulle - Étoile for 12 minutes. Total travel time is 31 minutes. Note that a faster route with RER B is disrupted due to an incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -644,7 +644,7 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 560,
+        "latency_ms": 741,
         "fallback": null,
         "answer": "From which station would you like to start your journey to the Eiffel Tower?",
         "tool_trace": []
@@ -655,7 +655,7 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 536,
+        "latency_ms": 578,
         "fallback": null,
         "answer": "De quelle station partez-vous pour aller au Sacré-Cœur ?",
         "tool_trace": []
@@ -666,9 +666,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2749,
+        "latency_ms": 2843,
         "fallback": null,
-        "answer": "Demain à 8h, depuis Nation vers La Défense, le trajet recommandé est en métro ligne 4 jusqu'à Montparnasse Bienvenue puis ligne 6 jusqu'à La Défense. Durée totale 31 minutes, départ à 8h10, arrivée à 8h41. Un autre trajet plus rapide existe mais utilise la ligne B interrompue.",
+        "answer": "Demain à 8h, le trajet recommandé de Nation à La Défense prend 31 minutes avec un changement. Vous prenez le métro 4 à Nation vers Bagneux à 08:12, changez à Montparnasse Bienvenue, puis prenez le métro 6 vers Charles de Gaulle - Étoile jusqu'à La Défense. Un trajet plus rapide utilise la ligne B, mais elle est interrompue entre Gare du Nord et Châtelet à cause d'un incident technique.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -701,9 +701,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2868,
+        "latency_ms": 2738,
         "fallback": null,
-        "answer": "Tomorrow at 7:30 from Gare du Nord to Bastille, the recommended journey takes 31 minutes with one change. Take metro line 4 towards Bagneux from Gare du Nord to Montparnasse Bienvenue, then line 6 towards Charles de Gaulle - Étoile to Bastille. A faster route via line B is disrupted by a technical incident between Gare du Nord and Châtelet - Les Halles.",
+        "answer": "Tomorrow at 7:30 from Gare du Nord to Bastille, the recommended journey takes 31 minutes with one change. Take metro line 4 from Gare du Nord to Montparnasse Bienvenue, then metro line 6 to Bastille. A faster route using RER B is disrupted by a technical incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -747,9 +747,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3024,
+        "latency_ms": 2750,
         "fallback": null,
-        "answer": "Le prochain RER A en direction de Marne-la-Vallée passe à Nation dans 6 minutes, à 06:19.",
+        "answer": "Le prochain RER A vers Marne-la-Vallée part de Nation dans 6 minutes à 06:29.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -759,12 +759,19 @@
             "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"462358\", \"name\": \"Nation\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01372\", \"label\": \"line 2\", \"mode\": \"Metro\"}, {\"line_id\": \"C01376\", \"label\": \"line 6\", \"mode\": \"Metro\"}, {\"line_id\": \"C01379\", \"label\": \"line 9\", \"mode\": \"Metro\"}, {\"line_id\": \"C01742\", \"label\": \"RER A\", \"mode\": \"RapidTransit\"}]}, {\"station_id\": \"44192\", \"name\": \"Nationale\", \"match\": 0.8, \"lines\": [{\"line_id\": \"C01376\", \"label\": \"line 6\", \"mode\": \"Metro\"}]}]}"
           },
           {
+            "call": "find_station",
+            "args": {
+              "query": "Marne-la-Vallée"
+            },
+            "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"47969\", \"name\": \"Les Vallées\", \"match\": 0.92, \"lines\": [{\"line_id\": \"C01740\", \"label\": \"train L\", \"mode\": \"LocalTrain\"}]}, {\"station_id\": \"43239\", \"name\": \"Marne-la-Vallée - Chessy\", \"match\": 0.9, \"lines\": [{\"line_id\": \"C01742\", \"label\": \"RER A\", \"mode\": \"RapidTransit\"}]}, {\"station_id\": \"480935\", \"name\": \"Allée Royale\", \"match\": 0.88, \"lines\": [{\"line_id\": \"C02344\", \"label\": \"tram T13\", \"mode\": \"Tramway\"}]}, {\"station_id\": \"486823\", \"name\": \"Vallée aux Loups\", \"match\": 0.88, \"lines\": [{\"line_id\": \"C02528\", \"label\": \"tram T10\", \"mode\": \"Tr"
+          },
+          {
             "call": "next_departures",
             "args": {
               "station_id": "462358",
               "line_id": "C01742"
             },
-            "output": "{\"_tool\": \"next_departures\", \"station\": \"Nation\", \"line\": \"RER A\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"06:16\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"06:19\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"06:24\", \"realtime\": true}]}"
+            "output": "{\"_tool\": \"next_departures\", \"station\": \"Nation\", \"line\": \"RER A\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"06:26\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"06:29\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"06:34\", \"realtime\": true}]}"
           }
         ]
       },
@@ -774,7 +781,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 14,
+        "latency_ms": 15,
         "fallback": null,
         "answer": "Line 14 at Châtelet. Towards Terminus Nord: 3 minutes, then 11 minutes. Towards Terminus Sud: 6 minutes. Real-time data, updated 0 seconds ago.",
         "tool_trace": []
@@ -785,14 +792,14 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 2772,
+        "latency_ms": 3012,
         "fallback": null,
-        "answer": "The next metro 1 at La Défense will depart towards Terminus Nord in 3 minutes, at 06:16.",
+        "answer": "The next metro line 1 at La Défense station arrives in 3 minutes towards Terminus Nord. The following metro comes in 6 minutes towards Terminus Sud.",
         "tool_trace": [
           {
             "call": "find_station",
             "args": {
-              "query": "La Défense"
+              "query": "la defense"
             },
             "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"462395\", \"name\": \"La Défense\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01740\", \"label\": \"train L\", \"mode\": \"LocalTrain\"}, {\"line_id\": \"C01741\", \"label\": \"train U\", \"mode\": \"LocalTrain\"}, {\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01742\", \"label\": \"RER A\", \"mode\": \"RapidTransit\"}, {\"line_id\": \"C01729\", \"label\": \"RER E\", \"mode\": \"RapidTransit\"}, {\"line_id\": \"C01390\", \"label\": \"tram T2\", \"mode\": \"Tramway\"}]}]}"
           },
@@ -802,7 +809,7 @@
               "station_id": "462395",
               "line_id": "C01371"
             },
-            "output": "{\"_tool\": \"next_departures\", \"station\": \"La Défense\", \"line\": \"line 1\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"06:16\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"06:19\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"06:24\", \"realtime\": true}]}"
+            "output": "{\"_tool\": \"next_departures\", \"station\": \"La Défense\", \"line\": \"line 1\", \"data_age_seconds\": 0, \"departures\": [{\"towards\": \"Terminus Nord\", \"in_minutes\": 3, \"at\": \"06:26\", \"realtime\": true}, {\"towards\": \"Terminus Sud\", \"in_minutes\": 6, \"at\": \"06:29\", \"realtime\": true}, {\"towards\": \"Terminus Nord\", \"in_minutes\": 11, \"at\": \"06:34\", \"realtime\": true}]}"
           }
         ]
       },
@@ -845,9 +852,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 678,
+        "latency_ms": 706,
         "fallback": null,
-        "answer": "From which station would you like to travel to Hogwarts station?",
+        "answer": "From which station do you want to take the next train to Hogwarts?",
         "tool_trace": []
       },
       {
@@ -878,9 +885,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4866,
+        "latency_ms": 3819,
         "fallback": null,
-        "answer": "The recommended journey from Nation to Bastille takes 31 minutes, with one change: take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then line 6 towards Charles de Gaulle - Étoile for 12 minutes to Bastille. A faster option exists but uses the disrupted RER B line.",
+        "answer": "The recommended metro journey from Nation to Bastille takes 31 minutes with one change at Montparnasse Bienvenue, including about 5 minutes walking. A faster route with line B RER is disrupted.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -923,9 +930,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 4087,
+        "latency_ms": 3599,
         "fallback": null,
-        "answer": "The fastest recommended route from Gare de l'Est to Bibliothèque François Mitterrand takes 31 minutes with one change. Take Metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to Metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. A faster route with line B is disrupted by a technical incident.",
+        "answer": "The fastest recommended route from Gare de l'Est to Bibliothèque François Mitterrand takes 31 minutes. Take metro line 4 towards Bagneux from Gare de l'Est to Montparnasse Bienvenue, then change to metro line 6 towards Charles de Gaulle - Étoile to Bibliothèque François Mitterrand. There is a faster 24-minute option using RER line B and metro line 1, but RER B is disrupted due to a technical incident.",
         "tool_trace": [
           {
             "call": "find_station",
@@ -957,9 +964,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 1189,
+        "latency_ms": 1113,
         "fallback": null,
-        "answer": "From which station and which line or transport mode do you want the next train? \"Metropolis City Hall\" is not recognized in Paris public transport. Please provide a Paris station or line.",
+        "answer": "From which station do you want the next train? Metropolis City Hall sounds unfamiliar in the Paris transport network. Could you please confirm the name or give a nearby landmark?",
         "tool_trace": []
       },
       {
@@ -968,21 +975,21 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 3823,
+        "latency_ms": 4042,
         "fallback": null,
-        "answer": "Pour aller de Gare de Lyon à l'aéroport d'Orly, le trajet recommandé prend 31 minutes avec un changement : métro ligne 4 de Gare de Lyon à Montparnasse Bienvenue, puis métro ligne 6 jusqu'à Orly. Un trajet plus rapide existe mais il utilise la ligne B avec un incident.",
+        "answer": "Pour aller de Gare de Lyon à l'aéroport d'Orly, le trajet recommandé prend 31 minutes avec un changement. Prenez le métro ligne 4 vers Bagneux jusqu'à Montparnasse Bienvenue puis changez pour la ligne 6 vers Charles de Gaulle - Étoile jusqu'à Orly. Un trajet plus rapide passe par la ligne B, mais cette ligne est actuellement interrompue entre Gare du Nord et Châtelet.",
         "tool_trace": [
           {
             "call": "find_station",
             "args": {
-              "query": "Gare de Lyon"
+              "query": "gare de lyon"
             },
             "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"43153\", \"name\": \"Gare de Lyon\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01731\", \"label\": \"train R\", \"mode\": \"LocalTrain\"}, {\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01384\", \"label\": \"line 14\", \"mode\": \"Metro\"}, {\"line_id\": \"C01742\", \"label\": \"RER A\", \"mode\": \"RapidTransit\"}, {\"line_id\": \"C01728\", \"label\": \"RER D\", \"mode\": \"RapidTransit\"}]}]}"
           },
           {
             "call": "find_station",
             "args": {
-              "query": "Orly"
+              "query": "orly"
             },
             "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"462747\", \"name\": \"Aéroport d'Orly\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01384\", \"label\": \"line 14\", \"mode\": \"Metro\"}, {\"line_id\": \"C01774\", \"label\": \"tram T7\", \"mode\": \"Tramway\"}]}], \"landmark\": {\"place\": \"l'aéroport d'Orly\", \"nearest_station\": \"Aéroport d'Orly\"}}"
           },
@@ -999,13 +1006,36 @@
       {
         "q": "Bastille to the Louvre?",
         "kind": "route",
-        "ok": false,
-        "why": "plan_route not called",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 828,
+        "latency_ms": 3655,
         "fallback": null,
-        "answer": "From which station do you want to start your trip to the Louvre?",
-        "tool_trace": []
+        "answer": "From Bastille to Palais Royal - Musée du Louvre, take metro line 4 towards Bagneux for 14 minutes to Montparnasse Bienvenue, then change to metro line 6 towards Charles de Gaulle - Étoile for 12 minutes. Total journey time is 31 minutes. The faster route via line B is disrupted by a technical incident.",
+        "tool_trace": [
+          {
+            "call": "find_station",
+            "args": {
+              "query": "Bastille"
+            },
+            "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"42288\", \"name\": \"Bastille\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01375\", \"label\": \"line 5\", \"mode\": \"Metro\"}, {\"line_id\": \"C01378\", \"label\": \"line 8\", \"mode\": \"Metro\"}]}]}"
+          },
+          {
+            "call": "find_station",
+            "args": {
+              "query": "Louvre"
+            },
+            "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"44236\", \"name\": \"Palais Royal - Musée du Louvre\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01377\", \"label\": \"line 7\", \"mode\": \"Metro\"}]}, {\"station_id\": \"44628\", \"name\": \"Louvres\", \"match\": 0.92, \"lines\": [{\"line_id\": \"C01728\", \"label\": \"RER D\", \"mode\": \"RapidTransit\"}]}, {\"station_id\": \"44645\", \"name\": \"Louvre - Rivoli\", \"match\": 0.88, \"lines\": [{\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}]}, {\"station_id\": \"45363\", \"name\": \"Lourmel\", \"match\": 0.77, \"lines\": [{\"line_id\":"
+          },
+          {
+            "call": "plan_route",
+            "args": {
+              "from_station_id": "42288",
+              "to_station_id": "44236"
+            },
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"Bastille\", \"to\": \"Palais Royal - Musée du Louvre\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"06:10\", \"arrive\": \"06:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"Bastille\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"06:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Palais Royal - Musée du Louvre\", \"minutes\": 12, \"depart\": \"0"
+          }
+        ]
       },
       {
         "q": "emmène-moi au Louvre",
@@ -1013,9 +1043,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 691,
+        "latency_ms": 820,
         "fallback": null,
-        "answer": "De quelle station partez-vous ?",
+        "answer": "De quelle station partez-vous pour aller au Louvre ?",
         "tool_trace": []
       },
       {
@@ -1024,9 +1054,9 @@
         "ok": true,
         "why": "",
         "path": "ai",
-        "latency_ms": 1537,
+        "latency_ms": 1597,
         "fallback": null,
-        "answer": "La ligne 9 du métro ne présente aucune perturbation actuellement.",
+        "answer": "La ligne 9 du métro ne présente pas de perturbations aujourd'hui.",
         "tool_trace": [
           {
             "call": "line_status",
@@ -1043,7 +1073,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 117,
+        "latency_ms": 108,
         "fallback": null,
         "answer": "Vélib près de Opéra. Opéra - Auber, à 55 mètres : 11 vélos dont 3 électriques, 4 places libres. Données Vélib en temps réel.",
         "tool_trace": []
@@ -1054,7 +1084,7 @@
         "ok": true,
         "why": "",
         "path": "rules",
-        "latency_ms": 386,
+        "latency_ms": 372,
         "fallback": null,
         "answer": "Bornes Belib' près de 30 Boulevard de Vaugirard. 30 Boulevard de Vaugirard, sur place : 2 libre(s) sur 2. Données Belib' en temps réel.",
         "tool_trace": []
@@ -1062,13 +1092,36 @@
       {
         "q": "republiqe jusqu'a nation",
         "kind": "messy",
-        "ok": false,
-        "why": "plan_route not called",
+        "ok": true,
+        "why": "",
         "path": "ai",
-        "latency_ms": 910,
+        "latency_ms": 4227,
         "fallback": null,
-        "answer": "De quelle station partez-vous pour aller de République à Nation ?",
-        "tool_trace": []
+        "answer": "De République à Nation, le trajet recommandé prend 31 minutes avec un changement. Prenez le métro ligne 4 vers Bagneux jusqu'à Montparnasse Bienvenue, puis changez pour la ligne 6 vers Charles de Gaulle - Étoile jusqu'à Nation. Notez qu'un autre itinéraire plus rapide est interrompu à cause d'un incident technique sur la ligne B.",
+        "tool_trace": [
+          {
+            "call": "find_station",
+            "args": {
+              "query": "République"
+            },
+            "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"44617\", \"name\": \"République\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01381\", \"label\": \"line 11\", \"mode\": \"Metro\"}, {\"line_id\": \"C01373\", \"label\": \"line 3\", \"mode\": \"Metro\"}, {\"line_id\": \"C01375\", \"label\": \"line 5\", \"mode\": \"Metro\"}, {\"line_id\": \"C01378\", \"label\": \"line 8\", \"mode\": \"Metro\"}, {\"line_id\": \"C01379\", \"label\": \"line 9\", \"mode\": \"Metro\"}]}, {\"station_id\": \"44626\", \"name\": \"République - Marx Dormoy\", \"match\": 0.85, \"lines\": [{\"line_id\": \"C01843\", \"label\": \"tram T4\", \"mode\": \"Tramway\"}]}]}"
+          },
+          {
+            "call": "find_station",
+            "args": {
+              "query": "Nation"
+            },
+            "output": "{\"_tool\": \"find_station\", \"stations\": [{\"station_id\": \"462358\", \"name\": \"Nation\", \"match\": 1.0, \"lines\": [{\"line_id\": \"C01371\", \"label\": \"line 1\", \"mode\": \"Metro\"}, {\"line_id\": \"C01372\", \"label\": \"line 2\", \"mode\": \"Metro\"}, {\"line_id\": \"C01376\", \"label\": \"line 6\", \"mode\": \"Metro\"}, {\"line_id\": \"C01379\", \"label\": \"line 9\", \"mode\": \"Metro\"}, {\"line_id\": \"C01742\", \"label\": \"RER A\", \"mode\": \"RapidTransit\"}]}, {\"station_id\": \"44192\", \"name\": \"Nationale\", \"match\": 0.8, \"lines\": [{\"line_id\": \"C01376\", \"label\": \"line 6\", \"mode\": \"Metro\"}]}]}"
+          },
+          {
+            "call": "plan_route",
+            "args": {
+              "from_station_id": "44617",
+              "to_station_id": "462358"
+            },
+            "output": "{\"_tool\": \"plan_route\", \"from\": \"République\", \"to\": \"Nation\", \"planned_for\": \"now (real-time)\", \"journeys\": [{\"recommended\": true, \"uses_disrupted_line\": false, \"total_minutes\": 31, \"depart\": \"06:10\", \"arrive\": \"06:41\", \"changes\": 1, \"walking_minutes\": 5, \"legs\": [{\"line\": \"4\", \"mode\": \"Metro\", \"towards\": \"Bagneux\", \"from\": \"République\", \"to\": \"Montparnasse Bienvenue\", \"minutes\": 14, \"depart\": \"06:12\"}, {\"line\": \"6\", \"mode\": \"Metro\", \"towards\": \"Charles de Gaulle - Étoile\", \"from\": \"Montparnasse Bienvenue\", \"to\": \"Nation\", \"minutes\": 12, \"depart\": \"06:29\"}]}, {\"recommended\": false, \"uses_disru"
+          }
+        ]
       }
     ]
   }

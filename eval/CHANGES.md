@@ -127,3 +127,10 @@ Dev run, answers read one by one; judge and reading agree:
 - Still failing (AI path): "Bastille to the Louvre?" and "republiqe jusqu'a nation" ask for an origin that was given, with no tool call. Cause: the agent's retry check (task_problems) only recognises from/de ... to wording. Not fixed yet.
 - Found while writing tests, not fixed: "delayed" is not a status word ("delay" and "delays" are).
 - Cost $0.0304 ($0.00095 per question), hybrid p50 / p95 1050 / 4071 ms, AI on 69% of questions (was 59%: more questions now go to the AI instead of a rules guess).
+
+## Agent retry check and dev run (1d3f1bc, 2026-11-23 05:23 UTC): hybrid 32/32, rules only 12/32
+- task_problems now gets the station index: an "X to / vers / jusqu'à Y" question with a place on each side (same test as parser fix B) counts as an origin given, so an answer that asks for the origin without planning gets one retry. Unit tests include questions with no origin ("how do I get to the Arc de Triomphe", "je veux aller jusqu'à Bercy", "to the Louvre"), where the retry must not fire.
+- Dev run, answers read one by one; judge and reading agree: 32/32. "Bastille to the Louvre?" and "republiqe jusqu'a nation" now plan the trip. Guard corrections: 3, blocked to template: 0.
+- Weak passes, unchanged: "Hogwarts" and "Metropolis City Hall" get a safe question back that treats the name as possibly real.
+- This is one run; earlier stability runs showed the model varies between identical runs (71/72 over 3 runs on 95210ef), so 32/32 is not a guarantee.
+- Cost $0.0342 ($0.00107 per question), hybrid p50 / p95 2168 / 3819 ms.
