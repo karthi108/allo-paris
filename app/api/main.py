@@ -29,6 +29,7 @@ from app.data.stops import StopIndex
 from app.data.velib import VelibClient
 from app.ev.live import ChargerClient
 from app.rag.corpus import Corpus
+from app.rag.retriever import make_retriever
 from app.voice import twiml
 from app.voice.calls import CallConfig, CallHandler
 
@@ -61,8 +62,14 @@ llm = make_client(
     price_in=settings.llm_price_in,
     price_out=settings.llm_price_out,
 )
+retriever = make_retriever(docs, settings.docs_path, llm) if docs is not None else None
 agent = (
-    Agent(llm, lambda: Toolbox(index, prim, velib, routes, chargers=chargers, docs=docs))
+    Agent(
+        llm,
+        lambda: Toolbox(
+            index, prim, velib, routes, chargers=chargers, docs=docs, retriever=retriever
+        ),
+    )
     if llm
     else None
 )

@@ -18,6 +18,7 @@ from app.data.stops import Line, StopArea, StopIndex
 from app.data.velib import VelibResult
 from app.ev.live import ChargerResult
 from app.rag.corpus import Corpus
+from app.rag.retriever import Retriever
 
 
 class Transit(Protocol):
@@ -157,9 +158,11 @@ class Toolbox:
         planner: Planner | None = None,
         chargers: Chargers | None = None,
         docs: Corpus | None = None,
+        retriever: Retriever | None = None,
     ) -> None:
         self.index = index
         self.docs = docs
+        self.retriever = retriever  # RAG v2 (hybrid + reranker); None = BM25 only
         self.question = ""  # set by the agent: search_docs adds the user's own words
         self.chargers = chargers
         self.transit = transit
@@ -348,7 +351,11 @@ class Toolbox:
             }
         # The model's keywords plus the user's own words: the model tends to drop the words
         # that pick the right section ("qui décide", "sans APA"; held-out set 4, 2026-11-23)
-        found = self.docs.search(f"{str(query)[:200]} {self.question}", limit=5)
+        words = f"{str(query)[:200]} {self.question}"
+        if self.retriever is not None:
+            found = self.retriever.search(words, self.question or str(query)[:200], limit=5)
+        else:
+            found = self.docs.search(words, limit=5)
         out: dict[str, Any] = {"passages": [d.as_tool_output() for d in found]}
         if not found:
             out["note"] = "no passage matches: say you have no document on this"

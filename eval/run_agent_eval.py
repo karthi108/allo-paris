@@ -38,9 +38,11 @@ from app.data.velib import VelibResult, VelibStation, _dist  # noqa: E402
 from app.ev.belib import parse_export  # noqa: E402
 from app.ev.live import ChargerClient  # noqa: E402
 from app.rag.corpus import Corpus  # noqa: E402
+from app.rag.retriever import Retriever, make_retriever  # noqa: E402
 
 # RAG v1 corpus (real, committed snapshot): deterministic, so no fixture is needed (D-025)
 DOCS = Corpus.load(ROOT / "data" / "docs.json")
+RAG = "v2"  # --rag v1 = BM25 only in search_docs (RAG v1), for comparison
 _CITE = re.compile(r"\(Source ?: ", re.I)
 # "No document / not covered" wording, on normalize()d text (FR and EN)
 _NO_DOC = re.compile(
@@ -497,9 +499,12 @@ def run_mode(
     bikes = EvalBikes(index)
     streets = fixture_streets(chargers)
     boxes: list[Toolbox] = []
+    retriever: Retriever | None = None
 
     def make_box() -> Toolbox:
-        box = Toolbox(index, transit, bikes, planner, chargers=chargers, docs=DOCS)
+        box = Toolbox(
+            index, transit, bikes, planner, chargers=chargers, docs=DOCS, retriever=retriever
+        )
         boxes.append(box)
         return box
 
@@ -517,6 +522,8 @@ def run_mode(
         )
         if llm is None:
             sys.exit("Hybrid mode needs ALLO_LLM_PROVIDER and ALLO_LLM_API_KEY in .env")
+        if RAG == "v2":
+            retriever = make_retriever(DOCS, ROOT / "data" / "docs.json", llm)
         agent = Agent(llm, make_box)
     dialog = Dialog(index, transit, bikes=bikes, agent=agent, chargers=chargers, docs=DOCS)
     rows = []
@@ -596,7 +603,10 @@ def main() -> None:
         "--max-usd", type=float, help="hard cost cap for this run (estimated from token usage)"
     )
     ap.add_argument("--summary", help="append a Markdown summary to this file (CI job summary)")
+    ap.add_argument("--rag", choices=["v1", "v2"], default="v2", help="document search version")
     args = ap.parse_args()
+    global RAG
+    RAG = args.rag
     qfile = {
         "dev": "questions_agent.jsonl",
         "holdout": "questions_agent_holdout.jsonl",

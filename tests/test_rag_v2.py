@@ -20,6 +20,7 @@ from app.rag.embed import (
     unit,
 )
 from app.rag.rerank import LLMReranker
+from app.rag.retriever import Retriever
 
 
 def _doc(i: str, title: str, text: str) -> Doc:
@@ -143,3 +144,53 @@ def test_reranker_bad_json_is_unavailable() -> None:
     c = _corpus()
     with pytest.raises(LLMUnavailable):
         LLMReranker(_client("not json")).rerank("q", c.docs)
+
+
+# Retriever: hybrid + reranker with fallbacks, and "decline when docs don't cover it"
+
+
+def _hybrid_corpus() -> Corpus:
+    c = _corpus()
+    c.attach_vectors(_vectors(c, {"a": [1, 0, 0], "b": [0, 1, 0], "c": [0, 0, 1]}))
+    return c
+
+
+def test_retriever_declines_when_reranker_finds_nothing() -> None:
+    c = _hybrid_corpus()
+    r = Retriever(c, lambda q: unit([1, 1, 1]), LLMReranker(_client('{"relevant": []}')))
+    assert r.search("chien dans le métro", "peut-on prendre son chien ?") == []
+    assert r.paths["reranked"] == 1
+
+
+def test_retriever_keeps_reranker_order() -> None:
+    c = _hybrid_corpus()
+    r = Retriever(c, lambda q: unit([1, 1, 1]), LLMReranker(_client('{"relevant": [2]}')))
+    got = r.search("médiatrice gratuit carte", "la médiation est gratuite ?")
+    assert len(got) == 1
+
+
+def test_retriever_falls_back_to_bm25_without_embeddings() -> None:
+    def broken(q: str) -> list[float]:
+        raise LLMUnavailable("budget")
+
+    r = Retriever(_hybrid_corpus(), broken, LLMReranker(_client('{"relevant": []}')))
+    assert [d.id for d in r.search("médiatrice gratuit")] == ["a"]
+    assert r.paths["bm25"] == 1
+
+
+def test_retriever_falls_back_to_hybrid_when_reranker_fails() -> None:
+    r = Retriever(_hybrid_corpus(), lambda q: unit([1, 0, 0]), LLMReranker(_client("oops")))
+    assert [d.id for d in r.search("médiatrice gratuit")][:1] == ["a"]
+    assert r.paths["hybrid"] == 1
+
+
+def test_search_docs_tool_says_no_document_when_declined() -> None:
+    from app.agent.tools import Toolbox
+
+    c = _hybrid_corpus()
+    r = Retriever(c, lambda q: unit([1, 1, 1]), LLMReranker(_client('{"relevant": []}')))
+    box = Toolbox(None, None, docs=c, retriever=r)  # type: ignore[arg-type]
+    box.question = "can I take my dog on the metro?"
+    out = json.loads(box.run("search_docs", {"query": "dog metro rules"}))
+    assert out["passages"] == []
+    assert "no document" in out["note"]

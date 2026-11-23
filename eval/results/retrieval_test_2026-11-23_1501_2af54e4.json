@@ -1,0 +1,596 @@
+{
+ "set": "test",
+ "queries": 41,
+ "embedding_tokens": 546,
+ "embedding_cost_usd": 1.1e-05,
+ "embed_call_ms_all_queries": 492,
+ "runs": [
+  {
+   "mode": "bm25",
+   "floor": null,
+   "covered": 33,
+   "uncovered": 8,
+   "recall@1": 0.515,
+   "recall@3": 0.667,
+   "recall@5": 0.697,
+   "mrr@5": 0.588,
+   "covered_empty": 5,
+   "uncovered_declined": 5,
+   "recall@5_by_kind": {
+    "fiche": "15/25",
+    "access": "8/8"
+   },
+   "search_ms_per_query": 0.46
+  },
+  {
+   "mode": "dense",
+   "floor": 0.46,
+   "covered": 33,
+   "uncovered": 8,
+   "recall@1": 0.788,
+   "recall@3": 0.939,
+   "recall@5": 0.97,
+   "mrr@5": 0.86,
+   "covered_empty": 1,
+   "uncovered_declined": 2,
+   "recall@5_by_kind": {
+    "fiche": "24/25",
+    "access": "8/8"
+   },
+   "search_ms_per_query": 19.56
+  },
+  {
+   "mode": "hybrid",
+   "floor": 0.46,
+   "covered": 33,
+   "uncovered": 8,
+   "recall@1": 0.758,
+   "recall@3": 0.939,
+   "recall@5": 0.939,
+   "mrr@5": 0.838,
+   "covered_empty": 1,
+   "uncovered_declined": 2,
+   "recall@5_by_kind": {
+    "fiche": "23/25",
+    "access": "8/8"
+   },
+   "search_ms_per_query": 18.84
+  },
+  {
+   "mode": "hybrid+rerank",
+   "floor": 0.46,
+   "reranker": "llm:gpt-4.1-mini",
+   "covered": 33,
+   "uncovered": 8,
+   "recall@1": 0.97,
+   "recall@3": 0.97,
+   "recall@5": 0.97,
+   "mrr@5": 0.97,
+   "covered_empty": 1,
+   "uncovered_declined": 8,
+   "recall@5_by_kind": {
+    "fiche": "24/25",
+    "access": "8/8"
+   },
+   "rerank_ms_per_query": 662,
+   "rerank_tokens_in_out": [
+    41293,
+    356
+   ],
+   "rerank_cost_usd": 0.01709
+  }
+ ],
+ "detail": {
+  "0.46": [
+   {
+    "q": "je peux faire annuler un procès-verbal pris dans le tram si je n'avais pas l'intention de frauder ?",
+    "relevant": [
+     "sp-F31852-1"
+    ],
+    "got": [
+     "sp-F31852-1",
+     "sp-F12151-7",
+     "sp-F12151-10",
+     "sp-F12151-8",
+     "sp-F12151-2"
+    ]
+   },
+   {
+    "q": "got fined on the metro, phone battery died with my ticket on it, what can I do",
+    "relevant": [
+     "sp-F31852-1"
+    ],
+    "got": [
+     "sp-F31852-1"
+    ]
+   },
+   {
+    "q": "faut il envoyer la contestation de l'amende en recommandé",
+    "relevant": [
+     "sp-F31852-1"
+    ],
+    "got": [
+     "sp-F31852-1",
+     "sp-F34049-29",
+     "sp-F34049-12",
+     "sp-F34049-47",
+     "sp-F12151-10"
+    ]
+   },
+   {
+    "q": "pas eu le temps de faire ma correspondance entre un TER et un Ouigo, qui peut m'aider ?",
+    "relevant": [
+     "sp-F12151-2"
+    ],
+    "got": [
+     "sp-F12151-2",
+     "sp-F12151-10",
+     "idfm-acc-43203",
+     "sp-F12151-4",
+     "sp-F12151-6"
+    ]
+   },
+   {
+    "q": "PV pour bagage abandonné dans le train, la médiatrice peut intervenir ?",
+    "relevant": [
+     "sp-F12151-2"
+    ],
+    "got": [
+     "sp-F12151-2",
+     "sp-F31852-1",
+     "sp-F12151-10",
+     "sp-F12151-3",
+     "sp-F12151-4"
+    ]
+   },
+   {
+    "q": "can someone else file the SNCF mediation request on my behalf",
+    "relevant": [
+     "sp-F12151-3"
+    ],
+    "got": [
+     "sp-F31852-1",
+     "sp-F12151-3",
+     "sp-F12151-7",
+     "sp-F12151-9",
+     "sp-F12151-10"
+    ]
+   },
+   {
+    "q": "ma réclamation date de plus d'un an, je peux encore saisir le médiateur sncf ?",
+    "relevant": [
+     "sp-F12151-4"
+    ],
+    "got": [
+     "sp-F12151-4",
+     "sp-F12151-7",
+     "sp-F12151-10",
+     "sp-F12151-9",
+     "sp-F12151-5"
+    ]
+   },
+   {
+    "q": "the SNCF customer service never answered my written complaint, what next",
+    "relevant": [
+     "sp-F12151-4",
+     "sp-F12151-1"
+    ],
+    "got": [
+     "sp-F12151-4",
+     "sp-F12151-6",
+     "sp-F12151-5",
+     "sp-F12151-1",
+     "sp-F31852-1"
+    ]
+   },
+   {
+    "q": "quels papiers envoyer à la médiatrice pour contester un PV en ligne",
+    "relevant": [
+     "sp-F12151-7"
+    ],
+    "got": [
+     "sp-F31852-1",
+     "sp-F12151-7",
+     "sp-F12151-5",
+     "sp-F12151-4",
+     "sp-F34049-12"
+    ]
+   },
+   {
+    "q": "adresse et forme du courrier à la mediatrice sncf pour un litige commercial",
+    "relevant": [
+     "sp-F12151-6"
+    ],
+    "got": [
+     "sp-F12151-6",
+     "sp-F12151-5",
+     "sp-F12151-1",
+     "sp-F12151-8",
+     "sp-F12151-4"
+    ]
+   },
+   {
+    "q": "est ce que la mediation sncf est gratuite",
+    "relevant": [
+     "sp-F12151-9"
+    ],
+    "got": [
+     "sp-F31852-1",
+     "sp-F12151-9",
+     "sp-F12151-10",
+     "sp-F12151-3",
+     "sp-F12151-5"
+    ]
+   },
+   {
+    "q": "what happens if I refuse the mediator's opinion on my fine and don't pay",
+    "relevant": [
+     "sp-F12151-10"
+    ],
+    "got": []
+   },
+   {
+    "q": "quels sont les différents types de carte mobilité inclusion",
+    "relevant": [
+     "sp-F34049-1"
+    ],
+    "got": [
+     "sp-F34049-35",
+     "sp-F34049-18",
+     "sp-F34049-1",
+     "sp-F34049-52",
+     "sp-F34049-19"
+    ]
+   },
+   {
+    "q": "avec la carte stationnement je paie le parking ?",
+    "relevant": [
+     "sp-F34049-2"
+    ],
+    "got": [
+     "sp-F34049-2",
+     "sp-F34049-16",
+     "sp-F34049-13",
+     "sp-F34049-17",
+     "sp-F34049-8"
+    ]
+   },
+   {
+    "q": "mon ancienne carte d'invalidité est valable jusqu'à quand",
+    "relevant": [
+     "sp-F34049-37"
+    ],
+    "got": [
+     "sp-F34049-37",
+     "sp-F34049-50",
+     "sp-F34049-51",
+     "sp-F34049-48",
+     "sp-F34049-36"
+    ]
+   },
+   {
+    "q": "what are the advantages of the CMI invalidity card",
+    "relevant": [
+     "sp-F34049-36"
+    ],
+    "got": [
+     "sp-F34049-36",
+     "sp-F34049-37",
+     "sp-F34049-52",
+     "sp-F34049-48",
+     "sp-F34049-49"
+    ]
+   },
+   {
+    "q": "conditions pour obtenir la CMI stationnement",
+    "relevant": [
+     "sp-F34049-3"
+    ],
+    "got": [
+     "sp-F34049-2",
+     "sp-F34049-13",
+     "sp-F34049-4",
+     "sp-F34049-18",
+     "sp-F34049-1"
+    ]
+   },
+   {
+    "q": "je demande l'APA en même temps, comment faire pour la CMI",
+    "relevant": [
+     "sp-F34049-5",
+     "sp-F34049-22",
+     "sp-F34049-40"
+    ],
+    "got": [
+     "sp-F34049-21",
+     "sp-F34049-22",
+     "sp-F34049-4",
+     "sp-F34049-25",
+     "sp-F34049-5"
+    ]
+   },
+   {
+    "q": "can I apply for the mobility inclusion card online at the MDPH",
+    "relevant": [
+     "sp-F34049-7",
+     "sp-F34049-24",
+     "sp-F34049-42",
+     "sp-F34049-17",
+     "sp-F34049-34",
+     "sp-F34049-51"
+    ],
+    "got": [
+     "sp-F34049-51",
+     "sp-F34049-24",
+     "sp-F34049-34",
+     "sp-F34049-42",
+     "sp-F34049-7"
+    ]
+   },
+   {
+    "q": "c'est la CDAPH qui examine le dossier de carte ?",
+    "relevant": [
+     "sp-F34049-9",
+     "sp-F34049-26",
+     "sp-F34049-44"
+    ],
+    "got": [
+     "sp-F34049-9",
+     "sp-F34049-26",
+     "sp-F34049-44",
+     "sp-F34049-20",
+     "sp-F34049-8"
+    ]
+   },
+   {
+    "q": "en combien de temps je reçois ma CMI une fois acceptée",
+    "relevant": [
+     "sp-F34049-10",
+     "sp-F34049-27",
+     "sp-F34049-45"
+    ],
+    "got": [
+     "sp-F34049-27",
+     "sp-F34049-45",
+     "sp-F34049-10",
+     "sp-F34049-21",
+     "sp-F34049-39"
+    ]
+   },
+   {
+    "q": "contester un refus de carte mobilité inclusion au tribunal",
+    "relevant": [
+     "sp-F34049-11",
+     "sp-F34049-12",
+     "sp-F34049-28",
+     "sp-F34049-29",
+     "sp-F34049-46",
+     "sp-F34049-47"
+    ],
+    "got": [
+     "sp-F34049-12",
+     "sp-F34049-29",
+     "sp-F34049-47",
+     "sp-F34049-46",
+     "sp-F34049-11"
+    ]
+   },
+   {
+    "q": "is the disability card given for life",
+    "relevant": [
+     "sp-F34049-48",
+     "sp-F34049-14",
+     "sp-F34049-30"
+    ],
+    "got": [
+     "sp-F34049-48",
+     "sp-F34049-30",
+     "sp-F34049-37",
+     "sp-F34049-38",
+     "sp-F34049-36"
+    ]
+   },
+   {
+    "q": "on m'a volé ma carte mobilité inclusion invalidité",
+    "relevant": [
+     "sp-F34049-49",
+     "sp-F34049-50",
+     "sp-F34049-51"
+    ],
+    "got": [
+     "sp-F34049-50",
+     "sp-F34049-49",
+     "sp-F34049-51",
+     "sp-F34049-32",
+     "sp-F34049-37"
+    ]
+   },
+   {
+    "q": "faut-il demander la CMI priorité si j'ai déjà la CMI invalidité",
+    "relevant": [
+     "sp-F34049-52"
+    ],
+    "got": [
+     "sp-F34049-21",
+     "sp-F34049-39",
+     "sp-F34049-52",
+     "sp-F34049-18",
+     "sp-F34049-20"
+    ]
+   },
+   {
+    "q": "Saint-Lazare accessible aux personnes en fauteuil ?",
+    "relevant": [
+     "idfm-acc-58566",
+     "idfm-acc-58718"
+    ],
+    "got": [
+     "idfm-acc-58566",
+     "idfm-acc-58718",
+     "idfm-acc-48964",
+     "idfm-acc-43201",
+     "idfm-acc-43196"
+    ]
+   },
+   {
+    "q": "step-free access at Gare d'Austerlitz",
+    "relevant": [
+     "idfm-acc-43072"
+    ],
+    "got": [
+     "idfm-acc-43072",
+     "idfm-acc-58757",
+     "idfm-acc-43607",
+     "idfm-acc-47528",
+     "idfm-acc-44514"
+    ]
+   },
+   {
+    "q": "accessibilité PMR à Massy Palaiseau",
+    "relevant": [
+     "idfm-acc-58774"
+    ],
+    "got": [
+     "idfm-acc-58774",
+     "idfm-acc-47940",
+     "idfm-acc-47009",
+     "idfm-acc-43175",
+     "idfm-acc-43234"
+    ]
+   },
+   {
+    "q": "gare de Rambouillet accessible",
+    "relevant": [
+     "idfm-acc-427870"
+    ],
+    "got": [
+     "idfm-acc-427870",
+     "idfm-acc-47881",
+     "idfm-acc-46689",
+     "idfm-acc-43167",
+     "idfm-acc-47910"
+    ]
+   },
+   {
+    "q": "is Châtelet les Halles wheelchair accessible",
+    "relevant": [
+     "idfm-acc-45102"
+    ],
+    "got": [
+     "idfm-acc-45102",
+     "idfm-acc-46470",
+     "idfm-acc-58757",
+     "idfm-acc-48964",
+     "idfm-acc-470540"
+    ]
+   },
+   {
+    "q": "Cergy le Haut fauteuil roulant",
+    "relevant": [
+     "idfm-acc-43104"
+    ],
+    "got": [
+     "idfm-acc-43104",
+     "idfm-acc-44559",
+     "idfm-acc-47897",
+     "idfm-acc-43133",
+     "idfm-acc-48964"
+    ]
+   },
+   {
+    "q": "accès handicapé gare de Pontoise",
+    "relevant": [
+     "idfm-acc-44411"
+    ],
+    "got": [
+     "idfm-acc-44411",
+     "idfm-acc-45493",
+     "idfm-acc-43184",
+     "idfm-acc-46552",
+     "idfm-acc-46286"
+    ]
+   },
+   {
+    "q": "Noisy-Champs accessible ?",
+    "relevant": [
+     "idfm-acc-58937"
+    ],
+    "got": [
+     "idfm-acc-58937",
+     "idfm-acc-474082",
+     "idfm-acc-44201",
+     "idfm-acc-58288",
+     "idfm-acc-46477"
+    ]
+   },
+   {
+    "q": "peut-on voyager avec un chat dans le RER",
+    "relevant": [],
+    "got": [
+     "idfm-acc-53783"
+    ]
+   },
+   {
+    "q": "how much is a ticket from Paris to CDG airport",
+    "relevant": [],
+    "got": []
+   },
+   {
+    "q": "droit de grève des conducteurs RATP",
+    "relevant": [],
+    "got": [
+     "sp-F31852-1"
+    ]
+   },
+   {
+    "q": "where is the lost and found office for the metro",
+    "relevant": [],
+    "got": []
+   },
+   {
+    "q": "comment refaire ma carte d'identité",
+    "relevant": [],
+    "got": [
+     "sp-F34049-10",
+     "sp-F34049-45",
+     "sp-F34049-27",
+     "sp-F34049-5",
+     "sp-F34049-41"
+    ]
+   },
+   {
+    "q": "les trottinettes sont-elles autorisées dans le métro",
+    "relevant": [],
+    "got": [
+     "idfm-acc-58875",
+     "idfm-acc-43207",
+     "idfm-acc-58937",
+     "idfm-acc-58757",
+     "idfm-acc-43208"
+    ]
+   },
+   {
+    "q": "station République accessible en fauteuil",
+    "relevant": [],
+    "got": [
+     "idfm-acc-43607",
+     "idfm-acc-47046",
+     "idfm-acc-45419",
+     "idfm-acc-48964",
+     "idfm-acc-470540"
+    ]
+   },
+   {
+    "q": "remboursement d'un abonnement Navigo non utilisé",
+    "relevant": [],
+    "got": [
+     "sp-F34049-15",
+     "sp-F31852-1",
+     "sp-F12151-10",
+     "sp-F34049-16",
+     "sp-F34049-49"
+    ]
+   }
+  ]
+ }
+}
