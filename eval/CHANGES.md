@@ -148,3 +148,13 @@ Dev run, answers read one by one; judge and reading agree:
 - New expectation types: "docs" (Service Public citation in the answer and one of the expected facts), "access" (Île-de-France Mobilités citation and the expected accessibility level text), "access_none" (no level given; says the data covers train and RER).
 - The eval uses the real committed corpus (data/docs.json): it is static, so no fixture is needed.
 - Rules path alone, before any AI run (local check, no model): 6/10 of the new questions. The misses are inherent to verbatim excerpts (an English question against French text; the useful sentence sharing no word with the question) or route phrasing that goes to the AI by design. Not tuned further against these questions.
+
+## RAG v1 dev run (aa7014f, 2026-11-23 09:15 UTC): judge hybrid 40/42, read 39/42; rules only 18/42
+- Cost $0.0476 ($0.00113 per question), hybrid p50 / p95 1924 / 4926 ms, guard corrections 5, blocked to template 1.
+- The 32 earlier questions: 32/32. The 10 RAG questions: judge 8/10, read 7/10. Every document answer carried its source and date (appended by code).
+- Claims checked one by one against data/docs.json: the 3-month deadline, registered letter, 1-month mediator delay, collection suspended during RATP mediation, CMI seat and queue priority, companion benefits, the mediator's 3-month opinion: all in the retrieved passages.
+- Failures:
+  - "comment saisir la médiatrice de la SNCF pour un litige ?": 4 sentences (limit 3 for voice); content grounded.
+  - "can I get to the platforms at La Défense in a wheelchair": misattributes the station-level AssistenGare booking to "line L" (the record says the train service at the station), and lists line L twice. The judge failed it because the level was translated, but the answer is wrong either way.
+  - Counted as a failure on reading although the judge passed it: "I got a fine on the RER...": adds "the SNCF mediator for trains and RER". The passage names the SNCF mediator for SNCF only; RER lines are run by RATP and SNCF. The guard cannot see this (no number or line): the known limit recorded in D-025.
+- Not yet measured on a held-out set: a RAG held-out set has to be written and frozen before its first run.
