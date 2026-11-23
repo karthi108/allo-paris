@@ -255,3 +255,8 @@ Set 5 is no longer blind after these runs.
 - Regression found by this run: the support check rejected a correct La Défense answer that named lines from find_station, not from the passage. Fix: the check also sees the other tool results. After the fix, La Défense, street parking and car registration re-run with --only (diagnosis, not a measurement): La Défense answer correct (judge still expects the French level text), the two near misses decline.
 - Other judge failures, variance seen before: a 4-sentence clarifying answer ("Metropolis City Hall"); a route answer mentioning the disrupted 24-minute RER B option as the one to avoid.
 - Cost $0.00122 per question, hybrid p50 / p95 2449 / 5200 ms.
+
+## Intent test set for the ML classifier comparison (written 2026-11-23, committed before any run)
+- eval/intents_test.jsonl: 120 questions, 15 per label (departures, status, route, velib, ev, access, docs, out_of_scope), 64 FR, 56 EN. Written by the assistant; none from the owner or real users; no question repeats another set.
+- Purpose: one table comparing rules / ML classifier / LLM / hybrid on the same questions (accuracy, cost, latency). Frozen: never used for training or tuning; run once per measured version.
+- Label rules: "docs" covers travel-rule and fiche questions even when the corpus has no answer (dog, bike on board, strike law), because they go to document search; "out_of_scope" covers prices, buses, weather, jokes, injections, gibberish.
