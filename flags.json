@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-23T06:00:56+00:00",
+ "generated_at": "2026-11-23T06:10:37+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
-  "covered_hours": 351.9,
+  "covered_hours": 352.1,
   "gaps": 2,
   "stale_snapshots": 0
  },
@@ -19,36 +19,36 @@
    "point_id": "FR*V75*E9002*01*1",
    "station": "7 Boulevard des Capucines 75002 Paris",
    "since": "2026-11-20T16:00:55+00:00",
-   "covered_hours": 62.0,
+   "covered_hours": 62.2,
    "lower_bound": false,
-   "detail": "unknown since Fri 20 Nov 16:00 UTC, 62.0 h observed"
+   "detail": "unknown since Fri 20 Nov 16:00 UTC, 62.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*01*2",
    "station": "7 Boulevard des Capucines 75002 Paris",
    "since": "2026-11-20T16:00:55+00:00",
-   "covered_hours": 62.0,
+   "covered_hours": 62.2,
    "lower_bound": false,
-   "detail": "unknown since Fri 20 Nov 16:00 UTC, 62.0 h observed"
+   "detail": "unknown since Fri 20 Nov 16:00 UTC, 62.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9002*01*3",
    "station": "7 Boulevard des Capucines 75002 Paris",
    "since": "2026-11-20T16:00:55+00:00",
-   "covered_hours": 62.0,
+   "covered_hours": 62.2,
    "lower_bound": false,
-   "detail": "unknown since Fri 20 Nov 16:00 UTC, 62.0 h observed"
+   "detail": "unknown since Fri 20 Nov 16:00 UTC, 62.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9005*01*1",
    "station": "17 Place du Panthéon 75005 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -64,9 +64,9 @@
    "point_id": "FR*V75*E9005*01*2",
    "station": "17 Place du Panthéon 75005 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -82,9 +82,9 @@
    "point_id": "FR*V75*E9005*01*3",
    "station": "17 Place du Panthéon 75005 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -100,9 +100,9 @@
    "point_id": "FR*V75*E9006*02*1",
    "station": "11 Rue de Medicis 75006 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -118,9 +118,9 @@
    "point_id": "FR*V75*E9006*02*2",
    "station": "11 Rue de Medicis 75006 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -136,9 +136,9 @@
    "point_id": "FR*V75*E9006*02*3",
    "station": "11 Rue de Medicis 75006 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -154,18 +154,18 @@
    "point_id": "FR*V75*E9006*03*1",
    "station": "66 Rue de Rennes 75006 Paris",
    "since": "2026-11-20T23:00:56+00:00",
-   "covered_hours": 55.0,
+   "covered_hours": 55.2,
    "lower_bound": false,
-   "detail": "maintenance since Fri 20 Nov 23:00 UTC, 55.0 h observed"
+   "detail": "maintenance since Fri 20 Nov 23:00 UTC, 55.2 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9007*04*1",
    "station": "35 Rue du Bac 75007 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R3",
@@ -190,18 +190,18 @@
    "point_id": "FR*V75*E9014*01*1",
    "station": "173 Avenue du Maine 75014 Paris",
    "since": "2026-11-21T17:40:34+00:00",
-   "covered_hours": 36.3,
+   "covered_hours": 36.5,
    "lower_bound": false,
-   "detail": "maintenance since Sat 21 Nov 17:40 UTC, 36.3 h observed"
+   "detail": "maintenance since Sat 21 Nov 17:40 UTC, 36.5 h observed"
   },
   {
    "rule": "R2",
    "point_id": "FR*V75*E9014*04*1",
    "station": "47 Rue Didot 75014 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "available with no session for 351.9 h observed or more, while 2 other point(s) at this address were used"
+   "detail": "available with no session for 352.1 h observed or more, while 2 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -217,27 +217,27 @@
    "point_id": "FR*V75*E9015*04*2",
    "station": "99 Rue de la Convention 75015 Paris",
    "since": "2026-11-20T16:30:49+00:00",
-   "covered_hours": 61.5,
+   "covered_hours": 61.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 20 Nov 16:30 UTC, 61.5 h observed"
+   "detail": "maintenance since Fri 20 Nov 16:30 UTC, 61.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9016*06*1",
    "station": "45 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-22T02:40:35+00:00",
-   "covered_hours": 27.3,
+   "covered_hours": 27.5,
    "lower_bound": false,
-   "detail": "maintenance since Sun 22 Nov 02:40 UTC, 27.3 h observed"
+   "detail": "maintenance since Sun 22 Nov 02:40 UTC, 27.5 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9017*04*1",
    "station": "12 Boulevard de Courcelles 75017 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -253,9 +253,9 @@
    "point_id": "FR*V75*E9017*04*2",
    "station": "12 Boulevard de Courcelles 75017 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -271,9 +271,9 @@
    "point_id": "FR*V75*E9017*04*3",
    "station": "12 Boulevard de Courcelles 75017 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -289,9 +289,9 @@
    "point_id": "FR*V75*E9020*04*1",
    "station": "127 Rue des Pyrénées 75020 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -307,9 +307,9 @@
    "point_id": "FR*V75*E9020*04*2",
    "station": "127 Rue des Pyrénées 75020 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -325,9 +325,9 @@
    "point_id": "FR*V75*E9020*04*3",
    "station": "127 Rue des Pyrénées 75020 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -343,27 +343,27 @@
    "point_id": "FR*V75*EPX01*02*1",
    "station": "62 Jean-Jacques Rousseau 75001 Paris",
    "since": "2026-11-19T11:40:35+00:00",
-   "covered_hours": 90.3,
+   "covered_hours": 90.5,
    "lower_bound": false,
-   "detail": "available with no session for 90.3 h observed, while 3 other point(s) at this address were used"
+   "detail": "available with no session for 90.5 h observed, while 3 other point(s) at this address were used"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX05*12*5",
    "station": "18 Rue Linnée 75005 Paris",
    "since": "2026-11-19T12:50:35+00:00",
-   "covered_hours": 89.2,
+   "covered_hours": 89.3,
    "lower_bound": false,
-   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 89.2 h observed"
+   "detail": "maintenance since Thu 19 Nov 12:50 UTC, 89.3 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX05*13*3",
    "station": "25 Rue Henri Barbusse 75005 Paris",
    "since": "2026-11-10T07:50:34+00:00",
-   "covered_hours": 309.4,
+   "covered_hours": 309.5,
    "lower_bound": false,
-   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 309.4 h observed"
+   "detail": "maintenance since Tue 10 Nov 07:50 UTC, 309.5 h observed"
   },
   {
    "rule": "R4",
@@ -379,9 +379,9 @@
    "point_id": "FR*V75*EPX06*07*1",
    "station": "38 Rue du Four 75006 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -397,18 +397,18 @@
    "point_id": "FR*V75*EPX06*07*6",
    "station": "38 Rue du Four 75006 Paris",
    "since": "2026-11-18T09:10:33+00:00",
-   "covered_hours": 116.8,
+   "covered_hours": 117.0,
    "lower_bound": false,
-   "detail": "available with no session for 116.8 h observed, while 4 other point(s) at this address were used"
+   "detail": "available with no session for 117.0 h observed, while 4 other point(s) at this address were used"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX07*11*3",
    "station": "13 Rue Ernest Psichari 75007 Paris",
    "since": "2026-11-15T14:20:33+00:00",
-   "covered_hours": 183.7,
+   "covered_hours": 183.8,
    "lower_bound": false,
-   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 183.7 h observed"
+   "detail": "maintenance since Sun 15 Nov 14:20 UTC, 183.8 h observed"
   },
   {
    "rule": "R4",
@@ -424,9 +424,9 @@
    "point_id": "FR*V75*EPX09*04*5",
    "station": "35 Rue Victor Massé 75009 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -442,9 +442,9 @@
    "point_id": "FR*V75*EPX09*11*1",
    "station": "12 Rue Milton 75009 Paris",
    "since": "2026-11-13T09:50:33+00:00",
-   "covered_hours": 236.2,
+   "covered_hours": 236.3,
    "lower_bound": false,
-   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 236.2 h observed"
+   "detail": "maintenance since Fri 13 Nov 09:50 UTC, 236.3 h observed"
   },
   {
    "rule": "R4",
@@ -460,9 +460,9 @@
    "point_id": "FR*V75*EPX09*12*2",
    "station": "",
    "since": "2026-11-17T09:40:36+00:00",
-   "covered_hours": 140.3,
+   "covered_hours": 140.5,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 140.3 h observed"
+   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 140.5 h observed"
   },
   {
    "rule": "R4",
@@ -478,9 +478,9 @@
    "point_id": "FR*V75*EPX11*14*6",
    "station": "5 Avenue de la République 75011 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -496,9 +496,9 @@
    "point_id": "FR*V75*EPX12*07*4",
    "station": "20 Boulevard de la Bastille 75012 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -514,9 +514,9 @@
    "point_id": "FR*V75*EPX12*07*5",
    "station": "20 Boulevard de la Bastille 75012 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -532,18 +532,18 @@
    "point_id": "FR*V75*EPX12*11*2",
    "station": "3 Rue Henard 75012 Paris",
    "since": "2026-11-21T19:30:54+00:00",
-   "covered_hours": 34.5,
+   "covered_hours": 34.7,
    "lower_bound": false,
-   "detail": "maintenance since Sat 21 Nov 19:30 UTC, 34.5 h observed"
+   "detail": "maintenance since Sat 21 Nov 19:30 UTC, 34.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX13*06*5",
    "station": "",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -559,18 +559,18 @@
    "point_id": "FR*V75*EPX13*19*4",
    "station": "157 Rue Jeanne D'Arc 75013 Paris",
    "since": "2026-11-17T12:30:52+00:00",
-   "covered_hours": 137.5,
+   "covered_hours": 137.7,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 12:30 UTC, 137.5 h observed"
+   "detail": "maintenance since Tue 17 Nov 12:30 UTC, 137.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX13*27*2",
    "station": "189 Rue Tolbiac 75013 Paris",
    "since": "2026-11-09T07:00:57+00:00",
-   "covered_hours": 334.2,
+   "covered_hours": 334.4,
    "lower_bound": false,
-   "detail": "maintenance since Mon 09 Nov 07:00 UTC, 334.2 h observed"
+   "detail": "maintenance since Mon 09 Nov 07:00 UTC, 334.4 h observed"
   },
   {
    "rule": "R4",
@@ -586,27 +586,27 @@
    "point_id": "FR*V75*EPX14*05*1",
    "station": "1 Rue Boulard 75014 Paris",
    "since": "2026-11-20T13:30:46+00:00",
-   "covered_hours": 64.5,
+   "covered_hours": 64.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 20 Nov 13:30 UTC, 64.5 h observed"
+   "detail": "maintenance since Fri 20 Nov 13:30 UTC, 64.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*01*7",
    "station": "1 Rue du Colonel Pierre Avia 75015 Paris",
    "since": "2026-11-18T16:30:48+00:00",
-   "covered_hours": 109.5,
+   "covered_hours": 109.7,
    "lower_bound": false,
-   "detail": "maintenance since Wed 18 Nov 16:30 UTC, 109.5 h observed"
+   "detail": "maintenance since Wed 18 Nov 16:30 UTC, 109.7 h observed"
   },
   {
    "rule": "R2",
    "point_id": "FR*V75*EPX15*02*6",
    "station": "56 Rue Lacordaire 75015 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "available with no session for 351.9 h observed or more, while 6 other point(s) at this address were used"
+   "detail": "available with no session for 352.1 h observed or more, while 6 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -622,9 +622,9 @@
    "point_id": "FR*V75*EPX15*04*1",
    "station": "",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "available with no session for 351.9 h observed or more, while 1 other point(s) at this address were used"
+   "detail": "available with no session for 352.1 h observed or more, while 1 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -640,9 +640,9 @@
    "point_id": "FR*V75*EPX15*20*4",
    "station": "43 Rue du Docteur Finlay 75015 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "available with no session for 351.9 h observed or more, while 6 other point(s) at this address were used"
+   "detail": "available with no session for 352.1 h observed or more, while 6 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -658,27 +658,18 @@
    "point_id": "FR*V75*EPX15*20*5",
    "station": "43 Rue du Docteur Finlay 75015 Paris",
    "since": "2026-11-18T20:30:48+00:00",
-   "covered_hours": 105.5,
+   "covered_hours": 105.7,
    "lower_bound": false,
-   "detail": "maintenance since Wed 18 Nov 20:30 UTC, 105.5 h observed"
-  },
-  {
-   "rule": "R1",
-   "point_id": "FR*V75*EPX15*20*7",
-   "station": "43 Rue du Docteur Finlay 75015 Paris",
-   "since": "2026-11-20T20:40:35+00:00",
-   "covered_hours": 57.3,
-   "lower_bound": false,
-   "detail": "maintenance since Fri 20 Nov 20:40 UTC, 57.3 h observed"
+   "detail": "maintenance since Wed 18 Nov 20:30 UTC, 105.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*27*1",
    "station": "4 Rue Beaugrenelle 75015 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -694,9 +685,9 @@
    "point_id": "FR*V75*EPX15*27*5",
    "station": "4 Rue Beaugrenelle 75015 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "available with no session for 351.9 h observed or more, while 4 other point(s) at this address were used"
+   "detail": "available with no session for 352.1 h observed or more, while 4 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -712,27 +703,27 @@
    "point_id": "FR*V75*EPX15*28*6",
    "station": "108 Rue Balard 75015 Paris",
    "since": "2026-11-20T03:30:44+00:00",
-   "covered_hours": 74.5,
+   "covered_hours": 74.7,
    "lower_bound": false,
-   "detail": "available with no session for 74.5 h observed, while 5 other point(s) at this address were used"
+   "detail": "available with no session for 74.7 h observed, while 5 other point(s) at this address were used"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX15*29*1",
    "station": "78 Avenue de Suffren 75015 Paris",
    "since": "2026-11-17T14:50:36+00:00",
-   "covered_hours": 135.2,
+   "covered_hours": 135.3,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 14:50 UTC, 135.2 h observed"
+   "detail": "maintenance since Tue 17 Nov 14:50 UTC, 135.3 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX16*20*2",
    "station": "70 Avenue Henri Martin 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -748,9 +739,9 @@
    "point_id": "FR*V75*EPX16*23*1",
    "station": "18 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -766,9 +757,9 @@
    "point_id": "FR*V75*EPX16*23*2",
    "station": "18 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -784,9 +775,9 @@
    "point_id": "FR*V75*EPX16*23*3",
    "station": "18 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -802,9 +793,9 @@
    "point_id": "FR*V75*EPX16*23*4",
    "station": "18 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -820,9 +811,9 @@
    "point_id": "FR*V75*EPX16*23*5",
    "station": "18 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -838,9 +829,9 @@
    "point_id": "FR*V75*EPX16*23*6",
    "station": "18 Avenue Victor Hugo 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -856,9 +847,9 @@
    "point_id": "FR*V75*EPX16*26*5",
    "station": "33 Rue du Ranelagh 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "available with no session for 351.9 h observed or more, while 5 other point(s) at this address were used"
+   "detail": "available with no session for 352.1 h observed or more, while 5 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -874,9 +865,9 @@
    "point_id": "FR*V75*EPX16*34*5",
    "station": "39 Avenue Paul Doumer 75016 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -892,9 +883,9 @@
    "point_id": "FR*V75*EPX16*36*2",
    "station": "",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -910,18 +901,18 @@
    "point_id": "FR*V75*EPX17*03*6",
    "station": "22 Place Charles Fillion 75017 Paris",
    "since": "2026-11-19T15:30:48+00:00",
-   "covered_hours": 86.5,
+   "covered_hours": 86.7,
    "lower_bound": false,
-   "detail": "maintenance since Thu 19 Nov 15:30 UTC, 86.5 h observed"
+   "detail": "maintenance since Thu 19 Nov 15:30 UTC, 86.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX17*04*5",
    "station": "6 Avenue de la Porte Pouchet 75017 Paris",
    "since": "2026-11-17T03:20:38+00:00",
-   "covered_hours": 146.7,
+   "covered_hours": 146.8,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 146.7 h observed"
+   "detail": "maintenance since Tue 17 Nov 03:20 UTC, 146.8 h observed"
   },
   {
    "rule": "R3",
@@ -937,9 +928,9 @@
    "point_id": "FR*V75*EPX17*05*4",
    "station": "66 Rue de la Jonquière 75017 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -955,18 +946,18 @@
    "point_id": "FR*V75*EPX17*16*4",
    "station": "47 Rue Navier 75017 Paris",
    "since": "2026-11-20T08:30:47+00:00",
-   "covered_hours": 69.5,
+   "covered_hours": 69.7,
    "lower_bound": false,
-   "detail": "maintenance since Fri 20 Nov 08:30 UTC, 69.5 h observed"
+   "detail": "maintenance since Fri 20 Nov 08:30 UTC, 69.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*EPX19*02*7",
    "station": "61 Avenue de Flandre 75019 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -982,9 +973,9 @@
    "point_id": "FR*V75*EPX19*04*4",
    "station": "60 Boulevard Sérurier 75019 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -1000,9 +991,9 @@
    "point_id": "FR*V75*EPX19*04*5",
    "station": "60 Boulevard Sérurier 75019 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -1027,9 +1018,9 @@
    "point_id": "FR*V75*EPX20*13*2",
    "station": "5 Rue Frédéric Loliée 75020 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -1045,9 +1036,9 @@
    "point_id": "FR*V75*EPX20*17*2",
    "station": "105 Rue Pelleport 75020 Paris",
    "since": "2026-11-08T10:02:45+00:00",
-   "covered_hours": 351.9,
+   "covered_hours": 352.1,
    "lower_bound": true,
-   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 351.9 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 352.1 h observed"
   },
   {
    "rule": "R4",
@@ -1063,9 +1054,9 @@
    "point_id": "FR*V75*EPX20*19*6",
    "station": "137 Rue des Pyrénées 75020 Paris",
    "since": "2026-11-18T07:40:42+00:00",
-   "covered_hours": 118.3,
+   "covered_hours": 118.5,
    "lower_bound": false,
-   "detail": "maintenance since Wed 18 Nov 07:40 UTC, 118.3 h observed"
+   "detail": "maintenance since Wed 18 Nov 07:40 UTC, 118.5 h observed"
   }
  ]
 }
