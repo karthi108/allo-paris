@@ -474,10 +474,12 @@ function renderBoard(d) {
     const times = el("div", { class: "times" });
     xs.slice(0, 3).forEach((x, i) => {
       const label = x.minutes <= 0 ? t.now : String(x.minutes);
-      const node = el("span", { class: `t ${i ? "later" : "next"}${x.realtime ? "" : " sched"}`, textContent: label,
-        title: (x.realtime ? t.live : t.sched) + " · " + new Date(x.at).toLocaleTimeString(state.lang, { hour: "2-digit", minute: "2-digit" }) });
-      if (x.minutes > 0) node.append(el("small", { textContent: t.min }));
-      times.append(node);
+      const clock = new Date(x.at).toLocaleTimeString(state.lang, { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Paris" });
+      const main = el("span", { class: "mins", textContent: label });
+      if (x.minutes > 0) main.append(el("small", { textContent: t.min }));
+      // Clock time under the countdown, for planning ("14:32")
+      times.append(el("span", { class: `t ${i ? "later" : "next"}${x.realtime ? "" : " sched"}`,
+        title: (x.realtime ? t.live : t.sched) + " · " + clock }, main, el("span", { class: "clock", textContent: clock })));
     });
     b.append(el("div", { class: "dir" },
       el("div", {}, el("div", { class: "to", textContent: t.to }), el("div", { class: "dest", textContent: dest })), times));
