@@ -217,3 +217,9 @@ Never delete an entry; mark it superseded and link the replacement.
 - Answers: a clearly named station's accessibility is answered by the rules, verbatim from the record, cited. A station with no record (any metro station) gets "not covered, the data covers train and RER stations", never a guess. Fine, mediator and CMI questions go to the AI with a search_docs tool; without AI, the rules give the two best-matching sentences verbatim, cited. The citation (source and date) is appended by code after the guard, so every document answer carries it whatever the model writes.
 - Guard: unchanged rules now apply to passages too (numbers and lines must appear in what search_docs returned; the station's lines are returned as structured data). Known limit: it does not check reworded claims without numbers or lines.
 - Open: the ev-data branch publishes a database derived from Belib' (ODbL) without a licence notice. Needs an ODbL notice and source credit there (owner to approve the push).
+
+## D-026 · ML models allowed for RAG v2 and an intent classifier (2026-11-23)
+- Owner decision, 2026-11-23: the earlier rule "no ML models" is lifted for two uses only: (1) RAG v2 retrieval (embeddings and a reranker on top of BM25) and (2) a lightweight intent classifier between the rules and the LLM.
+- Unchanged: no vector database (the corpus is small enough to search in memory), no multi-agent setup, no fine-tuning (still parked), no user accounts.
+- Conditions: each model is measured against the current baseline on the same sets (BM25 v1 for retrieval, rules and LLM for intent), with accuracy, cost and latency reported, bad numbers included. It must fit the Render free plan or be computed at build time. Held-out sets stay frozen in git before their first run.
+- Why: the owner wants the project to show retrieval and classification work measured end to end, not only rules and prompting.
