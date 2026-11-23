@@ -39,7 +39,7 @@ Bad results are kept too: the reasons for every failure are in [eval/CHANGES.md]
 question ─► injection filter ─► rules parser ──── confident? ──► template answer        (free, ~76 ms)
                                      │ no
                                      ▼
-                         LLM agent (OpenAI or Anthropic, tool calling)
+                         LLM agent (OpenAI, Anthropic or Mistral, tool calling)
                            find_station · next_departures · line_status
                            velib_nearby · chargers_nearby · plan_route (IDFM planner + live disruptions)
                                      │ draft answer
@@ -138,7 +138,7 @@ python scripts\build_stops.py   # downloads the IDFM station list (~1 min)
 ```
 Other commands: `python scripts\ask.py "ligne 4 Gare du Nord"` or `python scripts\ask.py --en "EV chargers near Bastille"` (live answer in the terminal) · `python eval\run_eval.py` · `python eval\run_agent_eval.py [--set holdout2] [--only TEXT]` (uses your LLM key) · `python scripts\check_routes.py` · `python scripts\measure.py` · `.\ship.ps1 "message"` (all checks, then commit and push).
 
-Optional AI agent: set `ALLO_LLM_PROVIDER` (`anthropic` or `openai`), `ALLO_LLM_API_KEY` and `ALLO_LLM_DAILY_BUDGET_USD` in `.env`. Without them everything still works on the rules path.
+Optional AI agent: set `ALLO_LLM_PROVIDER` (`openai`, `anthropic` or `mistral`), `ALLO_LLM_API_KEY` and `ALLO_LLM_DAILY_BUDGET_USD` in `.env`. Without them everything still works on the rules path. All measured results use `openai/gpt-4.1-mini`. Mistral support (`mistral-small-latest` by default) is unit-tested but has not been run on the evaluation sets yet; `python eval/run_agent_eval.py --set holdout6 --agent-provider mistral` would compare it with retrieval kept equal (needs `ALLO_MISTRAL_API_KEY`).
 
 ## Deploy (free)
 Live at https://allo-paris.onrender.com. `render.yaml` is a Render Blueprint: Render dashboard → **New → Blueprint** → this repo → paste `ALLO_PRIM_API_KEY`, `ALLO_LLM_PROVIDER` and `ALLO_LLM_API_KEY` when asked. Free instances sleep when idle (first request ~30-60 s).
