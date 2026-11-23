@@ -244,3 +244,8 @@ The 4 judge failures, read one by one:
 - "carte de stationnement résident à Paris, comment l'obtenir": the worst failure. The AI answered from general knowledge (mairie, proof of address) and the code appended a Service Public citation because a CMI Stationnement passage had been retrieved. A citation on a claim the passage does not support. The guard does not check reworded claims without numbers (known limit, D-025).
 Patterns for new dev questions (different wording, no targeted fix): a near-miss topic sharing a key word with a fiche ("stationnement"); citation added whenever any passage was retrieved; English questions on short sections still declined; a town name equal to a landmark keyword.
 Set 5 is no longer blind after these runs.
+
+## After held-out set 5 run 1 (2026-11-23): support check, judge fix, 4 dev questions
+- Support check (app/rag/verify.py, generic, not aimed at a question): before a document answer gets its citation, the chat model checks that every claim is in the retrieved passages; if not, the answer becomes "no document" with no citation. If the check is unavailable, the answer is kept (numbers-and-lines guard still applied). Cost: one short extra call per document answer.
+- Judge change: the 3-sentence check no longer counts abbreviations ("ex.", "e.g.", "etc.", "i.e.") as sentence ends. Held-out set 5 run 1 failed a 3-sentence answer on "par ex."; that row was already counted as a pass on reading.
+- Dev set 52 → 56 questions, one per real set 5 failure, new wording: street parking payment (near-miss on "stationnement"), lost car registration certificate (near-miss lost card), administrative-court deadline after a CMI refusal (English, short section), Roissy-en-Brie accessibility (town name with an airport keyword).

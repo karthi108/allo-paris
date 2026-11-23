@@ -194,3 +194,14 @@ def test_search_docs_tool_says_no_document_when_declined() -> None:
     out = json.loads(box.run("search_docs", {"query": "dog metro rules"}))
     assert out["passages"] == []
     assert "no document" in out["note"]
+
+
+def test_support_checker_reads_the_verdict() -> None:
+    from app.rag.verify import SupportChecker
+
+    p = [{"title": "t", "passage": "Le recours est gratuit."}]
+    assert SupportChecker(_client('{"supported": true}'))("It is free.", p) is True
+    assert SupportChecker(_client('{"supported": false}'))("Ask your town hall.", p) is False
+    assert SupportChecker(_client('{"supported": true}'))("x", []) is False
+    with pytest.raises(LLMUnavailable):
+        SupportChecker(_client("nope"))("x", p)

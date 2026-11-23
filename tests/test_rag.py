@@ -301,3 +301,71 @@ def test_no_fee_from_a_document(corpus: Corpus, full: StopIndex) -> None:
         "j'ai égaré ma carte d'invalidité CMI", CallState()
     )
     assert "€" not in reply.text and "duplicata" in reply.text
+
+
+# ---------- support check (after held-out set 5); wording differs from the eval ----------
+
+
+def _parking_llm() -> ScriptedLLM:
+    return ScriptedLLM(
+        [
+            call("search_docs", query="carte stationnement"),
+            LLMResponse(
+                "Pour la vignette de quartier, adressez-vous à votre mairie avec un justificatif.",
+                [],
+                100,
+                20,
+            ),
+        ]
+    )
+
+
+def test_unsupported_document_answer_is_replaced_and_not_cited(
+    corpus: Corpus, full: StopIndex
+) -> None:
+    seen: list[int] = []
+
+    def verify(answer: str, passages: list[dict[str, object]]) -> bool:
+        seen.append(len(passages))
+        return False
+
+    agent = Agent(_parking_llm(), lambda: Toolbox(full, FakeSource(), docs=corpus), verify=verify)
+    reply = Dialog(full, FakeSource(), agent=agent, docs=corpus).handle(
+        "comment avoir la vignette de stationnement de mon quartier", CallState()
+    )
+    assert seen and seen[0] > 0
+    assert "mairie" not in reply.text
+    assert "(Source" not in reply.text
+    assert "pas de document" in reply.text
+
+
+def test_supported_document_answer_keeps_its_citation(corpus: Corpus, full: StopIndex) -> None:
+    llm = ScriptedLLM(
+        [
+            call("search_docs", query="contester amende transport"),
+            LLMResponse(
+                "Oui, vous pouvez contester un procès-verbal reçu dans les transports en commun.",
+                [],
+                100,
+                20,
+            ),
+        ]
+    )
+    agent = Agent(llm, lambda: Toolbox(full, FakeSource(), docs=corpus), verify=lambda a, p: True)
+    reply = Dialog(full, FakeSource(), agent=agent, docs=corpus).handle(
+        "je veux contester mon amende", CallState()
+    )
+    assert "(Source : Service Public / DILA" in reply.text
+
+
+def test_support_check_unavailable_keeps_the_answer(corpus: Corpus, full: StopIndex) -> None:
+    from app.agent.llm import LLMUnavailable
+
+    def down(answer: str, passages: list[dict[str, object]]) -> bool:
+        raise LLMUnavailable("budget")
+
+    agent = Agent(_parking_llm(), lambda: Toolbox(full, FakeSource(), docs=corpus), verify=down)
+    reply = Dialog(full, FakeSource(), agent=agent, docs=corpus).handle(
+        "comment avoir la vignette de stationnement de mon quartier", CallState()
+    )
+    assert "mairie" in reply.text  # unchanged: the numbers-and-lines guard still applied

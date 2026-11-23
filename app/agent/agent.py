@@ -9,12 +9,13 @@ from __future__ import annotations
 
 import re
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
 from app.agent import grounding
-from app.agent.llm import LLMClient
+from app.agent.llm import LLMClient, LLMUnavailable
 from app.agent.parser import _FUTURE, FROM_TO, _connector_trip
 from app.agent.tools import TOOLS, Toolbox
 from app.data.routes import PARIS
@@ -217,9 +218,16 @@ def fallback_text(outputs: list[dict[str, Any]], lang: str) -> str:
 
 
 class Agent:
-    def __init__(self, llm: LLMClient, make_toolbox: Any) -> None:
+    def __init__(
+        self,
+        llm: LLMClient,
+        make_toolbox: Any,
+        verify: Callable[[str, list[dict[str, Any]]], bool] | None = None,
+    ) -> None:
         self.llm = llm
         self.make_toolbox = make_toolbox  # callable -> fresh Toolbox per question
+        # Support check for document answers (app/rag/verify.py); None = not checked
+        self.verify = verify
 
     def run(
         self, question: str, lang: str, history: list[dict[str, str]] | None = None
@@ -283,6 +291,20 @@ class Agent:
             # No prices or fees, even from a document: drop those sentences (policy)
             kept = [s for s in re.split(r"(?<=[.!?])\s+", answer) if not _MONEY.search(s)]
             answer = " ".join(kept) or no_doc_text(lang)
+        passages = [p for o in box.outputs for p in (o.get("passages") or [])]
+        if (
+            self.verify is not None
+            and passages
+            and reply.fallback is None
+            and not is_question_or_no_doc(answer)
+        ):
+            try:
+                if not self.verify(answer, passages):
+                    # Claims not in the passages must not carry their citation (set 5)
+                    reply.fallback = "not supported by the documents"
+                    answer = no_doc_text(lang)
+            except LLMUnavailable:
+                pass  # keep the answer: the guard already checked numbers and lines
         # Every document answer cites source and date; a "no document" answer cites nothing
         cite = "" if _NO_DOC.search(normalize(answer)) else cite_for(answer, box.outputs, lang)
         if cite and cite not in answer:

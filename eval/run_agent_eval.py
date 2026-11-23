@@ -39,6 +39,7 @@ from app.ev.belib import parse_export  # noqa: E402
 from app.ev.live import ChargerClient  # noqa: E402
 from app.rag.corpus import Corpus  # noqa: E402
 from app.rag.retriever import Retriever, make_retriever  # noqa: E402
+from app.rag.verify import SupportChecker  # noqa: E402
 
 # RAG v1 corpus (real, committed snapshot): deterministic, so no fixture is needed (D-025)
 DOCS = Corpus.load(ROOT / "data" / "docs.json")
@@ -292,7 +293,9 @@ def fixture_streets(chargers: ChargerClient) -> set[str]:
     }
 
 
-_SENTENCE_END = re.compile(r"[.!?](?:\s|$)")
+# Abbreviations ("par ex.", "e.g.", "etc.") are not sentence ends: held-out set 5 run 1
+# counted "par ex." and failed a 3-sentence answer (judge change, eval/CHANGES.md)
+_SENTENCE_END = re.compile(r"(?<!\bex)(?<!\be\.g)(?<!\betc)(?<!\bi\.e)[.!?](?:\s|$)")
 _WARNING = re.compile(
     r"fiab|unreliab|warning|attention|signal|flag|hors service|out of service", re.I
 )
@@ -522,9 +525,11 @@ def run_mode(
         )
         if llm is None:
             sys.exit("Hybrid mode needs ALLO_LLM_PROVIDER and ALLO_LLM_API_KEY in .env")
+        verify = None
         if RAG == "v2":
             retriever = make_retriever(DOCS, ROOT / "data" / "docs.json", llm)
-        agent = Agent(llm, make_box)
+            verify = SupportChecker(llm) if llm.provider == "openai" else None
+        agent = Agent(llm, make_box, verify=verify)
     dialog = Dialog(index, transit, bikes=bikes, agent=agent, chargers=chargers, docs=DOCS)
     rows = []
     for case in cases:

@@ -30,6 +30,7 @@ from app.data.velib import VelibClient
 from app.ev.live import ChargerClient
 from app.rag.corpus import Corpus
 from app.rag.retriever import make_retriever
+from app.rag.verify import SupportChecker
 from app.voice import twiml
 from app.voice.calls import CallConfig, CallHandler
 
@@ -69,6 +70,7 @@ agent = (
         lambda: Toolbox(
             index, prim, velib, routes, chargers=chargers, docs=docs, retriever=retriever
         ),
+        verify=SupportChecker(llm) if llm.provider == "openai" else None,
     )
     if llm
     else None
