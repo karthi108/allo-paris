@@ -180,3 +180,23 @@ The 9 failures:
 - "Denfert accessible PMR": partial name below the 0.95 match threshold and too short to go to the AI; asked which station (safe, not useful).
 Weak pass: "j'ai perdu ma carte mobilité inclusion" explains the duplicate correctly but states the 10 € fee: grounded, but against the "no prices" policy.
 Patterns (for new dev questions with different wording, not targeted fixes): rules matching a station from a fragment ("est", "Cité"); "vélo" taken as Vélib' in a rule question; the AI answering outside the corpus without a tool; generic search queries retrieving the wrong section of a long fiche; citations picked from the wrong passage; nicknames and partial names on the accessibility path.
+
+## Fixes after held-out set 4 and dev run (74bd867, 2026-11-23 09:37 UTC): judge hybrid 50/52, read 51/52; rules only 23/52
+Generic fixes, each with unit tests worded differently from the eval (tests/test_rag.py, 15 new tests, 214 in total; rules eval 61/61):
+- R1. Station names that reduce to an everyday word ("Gare de l'Est" → "est", "Quai de la Gare" → "quai", "Us") only match when the full name is said; "c'est" / "est-ce" no longer match Gare de l'Est (17 eval questions contained such words).
+- R2. An abbreviated last word after the exact other words ("Cité U", "Massy Pal") is a full match; the tie rule then prefers the longer name.
+- R3. Accessibility accepts a partial name (score >= 0.85) when it points to a single station name; several ("Massy") → asks which.
+- R4. A plain bike word next to a transport mode (RER, métro, train, tram, bus) is not a Vélib' question; "Vélib" itself always is.
+- A1. An AI answer with no tool call that is not a question or a "no document" answer gets one retry, then the "no document" template.
+- A2. search_docs ranks on the model's keywords plus the user's own question, and returns 5 passages (was 3).
+- A3. A passage must share at least 2 distinct terms with the query (a one-word query needs that word); feminine "-trice" is read as "-teur" (médiatrice = médiateur).
+- A4. Prompt: keep the question's key words in the query; search again with official wording if the passages do not answer; travel rules (animals, bikes on board) are not covered; a "no document" answer adds nothing else and gets no citation.
+- A5. No prices or fees in document answers: one retry, then sentences with an amount are dropped. Judge option "no_price" added for one dev question.
+Dev run (52 questions, 10 new from set 4), answers read one by one; claims checked against data/docs.json:
+- New questions 9/10: "c'est ... Juvisy", "Massy Pal", "Aulnay", Gare de l'Est (control) answered from the record; bike in the metro, cats, demonstrations → "no document" with no citation; the CDAPH answer and the free mediator procedure grounded and cited.
+- Failure (real): "j'ai perdu ma CMI invalidité, je fais comment ?": answers with the case for holders of the old card (new request at the department) without saying so; the duplicata route for current CMI holders is not mentioned. No fee stated.
+- Judge failure, correct on reading: "can I get to the platforms at La Défense in a wheelchair": the English answer gives the record's content correctly (AssistenGare booking for the train service, RER A on request, E, L and U via Accès Plus Transilien); the judge looks for the French level text. It failed in the previous run for a real misattribution; not this time. Judge left unchanged for now (recorded limit: "access" expects the French wording).
+- Earlier 42 questions: 41/42 by the judge (the La Défense case above), 42/42 on reading.
+- Cost $0.0596 ($0.00115 per question), hybrid p50 / p95 1854 / 4592 ms.
+- Held-out set 4 is no longer blind; any later run of it is labelled so.
+Known limits kept: the nickname "BNF" (needs a nickname table, owner's call); "Châtelet accessible ?" answers for the metro station Châtelet (no record), not the separate RER station Châtelet - Les Halles.
