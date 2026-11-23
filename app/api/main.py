@@ -17,6 +17,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from app.agent.agent import Agent
 from app.agent.dialog import Dialog
+from app.agent.intent_ml import IntentModel
 from app.agent.llm import make_client
 from app.agent.tools import Toolbox
 from app.api.web import RateLimiter, WebApi
@@ -85,6 +86,7 @@ dialog = Dialog(
     metrics=metrics,
     chargers=chargers,
     docs=docs,
+    intent_model=IntentModel.load(settings.docs_path.with_name("intent_model.json")),
 )
 store = Store(settings.db_path, settings.transcript_retention_days)
 calls = CallHandler(

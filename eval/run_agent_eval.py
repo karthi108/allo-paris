@@ -28,6 +28,7 @@ sys.path.insert(0, str(ROOT))
 
 from app.agent.agent import Agent  # noqa: E402
 from app.agent.dialog import CallState, Dialog  # noqa: E402
+from app.agent.intent_ml import IntentModel  # noqa: E402
 from app.agent.llm import make_client  # noqa: E402
 from app.agent.tools import Toolbox  # noqa: E402
 from app.core.config import get_settings  # noqa: E402
@@ -43,6 +44,7 @@ from app.rag.verify import SupportChecker  # noqa: E402
 
 # RAG v1 corpus (real, committed snapshot): deterministic, so no fixture is needed (D-025)
 DOCS = Corpus.load(ROOT / "data" / "docs.json")
+INTENT_MODEL = IntentModel.load(ROOT / "data" / "intent_model.json")
 RAG = "v2"  # --rag v1 = BM25 only in search_docs (RAG v1), for comparison
 _CITE = re.compile(r"\(Source ?: ", re.I)
 # "No document / not covered" wording, on normalize()d text (FR and EN)
@@ -530,7 +532,15 @@ def run_mode(
             retriever = make_retriever(DOCS, ROOT / "data" / "docs.json", llm)
             verify = SupportChecker(llm) if llm.provider == "openai" else None
         agent = Agent(llm, make_box, verify=verify)
-    dialog = Dialog(index, transit, bikes=bikes, agent=agent, chargers=chargers, docs=DOCS)
+    dialog = Dialog(
+        index,
+        transit,
+        bikes=bikes,
+        agent=agent,
+        chargers=chargers,
+        docs=DOCS,
+        intent_model=INTENT_MODEL if mode == "hybrid" else None,
+    )
     rows = []
     for case in cases:
         boxes.clear()

@@ -260,3 +260,18 @@ Set 5 is no longer blind after these runs.
 - eval/intents_test.jsonl: 120 questions, 15 per label (departures, status, route, velib, ev, access, docs, out_of_scope), 64 FR, 56 EN. Written by the assistant; none from the owner or real users; no question repeats another set.
 - Purpose: one table comparing rules / ML classifier / LLM / hybrid on the same questions (accuracy, cost, latency). Frozen: never used for training or tuning; run once per measured version.
 - Label rules: "docs" covers travel-rule and fiche questions even when the corpus has no answer (dog, bike on board, strike law), because they go to document search; "out_of_scope" covers prices, buses, weather, jokes, injections, gibberish.
+
+## Intent comparison, run 1 (72b8268, 2026-11-23 15:30 UTC): first and only blind run of eval/intents_test.jsonl
+120 questions, 8 labels. Raw: eval/results/intents_2026-11-23_1530_72b8268.json. An abstention counts as wrong.
+
+| System | Accuracy | Cost / question | p50 / p95 latency |
+|---|---|---|---|
+| Rules (parser, intent mapped to the 8 labels) | 98/120 (81.7%), 7 abstentions | 0 | 60 / 582 ms (includes station matching) |
+| ML classifier (logistic regression, 557 synthetic rows) | 107/120 (89.2%) | 0 | 0.14 / 0.23 ms |
+| LLM zero-shot (gpt-4.1-mini) | **118/120 (98.3%)** | ≈ $0.000067 | 646 / 1207 ms |
+| Hybrid as declared before the run: rules, then ML if p >= 0.6, then LLM | 103/120 (85.8%) | 0 (the LLM was never reached) | 60 / 582 ms |
+
+- Honest reading: the declared hybrid is worse than ML alone. The rules almost never abstain: their fallback intent is "next departure", so 15 of the 17 hybrid errors are rules answering confidently with the wrong intent (EV, accessibility, docs and out-of-scope questions without the trigger words, e.g. "where to plug in my Tesla near Châtelet", "best restaurants near Montmartre"). Cross-validation on training data only (0.91) was close to the ML test score (0.89).
+- What this means for the app: in the dialog, a "next departure" read without a line or station is asked back or handed to the AI for long sentences, so the intent-level accuracy is not the end-to-end accuracy. Still, the result says the rules' default is the weak point, and the LLM is the best classifier at about 0.07 thousandths of a dollar per question.
+- Not done (would need a new frozen set to measure): a revised hybrid such as ML first and the LLM when ML is unsure. Choosing it from this run's results would be tuning on the test set.
+- Wired into the app in a narrow role chosen from training-data cross-validation, not from this run: when the rules cannot classify a question at all ("unknown"), an out_of_scope prediction with p >= 0.9 gets the scope template without an LLM call (63 of 64 such predictions right in cross-validation).

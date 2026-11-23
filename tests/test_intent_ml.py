@@ -48,3 +48,25 @@ def test_committed_model_loads_with_the_eight_labels() -> None:
     model = IntentModel.load(Path("data") / "intent_model.json")
     assert model is not None
     assert len(model.bias) == len(LABELS) == 8
+
+
+def test_ml_gate_answers_out_of_scope_without_the_llm() -> None:
+    from app.agent.dialog import CallState, Dialog
+    from tests.conftest import FakeSource
+    from tests.test_agent import ScriptedLLM
+
+    class Never(ScriptedLLM):
+        def chat(self, *a: object, **k: object) -> object:  # type: ignore[override]
+            raise AssertionError("the LLM must not be called")
+
+    from app.agent.agent import Agent
+    from app.data.stops import StopIndex
+
+    index = StopIndex.load(Path("data") / "stops.json")
+    jokes = [("tell me a joke", "out_of_scope"), ("raconte une blague", "out_of_scope")]
+    model = IntentModel.train((ROWS + jokes) * 3, epochs=30)
+    agent = Agent(Never([]), lambda: None)
+    dialog = Dialog(index, FakeSource(), agent=agent, intent_model=model)
+    reply = dialog.handle("raconte-moi une blague drôle", CallState())  # rules: unknown
+    assert reply.path == "ml" and reply.intent == "out_of_scope"
+    assert "prix" in reply.text

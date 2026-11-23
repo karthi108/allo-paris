@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from typing import Protocol
 
 from app.agent.agent import Agent, fallback_text
+from app.agent.intent_ml import IntentModel
 from app.agent.llm import LLMUnavailable
 from app.agent.parser import MIN_STOP_SCORE, ParsedQuery, parse
 from app.core.metrics import Metrics
@@ -103,6 +104,10 @@ T = {
         "ev_fresh": "Données Belib' en temps réel.",
         "ev_down": "Les données Belib' ne sont pas disponibles pour le moment.",
         "not_understood": "Je n'ai pas compris. Dites par exemple : ligne 4 à Gare du Nord.",
+        "out_of_scope": (
+            "Je réponds sur les métros, RER, trams et trains d'Île-de-France, Vélib', les bornes "
+            "Belib' et l'accessibilité des gares, sans les prix ni les bus."
+        ),
         "which_stop": "À quelle station ?",
         "which_stop_choice": "Vous voulez dire {a} ou {b} ?",
         "stop_not_found": "Je ne trouve pas de station dans votre question. Donnez un nom de "
@@ -172,6 +177,10 @@ T = {
         "ev_fresh": "Real-time Belib' data.",
         "ev_down": "Belib' data is unavailable right now.",
         "not_understood": "Sorry, I didn't catch that. Say for example: line 4 at Gare du Nord.",
+        "out_of_scope": (
+            "I answer about Paris-region metro, RER, tram and train, Vélib' bikes, Belib' chargers "
+            "and station accessibility, without prices or buses."
+        ),
         "which_stop": "Which station?",
         "which_stop_choice": "Do you mean {a} or {b}?",
         "stop_not_found": "I can't find a station in your question. Give a station name, "
@@ -371,6 +380,7 @@ class Reply:
 _STREET = re.compile(r"\b(rue|boulevard|bd|avenue|av|place|quai|allee|impasse|cours)\b")
 
 # Rule outcomes the AI agent may improve on (when an LLM is configured)
+ML_GATE = 0.9
 AI_INTENTS = {"unknown", "unsupported_route", "unsupported_time", "docs"}
 
 
@@ -399,9 +409,13 @@ class Dialog:
         metrics: Metrics | None = None,
         chargers: ChargerSource | None = None,
         docs: Corpus | None = None,
+        intent_model: IntentModel | None = None,
     ) -> None:
         self.index = index
         self.docs = docs
+        # ML gate (D-026, step 4): when the rules cannot classify a question, a confident
+        # out_of_scope prediction answers with the scope template instead of an LLM call
+        self.intent_model = intent_model
         self.source = source
         self.stale_after = stale_after
         self.bikes = bikes
@@ -419,10 +433,23 @@ class Dialog:
         if reply is None:
             reply = self._handle_rules(utterance, state)
             if self.agent is not None and _needs_ai(reply, utterance):
-                reply = self._try_agent(utterance, state) or _mark(reply, "rules_fallback")
+                gated = self._ml_gate(utterance, state, reply)
+                reply = gated or self._try_agent(utterance, state) or _mark(reply, "rules_fallback")
         reply.latency_ms = int((time.perf_counter() - t0) * 1000)
         self.metrics.record(reply.path, reply.intent, reply.latency_ms)
         return reply
+
+    def _ml_gate(self, utterance: str, state: CallState, reply: Reply) -> Reply | None:
+        """Only for questions the rules could not classify at all ("unknown"), and only at
+        p >= ML_GATE: in training-data cross-validation, 63 of 64 such predictions were
+        right; the wrong one ("take me to the Champs-Élysées") is a route the rules classify,
+        so it never reaches this gate."""
+        if self.intent_model is None or reply.intent != "unknown":
+            return None
+        label, p = self.intent_model.predict(utterance)
+        if label != "out_of_scope" or p < ML_GATE:
+            return None
+        return Reply(t(state.lang, "out_of_scope"), "out_of_scope", path="ml")
 
     def _try_agent(self, utterance: str, state: CallState) -> Reply | None:
         if self.agent is None:
