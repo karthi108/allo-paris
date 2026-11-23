@@ -1,0 +1,41 @@
+{"q": "je peux faire annuler un procès-verbal pris dans le tram si je n'avais pas l'intention de frauder ?", "lang": "fr", "kind": "fiche", "relevant": ["sp-F31852-1"]}
+{"q": "got fined on the metro, phone battery died with my ticket on it, what can I do", "lang": "en", "kind": "fiche", "relevant": ["sp-F31852-1"]}
+{"q": "faut il envoyer la contestation de l'amende en recommandé", "lang": "fr", "kind": "fiche", "relevant": ["sp-F31852-1"]}
+{"q": "pas eu le temps de faire ma correspondance entre un TER et un Ouigo, qui peut m'aider ?", "lang": "fr", "kind": "fiche", "relevant": ["sp-F12151-2"]}
+{"q": "PV pour bagage abandonné dans le train, la médiatrice peut intervenir ?", "lang": "fr", "kind": "fiche", "relevant": ["sp-F12151-2"]}
+{"q": "can someone else file the SNCF mediation request on my behalf", "lang": "en", "kind": "fiche", "relevant": ["sp-F12151-3"]}
+{"q": "ma réclamation date de plus d'un an, je peux encore saisir le médiateur sncf ?", "lang": "fr", "kind": "fiche", "relevant": ["sp-F12151-4"]}
+{"q": "the SNCF customer service never answered my written complaint, what next", "lang": "en", "kind": "fiche", "relevant": ["sp-F12151-4", "sp-F12151-1"]}
+{"q": "quels papiers envoyer à la médiatrice pour contester un PV en ligne", "lang": "fr", "kind": "fiche", "relevant": ["sp-F12151-7"]}
+{"q": "adresse et forme du courrier à la mediatrice sncf pour un litige commercial", "lang": "fr", "kind": "fiche", "relevant": ["sp-F12151-6"]}
+{"q": "est ce que la mediation sncf est gratuite", "lang": "fr", "kind": "fiche", "relevant": ["sp-F12151-9"]}
+{"q": "what happens if I refuse the mediator's opinion on my fine and don't pay", "lang": "en", "kind": "fiche", "relevant": ["sp-F12151-10"]}
+{"q": "quels sont les différents types de carte mobilité inclusion", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-1"]}
+{"q": "avec la carte stationnement je paie le parking ?", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-2"]}
+{"q": "mon ancienne carte d'invalidité est valable jusqu'à quand", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-37"]}
+{"q": "what are the advantages of the CMI invalidity card", "lang": "en", "kind": "fiche", "relevant": ["sp-F34049-36"]}
+{"q": "conditions pour obtenir la CMI stationnement", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-3"]}
+{"q": "je demande l'APA en même temps, comment faire pour la CMI", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-5", "sp-F34049-22", "sp-F34049-40"]}
+{"q": "can I apply for the mobility inclusion card online at the MDPH", "lang": "en", "kind": "fiche", "relevant": ["sp-F34049-7", "sp-F34049-24", "sp-F34049-42", "sp-F34049-17", "sp-F34049-34", "sp-F34049-51"]}
+{"q": "c'est la CDAPH qui examine le dossier de carte ?", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-9", "sp-F34049-26", "sp-F34049-44"]}
+{"q": "en combien de temps je reçois ma CMI une fois acceptée", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-10", "sp-F34049-27", "sp-F34049-45"]}
+{"q": "contester un refus de carte mobilité inclusion au tribunal", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-11", "sp-F34049-12", "sp-F34049-28", "sp-F34049-29", "sp-F34049-46", "sp-F34049-47"]}
+{"q": "is the disability card given for life", "lang": "en", "kind": "fiche", "relevant": ["sp-F34049-48", "sp-F34049-14", "sp-F34049-30"]}
+{"q": "on m'a volé ma carte mobilité inclusion invalidité", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-49", "sp-F34049-50", "sp-F34049-51"]}
+{"q": "faut-il demander la CMI priorité si j'ai déjà la CMI invalidité", "lang": "fr", "kind": "fiche", "relevant": ["sp-F34049-52"]}
+{"q": "Saint-Lazare accessible aux personnes en fauteuil ?", "lang": "fr", "kind": "access", "relevant": ["idfm-acc-58566", "idfm-acc-58718"]}
+{"q": "step-free access at Gare d'Austerlitz", "lang": "en", "kind": "access", "relevant": ["idfm-acc-43072"]}
+{"q": "accessibilité PMR à Massy Palaiseau", "lang": "fr", "kind": "access", "relevant": ["idfm-acc-58774"]}
+{"q": "gare de Rambouillet accessible", "lang": "fr", "kind": "access", "relevant": ["idfm-acc-427870"]}
+{"q": "is Châtelet les Halles wheelchair accessible", "lang": "en", "kind": "access", "relevant": ["idfm-acc-45102"]}
+{"q": "Cergy le Haut fauteuil roulant", "lang": "fr", "kind": "access", "relevant": ["idfm-acc-43104"]}
+{"q": "accès handicapé gare de Pontoise", "lang": "fr", "kind": "access", "relevant": ["idfm-acc-44411"]}
+{"q": "Noisy-Champs accessible ?", "lang": "fr", "kind": "access", "relevant": ["idfm-acc-58937"]}
+{"q": "peut-on voyager avec un chat dans le RER", "lang": "fr", "kind": "none", "relevant": []}
+{"q": "how much is a ticket from Paris to CDG airport", "lang": "en", "kind": "none", "relevant": []}
+{"q": "droit de grève des conducteurs RATP", "lang": "fr", "kind": "none", "relevant": []}
+{"q": "where is the lost and found office for the metro", "lang": "en", "kind": "none", "relevant": []}
+{"q": "comment refaire ma carte d'identité", "lang": "fr", "kind": "none", "relevant": [], "note": "identity card words appear in CMI passages"}
+{"q": "les trottinettes sont-elles autorisées dans le métro", "lang": "fr", "kind": "none", "relevant": []}
+{"q": "station République accessible en fauteuil", "lang": "fr", "kind": "none", "relevant": [], "note": "metro-only station, no record"}
+{"q": "remboursement d'un abonnement Navigo non utilisé", "lang": "fr", "kind": "none", "relevant": []}

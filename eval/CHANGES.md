@@ -200,3 +200,10 @@ Dev run (52 questions, 10 new from set 4), answers read one by one; claims check
 - Cost $0.0596 ($0.00115 per question), hybrid p50 / p95 1854 / 4592 ms.
 - Held-out set 4 is no longer blind; any later run of it is labelled so.
 Known limits kept: the nickname "BNF" (needs a nickname table, owner's call); "Châtelet accessible ?" answers for the metro station Châtelet (no record), not the separate RER station Châtelet - Les Halles.
+
+## Retrieval sets for RAG v2 (written 2026-11-23, committed before any run)
+- Purpose: measure retrieval on its own (recall@k, MRR, and "returns nothing" when the corpus does not cover the topic), separately from the answer judge.
+- eval/retrieval_dev.jsonl: 42 queries (26 fiche, 8 accessibility, 8 not covered; 31 FR, 11 EN). Used to choose the fusion and the relevance floor; may be tuned against.
+- eval/retrieval_test.jsonl: 41 queries (25 fiche, 8 accessibility, 8 not covered; 30 FR, 11 EN). Frozen: run once per measured version, never tuned against.
+- Labels: "relevant" lists every passage that answers the query. Identical CMI sections repeated under Stationnement, Priorité and Invalidité are all listed when the query does not name a card type. "none" queries expect no passage (including two metro-only stations and two queries sharing words with CMI passages, such as "carte d'identité").
+- Written by the assistant, labels checked against data/docs.json (every id exists; no query repeats another set). Not checked by the owner.
