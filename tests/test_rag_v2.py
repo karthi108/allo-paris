@@ -1,0 +1,145 @@
+"""RAG v2: vectors file, hybrid search floors, query embedder, LLM reranker (no network)."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+import pytest
+
+from app.agent.llm import Budget, LLMUnavailable, OpenAIClient
+from app.rag.corpus import Corpus, Doc
+from app.rag.embed import (
+    QueryEmbedder,
+    Vectors,
+    corpus_hash,
+    decode,
+    encode,
+    passage_text,
+    unit,
+)
+from app.rag.rerank import LLMReranker
+
+
+def _doc(i: str, title: str, text: str) -> Doc:
+    return Doc(i, "fiche", title, text, "Service Public / DILA", "LO 2.0", "u", "2026-11-16")
+
+
+def _corpus() -> Corpus:
+    return Corpus(
+        [
+            _doc("a", "Médiatrice SNCF", "Le recours à la médiatrice est gratuit."),
+            _doc("b", "Carte mobilité inclusion", "La carte est demandée à la MDPH."),
+            _doc("c", "Amende", "Contester un procès-verbal sous 3 mois."),
+        ]
+    )
+
+
+def _vectors(c: Corpus, vecs: dict[str, list[float]]) -> Vectors:
+    return Vectors({k: unit(v) for k, v in vecs.items()}, "m", 3)
+
+
+def test_encode_decode_roundtrip() -> None:
+    vecs = [unit([1.0, 2.0, 2.0]), unit([0.0, 1.0, 0.0])]
+    back = decode(encode(vecs), 3)
+    assert len(back) == 2
+    assert all(
+        abs(x - y) < 1e-6
+        for a, b in zip(vecs, back, strict=True)
+        for x, y in zip(a, b, strict=True)
+    )
+
+
+def test_vectors_refused_when_built_from_other_passages(tmp_path_factory: Any) -> None:
+    c = _corpus()
+    ids = [d.id for d in c.docs]
+    texts = [passage_text(d.title, d.text) for d in c.docs]
+    raw = {
+        "model": "m",
+        "dimensions": 3,
+        "corpus_hash": corpus_hash(ids, texts),
+        "ids": ids,
+        "vectors": encode([unit([1, 0, 0]), unit([0, 1, 0]), unit([0, 0, 1])]),
+    }
+    path = Path("data") / "_test_vectors.json"
+    path.write_text(json.dumps(raw), encoding="utf-8")
+    try:
+        assert Vectors.load(path, ids, texts) is not None
+        changed = [*texts[:2], texts[2] + " (corrigé)"]
+        assert Vectors.load(path, ids, changed) is None
+    finally:
+        path.unlink()
+
+
+def test_hybrid_finds_passage_with_no_shared_word() -> None:
+    c = _corpus()
+    c.attach_vectors(_vectors(c, {"a": [1, 0, 0], "b": [0, 1, 0], "c": [0, 0, 1]}))
+    q = "is mediation free of charge"  # no French word in common with passage a
+    assert c.search(q, limit=3) == []  # BM25 alone finds nothing
+    got = c.search(q, limit=3, qvec=unit([0.9, 0.1, 0.0]), floor=0.5)
+    assert [d.id for d in got] == ["a"]
+
+
+def test_hybrid_below_both_floors_returns_nothing() -> None:
+    c = _corpus()
+    c.attach_vectors(_vectors(c, {"a": [1, 0, 0], "b": [0, 1, 0], "c": [0, 0, 1]}))
+    got = c.search("chien dans le metro", limit=3, qvec=unit([1, 1, 1]), floor=0.9)
+    assert got == []
+
+
+def test_without_vectors_search_is_bm25() -> None:
+    c = _corpus()
+    assert [d.id for d in c.search("médiatrice gratuit")] == ["a"]
+    assert [d.id for d in c.search("médiatrice gratuit", qvec=[1.0, 0.0, 0.0])] == ["a"]
+
+
+def test_query_embedder_caches_and_counts_budget() -> None:
+    calls: list[dict[str, Any]] = []
+
+    def post(url: str, h: dict[str, str], body: dict[str, Any], t: float) -> dict[str, Any]:
+        calls.append(body)
+        return {"data": [{"index": 0, "embedding": [3.0, 4.0]}], "usage": {"prompt_tokens": 5}}
+
+    budget = Budget(1.0, 0.4, 1.6)
+    emb = QueryEmbedder("k", budget, post=post, dimensions=2)
+    v1 = emb("Médiation gratuite ?")
+    v2 = emb("  médiation gratuite ?  ")
+    assert v1 == v2 == pytest.approx([0.6, 0.8])
+    assert len(calls) == 1 and calls[0]["dimensions"] == 2
+    assert budget.spent_usd > 0
+
+
+def test_query_embedder_without_key_is_unavailable() -> None:
+    with pytest.raises(LLMUnavailable):
+        QueryEmbedder("")("x")
+
+
+def _client(content: str) -> OpenAIClient:
+    def post(url: str, h: dict[str, str], body: dict[str, Any], t: float) -> dict[str, Any]:
+        assert body["response_format"] == {"type": "json_object"}
+        return {
+            "choices": [{"message": {"content": content}}],
+            "usage": {"prompt_tokens": 100, "completion_tokens": 5},
+        }
+
+    return OpenAIClient("k", "gpt-test", Budget(1.0, 0.4, 1.6), post=post)
+
+
+def test_reranker_orders_and_drops_bad_numbers() -> None:
+    c = _corpus()
+    rr = LLMReranker(_client('{"relevant": [3, 9, 1, 3]}'))
+    got = rr.rerank("q", c.docs)
+    assert [d.id for d in got] == ["c", "a"]
+    assert rr.calls == 1 and rr.input_tokens == 100
+
+
+def test_reranker_can_say_none() -> None:
+    c = _corpus()
+    assert LLMReranker(_client('{"relevant": []}')).rerank("chien", c.docs) == []
+
+
+def test_reranker_bad_json_is_unavailable() -> None:
+    c = _corpus()
+    with pytest.raises(LLMUnavailable):
+        LLMReranker(_client("not json")).rerank("q", c.docs)

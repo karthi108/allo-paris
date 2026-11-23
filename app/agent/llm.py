@@ -94,6 +94,12 @@ class Budget:
             self.calls_today += 1
         return cost
 
+    def record_usd(self, cost: float) -> None:
+        """A cost priced elsewhere (embeddings), counted in the same daily cap."""
+        with self._lock:
+            self._roll()
+            self.spent_usd += cost
+
 
 class LLMClient:
     provider = "none"

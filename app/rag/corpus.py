@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from app.data.stops import normalize
+from app.rag.embed import Vectors, dot
 
 # Words too common to help ranking (French and English), after normalize()
 _STOP_WORDS = (
@@ -28,6 +29,15 @@ _STOP_WORDS = (
 _STOP = frozenset(_STOP_WORDS.split())
 K1, B = 1.5, 0.75
 MIN_HITS = 2  # distinct query terms a passage must share to be returned
+# Hybrid search (RAG v2). COS_FLOOR is chosen on eval/retrieval_dev.jsonl only.
+# Dev sweep 2026-11-23: covered queries had a top cosine >= 0.467, so 0.46 keeps them all;
+# cosine alone cannot separate every uncovered query (some score 0.5 to 0.66).
+COS_FLOOR = 0.46
+RRF_K = 60  # usual constant of reciprocal rank fusion
+# Dense list counts 3x in the fusion: on the dev set plain RRF (1:1) lowered recall@1
+# from 0.853 (dense alone) to 0.765; 3:1 kept 0.853 and raised recall@5 to 1.0.
+DENSE_WEIGHT = 3.0
+RRF_DEPTH = 20
 
 
 def terms(text: str) -> list[str]:
@@ -124,6 +134,8 @@ class Corpus:
         self._idf = {t: math.log(1 + (n - f + 0.5) / (f + 0.5)) for t, f in df.items()}
         self._len = [sum(tf.values()) for tf in self._tf]
         self._avg = (sum(self._len) / n) if n else 0.0
+        self.vectors: Vectors | None = None
+        self._vec: list[list[float] | None] = []
 
     @classmethod
     def load(cls, path: Path) -> Corpus:
@@ -145,8 +157,50 @@ class Corpus:
             ]
         )
 
-    def search(self, query: str, kind: str | None = None, limit: int = 3) -> list[Doc]:
-        """BM25 ranking. Only passages sharing at least one term with the query are returned."""
+    def attach_vectors(self, vectors: Vectors | None) -> None:
+        """Passage vectors for hybrid search (RAG v2); None keeps BM25 only."""
+        self.vectors = vectors
+        self._vec = [vectors.by_id.get(d.id) if vectors else None for d in self.docs]
+
+    def dense(
+        self, qvec: list[float], kind: str | None = None, floor: float | None = None
+    ) -> list[tuple[float, int]]:
+        """(cosine, index) of passages at or above the floor, best first."""
+        floor = COS_FLOOR if floor is None else floor
+        out = []
+        for i, v in enumerate(self._vec):
+            if v is None or (kind and self.docs[i].kind != kind):
+                continue
+            c = dot(qvec, v)
+            if c >= floor:
+                out.append((c, i))
+        out.sort(key=lambda x: (-x[0], x[1]))
+        return out
+
+    def search(
+        self,
+        query: str,
+        kind: str | None = None,
+        limit: int = 3,
+        qvec: list[float] | None = None,
+        floor: float | None = None,
+    ) -> list[Doc]:
+        """BM25, or hybrid when a query vector is given and passage vectors are attached:
+        weighted reciprocal rank fusion of the BM25 list (relevance floor: shared terms) and the
+        dense list (relevance floor: cosine). A passage passing neither floor is never
+        returned, so "no document" stays possible."""
+        ranked = self.bm25(query, kind)
+        if qvec is None or self.vectors is None:
+            return [self.docs[i] for _, i in ranked[:limit]]
+        fused: dict[int, float] = {}
+        for weight, lst in ((1.0, ranked), (DENSE_WEIGHT, self.dense(qvec, kind, floor))):
+            for rank, (_, i) in enumerate(lst[:RRF_DEPTH]):
+                fused[i] = fused.get(i, 0.0) + weight / (RRF_K + rank + 1)
+        order = sorted(fused, key=lambda i: (-fused[i], i))
+        return [self.docs[i] for i in order[:limit]]
+
+    def bm25(self, query: str, kind: str | None = None) -> list[tuple[float, int]]:
+        """(BM25 score, index) of passages passing the shared-terms floor, best first."""
         q = set(terms(query))
         if not q:
             return []
@@ -168,4 +222,4 @@ class Corpus:
             if score > 0 and hits >= min(MIN_HITS, len(q)):
                 scored.append((score, i))
         scored.sort(key=lambda x: (-x[0], x[1]))
-        return [self.docs[i] for _, i in scored[:limit]]
+        return scored
