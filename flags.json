@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T21:30:03+00:00",
+ "generated_at": "2026-11-24T21:30:49+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 391.4,
@@ -174,7 +174,7 @@
    "since": "2026-11-08T10:02:45+00:00",
    "covered_hours": 391.4,
    "lower_bound": true,
-   "detail": "unknown since Sun 08 Nov 10:02 UTC or earlier, 391.4 h observed"
+   "detail": "maintenance since Sun 08 Nov 10:02 UTC or earlier, 391.4 h observed"
   },
   {
    "rule": "R4",
