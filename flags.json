@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T01:47:58+00:00",
+ "generated_at": "2026-11-24T01:50:38+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 371.7,
@@ -181,9 +181,9 @@
    "point_id": "FR*V75*E9012*07*3",
    "station": "5 Rue Docteur Goujon 75012 Paris",
    "since": "2026-11-22T12:10:35+00:00",
-   "covered_hours": 37.6,
+   "covered_hours": 37.7,
    "lower_bound": false,
-   "detail": "maintenance since Sun 22 Nov 12:10 UTC, 37.6 h observed"
+   "detail": "maintenance since Sun 22 Nov 12:10 UTC, 37.7 h observed"
   },
   {
    "rule": "R2",
@@ -271,9 +271,9 @@
    "point_id": "FR*V75*EPX01*02*1",
    "station": "62 Jean-Jacques Rousseau 75001 Paris",
    "since": "2026-11-19T11:40:35+00:00",
-   "covered_hours": 110.1,
+   "covered_hours": 110.2,
    "lower_bound": false,
-   "detail": "available with no session for 110.1 h observed, while 3 other point(s) at this address were used"
+   "detail": "available with no session for 110.2 h observed, while 3 other point(s) at this address were used"
   },
   {
    "rule": "R1",
@@ -325,9 +325,9 @@
    "point_id": "FR*V75*EPX06*07*6",
    "station": "38 Rue du Four 75006 Paris",
    "since": "2026-11-18T09:10:33+00:00",
-   "covered_hours": 136.6,
+   "covered_hours": 136.7,
    "lower_bound": false,
-   "detail": "available with no session for 136.6 h observed, while 4 other point(s) at this address were used"
+   "detail": "available with no session for 136.7 h observed, while 4 other point(s) at this address were used"
   },
   {
    "rule": "R1",
@@ -406,9 +406,9 @@
    "point_id": "FR*V75*EPX09*12*2",
    "station": "",
    "since": "2026-11-17T09:40:36+00:00",
-   "covered_hours": 160.1,
+   "covered_hours": 160.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 160.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 160.2 h observed"
   },
   {
    "rule": "R1",
