@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T14:49:14+00:00",
+ "generated_at": "2026-11-25T14:50:36+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 408.7,
@@ -154,9 +154,9 @@
    "point_id": "FR*V75*E9012*07*3",
    "station": "5 Rue Docteur Goujon 75012 Paris",
    "since": "2026-11-22T12:10:35+00:00",
-   "covered_hours": 74.6,
+   "covered_hours": 74.7,
    "lower_bound": false,
-   "detail": "maintenance since Sun 22 Nov 12:10 UTC, 74.6 h observed"
+   "detail": "maintenance since Sun 22 Nov 12:10 UTC, 74.7 h observed"
   },
   {
    "rule": "R2",
@@ -217,27 +217,27 @@
    "point_id": "FR*V75*E9019*05*1",
    "station": "14 Rue de Crimée 75019 Paris",
    "since": "2026-11-23T08:10:43+00:00",
-   "covered_hours": 54.6,
+   "covered_hours": 54.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 23 Nov 08:10 UTC, 54.6 h observed"
+   "detail": "unknown since Mon 23 Nov 08:10 UTC, 54.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9019*05*2",
    "station": "14 Rue de Crimée 75019 Paris",
    "since": "2026-11-23T08:10:43+00:00",
-   "covered_hours": 54.6,
+   "covered_hours": 54.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 23 Nov 08:10 UTC, 54.6 h observed"
+   "detail": "unknown since Mon 23 Nov 08:10 UTC, 54.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9019*05*3",
    "station": "14 Rue de Crimée 75019 Paris",
    "since": "2026-11-23T08:10:43+00:00",
-   "covered_hours": 54.6,
+   "covered_hours": 54.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 23 Nov 08:10 UTC, 54.6 h observed"
+   "detail": "unknown since Mon 23 Nov 08:10 UTC, 54.7 h observed"
   },
   {
    "rule": "R1",
@@ -298,9 +298,9 @@
    "point_id": "FR*V75*EPX01*02*1",
    "station": "62 Jean-Jacques Rousseau 75001 Paris",
    "since": "2026-11-19T11:40:35+00:00",
-   "covered_hours": 147.1,
+   "covered_hours": 147.2,
    "lower_bound": false,
-   "detail": "available with no session for 147.1 h observed, while 3 other point(s) at this address were used"
+   "detail": "available with no session for 147.2 h observed, while 3 other point(s) at this address were used"
   },
   {
    "rule": "R1",
@@ -352,9 +352,9 @@
    "point_id": "FR*V75*EPX06*07*6",
    "station": "38 Rue du Four 75006 Paris",
    "since": "2026-11-18T09:10:33+00:00",
-   "covered_hours": 173.6,
+   "covered_hours": 173.7,
    "lower_bound": false,
-   "detail": "available with no session for 173.6 h observed, while 4 other point(s) at this address were used"
+   "detail": "available with no session for 173.7 h observed, while 4 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -424,9 +424,9 @@
    "point_id": "FR*V75*EPX09*12*2",
    "station": "",
    "since": "2026-11-17T09:40:36+00:00",
-   "covered_hours": 197.1,
+   "covered_hours": 197.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 197.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 197.2 h observed"
   },
   {
    "rule": "R4",
@@ -892,9 +892,9 @@
    "point_id": "FR*V75*EPX18*07*5",
    "station": "1 Rue Jean-François Lépine 75018 Paris",
    "since": "2026-11-23T04:40:36+00:00",
-   "covered_hours": 58.1,
+   "covered_hours": 58.2,
    "lower_bound": false,
-   "detail": "maintenance since Mon 23 Nov 04:40 UTC, 58.1 h observed"
+   "detail": "maintenance since Mon 23 Nov 04:40 UTC, 58.2 h observed"
   },
   {
    "rule": "R1",
@@ -955,9 +955,9 @@
    "point_id": "FR*V75*EPX20*08*3",
    "station": "24 Rue Monte Cristo 75020 Paris",
    "since": "2026-11-24T01:10:34+00:00",
-   "covered_hours": 37.6,
+   "covered_hours": 37.7,
    "lower_bound": false,
-   "detail": "maintenance since Tue 24 Nov 01:10 UTC, 37.6 h observed"
+   "detail": "maintenance since Tue 24 Nov 01:10 UTC, 37.7 h observed"
   },
   {
    "rule": "R1",
