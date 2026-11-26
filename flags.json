@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T23:48:23+00:00",
+ "generated_at": "2026-11-26T23:50:37+00:00",
  "coverage": {
   "first": "2026-11-08T10:02:45+00:00",
   "covered_hours": 441.7,
@@ -154,9 +154,9 @@
    "point_id": "FR*V75*E9012*07*3",
    "station": "5 Rue Docteur Goujon 75012 Paris",
    "since": "2026-11-22T12:10:35+00:00",
-   "covered_hours": 107.6,
+   "covered_hours": 107.7,
    "lower_bound": false,
-   "detail": "maintenance since Sun 22 Nov 12:10 UTC, 107.6 h observed"
+   "detail": "maintenance since Sun 22 Nov 12:10 UTC, 107.7 h observed"
   },
   {
    "rule": "R2",
@@ -190,27 +190,27 @@
    "point_id": "FR*V75*E9019*05*1",
    "station": "14 Rue de Crimée 75019 Paris",
    "since": "2026-11-23T08:10:43+00:00",
-   "covered_hours": 87.6,
+   "covered_hours": 87.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 23 Nov 08:10 UTC, 87.6 h observed"
+   "detail": "unknown since Mon 23 Nov 08:10 UTC, 87.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9019*05*2",
    "station": "14 Rue de Crimée 75019 Paris",
    "since": "2026-11-23T08:10:43+00:00",
-   "covered_hours": 87.6,
+   "covered_hours": 87.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 23 Nov 08:10 UTC, 87.6 h observed"
+   "detail": "unknown since Mon 23 Nov 08:10 UTC, 87.7 h observed"
   },
   {
    "rule": "R1",
    "point_id": "FR*V75*E9019*05*3",
    "station": "14 Rue de Crimée 75019 Paris",
    "since": "2026-11-23T08:10:43+00:00",
-   "covered_hours": 87.6,
+   "covered_hours": 87.7,
    "lower_bound": false,
-   "detail": "unknown since Mon 23 Nov 08:10 UTC, 87.6 h observed"
+   "detail": "unknown since Mon 23 Nov 08:10 UTC, 87.7 h observed"
   },
   {
    "rule": "R1",
@@ -271,9 +271,9 @@
    "point_id": "FR*V75*EPX01*02*1",
    "station": "62 Jean-Jacques Rousseau 75001 Paris",
    "since": "2026-11-19T11:40:35+00:00",
-   "covered_hours": 180.1,
+   "covered_hours": 180.2,
    "lower_bound": false,
-   "detail": "available with no session for 180.1 h observed, while 3 other point(s) at this address were used"
+   "detail": "available with no session for 180.2 h observed, while 3 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -334,9 +334,9 @@
    "point_id": "FR*V75*EPX06*07*6",
    "station": "38 Rue du Four 75006 Paris",
    "since": "2026-11-18T09:10:33+00:00",
-   "covered_hours": 206.6,
+   "covered_hours": 206.7,
    "lower_bound": false,
-   "detail": "available with no session for 206.6 h observed, while 4 other point(s) at this address were used"
+   "detail": "available with no session for 206.7 h observed, while 4 other point(s) at this address were used"
   },
   {
    "rule": "R4",
@@ -388,9 +388,9 @@
    "point_id": "FR*V75*EPX09*06*2",
    "station": "13 Rue du conservatoire 75009 Paris",
    "since": "2026-11-24T17:10:36+00:00",
-   "covered_hours": 54.6,
+   "covered_hours": 54.7,
    "lower_bound": false,
-   "detail": "maintenance since Tue 24 Nov 17:10 UTC, 54.6 h observed"
+   "detail": "maintenance since Tue 24 Nov 17:10 UTC, 54.7 h observed"
   },
   {
    "rule": "R1",
@@ -415,9 +415,9 @@
    "point_id": "FR*V75*EPX09*12*2",
    "station": "",
    "since": "2026-11-17T09:40:36+00:00",
-   "covered_hours": 230.1,
+   "covered_hours": 230.2,
    "lower_bound": false,
-   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 230.1 h observed"
+   "detail": "maintenance since Tue 17 Nov 09:40 UTC, 230.2 h observed"
   },
   {
    "rule": "R4",
@@ -910,9 +910,9 @@
    "point_id": "FR*V75*EPX18*07*5",
    "station": "1 Rue Jean-François Lépine 75018 Paris",
    "since": "2026-11-23T04:40:36+00:00",
-   "covered_hours": 91.1,
+   "covered_hours": 91.2,
    "lower_bound": false,
-   "detail": "maintenance since Mon 23 Nov 04:40 UTC, 91.1 h observed"
+   "detail": "maintenance since Mon 23 Nov 04:40 UTC, 91.2 h observed"
   },
   {
    "rule": "R1",
@@ -973,9 +973,9 @@
    "point_id": "FR*V75*EPX20*08*3",
    "station": "24 Rue Monte Cristo 75020 Paris",
    "since": "2026-11-24T01:10:34+00:00",
-   "covered_hours": 70.6,
+   "covered_hours": 70.7,
    "lower_bound": false,
-   "detail": "maintenance since Tue 24 Nov 01:10 UTC, 70.6 h observed"
+   "detail": "maintenance since Tue 24 Nov 01:10 UTC, 70.7 h observed"
   },
   {
    "rule": "R1",
